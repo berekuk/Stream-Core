@@ -12,10 +12,24 @@ Stream::DB::In - DB reading stream
 use Yandex::DB;
 use Carp;
 
+use Params::Validate qw(:all);
+
+=head1 CONSTRUCTOR
+
+=over
+
+=item C<< new({storage => $storage, cursor => $cursor}) >>
+
+Constructs new reading stream. C<$storage> should be L<Stream::DB> instance, C<$cursor> - L<Stream::DB::Cursor>.
+
+=cut
 sub new($$) {
-    my ($class, $params) = @_;
-    my $storage = $params->{storage} or croak "storage not specified";
-    my $cursor = $params->{cursor} or croak "cursor not specified";
+    my $class = shift;
+    my $params = validate(@_, {
+        storage => { isa => 'Stream::DB' },
+        cursor => { isa => 'Stream::DB::Cursor' },
+    });
+    my ($storage, $cursor) = ($params->{storage}, $params->{cursor});
 
     my $self = bless {
         dbh => connectdb($storage->{db}),

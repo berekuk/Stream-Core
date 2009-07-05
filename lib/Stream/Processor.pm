@@ -19,9 +19,22 @@ use Stream::Out;
 our @EXPORT_OK = qw(processor);
 our @ISA = qw(Exporter Stream::Out);
 
+=head1 SUBS
+
+=over
+
+=item C<processor(&)>
+
+Simple wrapper for Stream::Out::processor.
+
+=cut
 sub processor(&) {
     goto &Stream::Out::processor;
 }
+
+=back
+
+=cut
 
 1;
 

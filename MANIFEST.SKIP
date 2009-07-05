@@ -5,3 +5,4 @@
 ^tfiles/
 ^MANIFEST\.bak
 ^Makefile$
+^Makefile\.old$
