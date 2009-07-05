@@ -11,7 +11,7 @@ Stream::DB - DB-based storage
 
 use Yandex::DB 2.2.0;
 use PPB::DB::Inserter;
-use Stream::DB::Stream;
+use Stream::DB::In;
 
 use Carp;
 
@@ -69,7 +69,7 @@ sub params {
 
 sub stream {
     my ($self, $cursor) = @_;
-    return Stream::DB::Stream->new({storage => $self, cursor => $cursor});
+    return Stream::DB::In->new({storage => $self, cursor => $cursor});
 }
 
 =head1 AUTHOR

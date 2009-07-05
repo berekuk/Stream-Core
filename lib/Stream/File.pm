@@ -23,7 +23,7 @@ use base qw(Stream::Storage);
 use Carp;
 use IO::Handle;
 use Yandex::X qw(xopen xprint);
-use Stream::File::Stream;
+use Stream::File::In;
 
 =item B<new($file)>
 
