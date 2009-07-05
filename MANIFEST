@@ -28,8 +28,6 @@ t/cursor.d/something.cursor
 t/db.t
 t/file.t
 t/filter.t
-t/log
-t/log.t
 t/storage.d/something
 t/storage/file
 t/storage/something
