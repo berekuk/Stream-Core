@@ -17,10 +17,11 @@ my %modules = map { ($_ => 1) } @modules;
 my @good_modules = qw(
     Streams
     Stream::Log
+    Stream::In
     Stream::Out
     Stream::Stream
-    Stream::In
     Stream::Processor
+    Stream::Storage
     Stream::File::Stream
     Stream::Log::Stream
     Stream::DB::Stream
