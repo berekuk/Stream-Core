@@ -68,6 +68,7 @@ sub in ($$) {
 }
 
 # just an alias to out() method
+# TODO - since Out stream must have special abilities to be storage, we should check for it's type
 sub storage {
     goto &out;
 }
