@@ -1,3 +1,9 @@
+libstream-perl (0.4.2) unstable; urgency=low
+
+  * many PODs, small cleanups
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sun, 05 Jul 2009 21:14:19 +0400
+
 libstream-perl (0.4.1) unstable; urgency=low
 
   * more renamings in packages which used "stream" and "processor" instead of
