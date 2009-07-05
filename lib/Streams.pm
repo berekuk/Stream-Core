@@ -29,7 +29,7 @@ This module is just a simple way to load most important subs from other Stream::
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Stream::Utils qw(process storage cursor stream);
-use Stream::Processor qw(processor);
+use Stream::Out qw(processor);
 use Stream::Filter qw(filter);
 
 use base qw(Exporter);
@@ -37,11 +37,11 @@ our @EXPORT = qw(process storage cursor stream processor filter);
 
 =head1 SEE ALSO
 
-L<Stream::Stream> - interface which every stream must implement.
+L<Stream::In> - interface which every every stream must implement.
 
-L<Stream::Processor> - stream processor's interface and constructor for anonimous processor.
+L<Stream::Out> - output stream interface and constructor for anonimous processor.
 
-L<Stream::Filter> - specific processor which generates another stream
+L<Stream::Filter> - specific output stream which generates another stream
 
 L<process.pl> - script which processes any specified stream.
 

@@ -19,10 +19,10 @@ use Params::Validate;
 use Stream::Catalog;
 
 use base qw(Exporter);
-our @EXPORT_OK = qw/process storage cursor stream/;
+our @EXPORT_OK = qw/process storage cursor stream catalog /;
 
 sub process($$;$) {
-    my ($stream, $processor, $limit) = validate_pos(@_, {isa => 'Stream::Stream'}, {isa => 'Stream::Processor'}, 0);
+    my ($stream, $processor, $limit) = validate_pos(@_, {isa => 'Stream::In'}, {isa => 'Stream::Out'}, 0);
     my $i = 0;
     my $chunk_size = 1000;
     while (1) {
@@ -43,6 +43,11 @@ sub process($$;$) {
 }
 
 our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance
+
+sub catalog() {
+    return $catalog;
+}
+
 sub storage($) {
     my ($name) = @_;
     return $catalog->storage($name);

@@ -1,3 +1,11 @@
+libstream-perl (0.4.0) unstable; urgency=low
+
+  * Stream::Stream renamed into Stream::In
+  * Stream::Processor renamed into Stream::Out
+  * some modules moved into libstream-more-perl package
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sun, 05 Jul 2009 19:25:26 +0400
+
 libstream-perl (0.3.11) unstable; urgency=low
 
   * more basic modules provide $VERSION

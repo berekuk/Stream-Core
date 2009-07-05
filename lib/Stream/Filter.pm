@@ -25,9 +25,9 @@ use Carp;
 use Params::Validate;
 use Scalar::Util qw(blessed);
 
-use Stream::Processor;
+use Stream::Out;
 use base qw(
-    Stream::Processor
+    Stream::Out
     Exporter
 );
 our @EXPORT_OK = 'filter';
@@ -43,18 +43,18 @@ use overload '|' => sub {
     unless (blessed $right) {
         croak "Right side of pipe is not object, but '$right'";
     }
-    if ($left->isa('Stream::Filter') and $right->isa('Stream::Processor')) {
+    if ($left->isa('Stream::Filter') and $right->isa('Stream::Out')) {
         # right-side filter
         if ($right->isa('Stream::Filter')) {
             return Stream::Filter::FilteredFilter->new($left, $right);
         }
         else {
-            return Stream::Filter::FilteredProcessor->new($left, $right);
+            return Stream::Filter::FilteredOut->new($left, $right);
         }
     }
-    elsif ($left->isa('Stream::Stream') and $right->isa('Stream::Filter')) {
+    elsif ($left->isa('Stream::In') and $right->isa('Stream::Filter')) {
         # left-side filter
-        return Stream::Filter::FilteredStream->new($left, $right);
+        return Stream::Filter::FilteredIn->new($left, $right);
     }
     else {
         croak "Strange arguments '$left' and '$right'";
@@ -114,10 +114,9 @@ sub write {
     return $self->{callback}->($line);
 }
 
-package Stream::Filter::FilteredProcessor;
+package Stream::Filter::FilteredOut;
 
-use Stream::Processor;
-use base qw(Stream::Processor);
+use base qw(Stream::Out);
 
 sub new {
     my ($class, $filter, $processor) = @_;
@@ -145,10 +144,9 @@ sub commit {
     $self->{processor}->commit; # necessary!
 }
 
-package Stream::Filter::FilteredStream;
+package Stream::Filter::FilteredIn;
 
-use Stream::Stream;
-use base qw(Stream::Stream);
+use base qw(Stream::In);
 
 sub new {
     my ($class, $stream, $filter) = @_;
@@ -182,9 +180,9 @@ sub commit {
 
 package Stream::Filter::FilteredFilter;
 
-# FilteredFilter is the same as FilteredProcessor, but it's also a filter, which means it can be used on a left side of a pipe
+# FilteredFilter is the same as FilteredOut, but it's also a filter, which means it can be used on a left side of a pipe
 our @ISA = qw(
-    Stream::Filter::FilteredProcessor
+    Stream::Filter::FilteredOut
     Stream::Filter
 );
 

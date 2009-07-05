@@ -48,7 +48,7 @@ For example, if it looked like this:
 You should rewrite it like this:
 
     package PPB::Something;
-    use base qw(Stream::Processor);
+    use base qw(Stream::Out);
     sub write {
         ...
     }

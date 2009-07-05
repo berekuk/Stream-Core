@@ -18,8 +18,7 @@ Stream::Storage - interface to any storage.
 
 use Carp;
 
-use Stream::Processor;
-use base qw(Stream::Processor); # TODO - should we introduce common base class Stream::Writer?
+use base qw(Stream::Out);
 
 sub new {
     return bless {} => shift;

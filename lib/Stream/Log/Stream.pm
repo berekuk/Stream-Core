@@ -9,8 +9,7 @@ Stream::Log::Stream - stream which is a wrapper to Yandex::Unrotate.
 
 =cut
 
-use Stream::Stream;
-use base qw(Stream::Stream);
+use base qw(Stream::In);
 
 use Params::Validate qw(:all);
 
