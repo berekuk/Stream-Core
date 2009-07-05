@@ -119,29 +119,29 @@ package Stream::Filter::FilteredOut;
 use base qw(Stream::Out);
 
 sub new {
-    my ($class, $filter, $processor) = @_;
+    my ($class, $filter, $out) = @_;
     return bless {
         filter => $filter,
-        processor => $processor,
+        out => $out,
     } => $class;
 }
 
 sub write {
     my ($self, $line) = @_;
     my @lines = $self->{filter}->write($line);
-    return map { $self->{processor}->write($_) } @lines;
+    return map { $self->{out}->write($_) } @lines;
 }
 
 sub write_chunk {
     my ($self, $chunk) = @_;
     $chunk = $self->{filter}->write_chunk($chunk);
-    return $self->{processor}->write_chunk($chunk);
+    return $self->{out}->write_chunk($chunk);
 }
 
 sub commit {
     my ($self) = @_;
     $self->{filter}->commit; # useless?
-    $self->{processor}->commit; # necessary!
+    $self->{out}->commit; # necessary!
 }
 
 package Stream::Filter::FilteredIn;
@@ -149,16 +149,16 @@ package Stream::Filter::FilteredIn;
 use base qw(Stream::In);
 
 sub new {
-    my ($class, $stream, $filter) = @_;
+    my ($class, $in, $filter) = @_;
     return bless {
         filter => $filter,
-        stream => $stream,
+        in => $in,
     } => $class;
 }
 
 sub read {
     my ($self) = @_;
-    my $line = $self->{stream}->read() or return;
+    my $line = $self->{in}->read() or return;
     my @filtered = $self->{filter}->write($line);
     return unless @filtered;
     die "One-to-many not implemented in source filters" unless @filtered == 1;
@@ -167,7 +167,7 @@ sub read {
 
 sub read_chunk {
     my ($self, $limit) = @_;
-    my $chunk = $self->{stream}->read_chunk($limit);
+    my $chunk = $self->{in}->read_chunk($limit);
     return unless $chunk;
     return $self->{filter}->write_chunk($chunk);
 }
@@ -175,7 +175,7 @@ sub read_chunk {
 sub commit {
     my ($self) = @_;
     $self->{filter}->commit; # useless?
-    $self->{stream}->commit; # necessary!
+    $self->{in}->commit; # necessary!
 }
 
 package Stream::Filter::FilteredFilter;

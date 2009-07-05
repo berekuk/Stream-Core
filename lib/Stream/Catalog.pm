@@ -16,7 +16,8 @@ Stream::Catalog - registry of all streams
 
 =cut
 
-use Stream::Catalog::Storage::File;
+use Stream::Catalog::Out::File;
+use Stream::Catalog::In::File;
 use Stream::Catalog::Cursor::File;
 
 sub new ($) {
@@ -25,8 +26,14 @@ sub new ($) {
 }
 
 {
-    my $file_module = Stream::Catalog::Storage::File->new;
-    sub storage_modules ($$) {
+    my $file_module = Stream::Catalog::Out::File->new;
+    sub out_modules ($$) {
+        return $file_module;
+    }
+}
+{
+    my $file_module = Stream::Catalog::In::File->new;
+    sub in_modules ($$) {
         return $file_module;
     }
 }
@@ -38,15 +45,31 @@ sub new ($) {
     }
 }
 
-sub storage ($$) {
+sub out ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->storage_modules) {
-        my $storage = $module->storage($name);
-        if ($storage) {
-            return $storage;
+    for my $module ($self->out_modules) {
+        my $out = $module->out($name);
+        if ($out) {
+            return $out;
         }
     }
-    die "Can't find storage by name '$name'";
+    die "Can't find output stream by name '$name'";
+}
+
+sub in ($$) {
+    my ($self, $name) = @_;
+    for my $module ($self->in_modules) {
+        my $stream = $module->in($name);
+        if ($stream) {
+            return $stream;
+        }
+    }
+    die "Can't find input stream by name '$name'";
+}
+
+# just an alias to out() method
+sub storage {
+    goto &out;
 }
 
 sub cursor ($$) {

@@ -33,7 +33,7 @@ use Stream::Out qw(processor);
 use Stream::Filter qw(filter);
 
 use base qw(Exporter);
-our @EXPORT = qw(process storage cursor stream processor filter);
+our @EXPORT = qw(process storage cursor stream processor filter catalog);
 
 =head1 SEE ALSO
 

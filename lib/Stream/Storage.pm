@@ -14,6 +14,12 @@ Stream::Storage - interface to any storage.
 
     $stream = $storage->stream($cursor);
 
+=head1 DESCRIPTION
+
+Stream::Storage is a kind of writing stream which can generate associated reading stream with C<stream> method.
+
+C<stream> method usually accepts associated cursor, but implementations may vary...
+
 =cut
 
 use Carp;

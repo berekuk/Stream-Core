@@ -82,7 +82,7 @@ sub stream {
             croak "Cursor '$self->{posfile}' doesn't have any associated file";
         }
     }
-    return Stream::File::Stream->new({file => $storage_file, cursor => $self});
+    return Stream::File::In->new({file => $storage_file, cursor => $self});
 }
 
 =head1 AUTHOR

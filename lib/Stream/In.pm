@@ -17,16 +17,42 @@ Stream::In - input stream interface
 
 C<Stream::In> defines interface which every reading stream must implement.
 
+=head1 INTERFACE
+
+=over
+
 =cut
 
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
 
+=item I<new>
+
+Constructor is not specified in this class. Each input stream class should provide it's own implementation.
+
+=item I<read()>
+
+C<read> method should be implemented by child class.
+
+It must return any defined scalar when there's something left in stream, and undef when stream is over.
+
+Currently, C<Stream::In> doesn't coerce C<read()> into C<read_chunk(1)>. This can be fixed in future (in a safe way, so that non-implementing both C<read> and C<read_chunk> still will be error), or there will be mixin for this task.
+
+=cut
 sub read($) {
     croak 'read not implemented';
 }
 
+=item I<read_chunk($limit)>
+
+C<read_chunk> receives integer limit as an only argument and should return array ref with single scalars, ordered as if C<read()> was invoked several times, or undef if there is no data left in the stream.
+
+C<read_chunk> method can be provided by a child class if it's convenient or when maximum performance is needed.
+
+Default implementation simply calls C<read()> I<$limit> times.
+
+=cut
 sub read_chunk($$) {
     my ($self, $limit) = @_;
     my @chunk;
@@ -38,7 +64,21 @@ sub read_chunk($$) {
     return \@chunk;
 }
 
-sub commit {} # do nothing by default
+=item I<commit()>
+
+C<commit> method can commit position, print statistics or do anything neccessary to make sure that reading is completed correctly.
+
+Stream's author should make sure that stream is still readable after that.
+
+Default implementation does nothing.
+
+=cut
+sub commit {
+}
+
+=back
+
+=cut
 
 1;
 
