@@ -1,0 +1,66 @@
+=head1 NAME
+
+Stream - stream-processing framework
+
+=head1 SYNOPSIS
+
+    use Streams;
+    process stream('links') => processor {
+        print "Link: ".shift;
+    });
+
+=head1 DESCRIPTION
+
+B<Stream> framework should make it easy to write stream-processing scripts, which will be input and output-agnostic.
+
+Common terms:
+
+=over
+
+=item I<Storage>
+
+Anything that can keep ordered information.
+
+See L<Stream::Storage> for abstract base class and API.
+
+Implementations: L<Stream::File>, L<Stream::Log>, L<Stream::DB>.
+
+=item I<Cursor>
+
+Persistent object which contains position of stream, usually associated with some storage.
+
+If you know cursor, you usually don't have to explicitly construct storage, it's coordinates on disk (or in DB, or anywhere else) will be restored from cursor contents.
+
+Implementations: L<Stream::File::Cursor>, L<Stream::DB::Cursor>.
+
+=item I<Stream>
+
+Stream is an object in memory providing iterator-like API - C<read> and C<read_chunk> methods.
+
+You can construct stream if you know storage and cursor.
+
+Implementations: L<Stream::File::Stream>, L<Stream::DB::Stream>.
+
+=back
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+L<Stream::Catalog> allows to reference to any storage, cursor and stream by it's name in catalog.
+
+=head1 BUGS AND LIMITATIONS
+
+This is still a very early draft. API is still very unstable. Use with a caution.
+
+=head1 SEE ALSO
+
+L<http://search.cpan.org/~nuffin/Data-Stream-Bulk-0.04/> - another streaming framework.
+
+=head1 AUTHOR
+
+Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2009 Yandex LTD. All rights reserved.
+
+=cut

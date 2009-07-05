@@ -1,0 +1,125 @@
+libstream-perl (0.3.11) unstable; urgency=low
+
+  * more basic modules provide $VERSION
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sat, 04 Jul 2009 22:43:19 +0400
+
+libstream-perl (0.3.10) unstable; urgency=low
+
+  * typo fix in source filter's commit method
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 29 Jun 2009 03:57:20 +0400
+
+libstream-perl (0.3.9) unstable; urgency=low
+
+  * bugfix: process should expect $limit to be defined
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 29 Jun 2009 03:24:01 +0400
+
+libstream-perl (0.3.8) unstable; urgency=low
+
+  * Stream::Filter - bugfix in stream filters
+  * one more bugfix
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 29 Jun 2009 03:15:39 +0400
+
+libstream-perl (0.3.7) unstable; urgency=low
+
+  * Mixin::Shift class
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sun, 28 Jun 2009 19:04:33 +0400
+
+libstream-perl (0.3.6) unstable; urgency=low
+
+  * Stream::Filter supports stream filters too, not only processor filters
+  * Stream::Simple - another attempt to adapt PPB::Join modules to streams
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sun, 28 Jun 2009 18:59:32 +0400
+
+libstream-perl (0.3.5) unstable; urgency=low
+
+  * Streams provides version
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 18 Jun 2009 00:09:16 +0400
+
+libstream-perl (0.3.4) unstable; urgency=low
+
+  * Filter: write() method can return any number of lines
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 17 Jun 2009 23:54:54 +0400
+
+libstream-perl (0.3.3) unstable; urgency=low
+
+  * Stream::Utils: process commits processor too
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 16 Jun 2009 23:08:02 +0400
+
+libstream-perl (0.3.2) unstable; urgency=low
+
+  * Stream::DB insert items with IGNORE modificator
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 16 Jun 2009 22:57:41 +0400
+
+libstream-perl (0.3.1) unstable; urgency=low
+
+  * Stream::DB is a storage - now it should work as right side of filter's
+    pipe
+  * process() returns number of processed items
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 16 Jun 2009 21:15:48 +0400
+
+libstream-perl (0.3.0) unstable; urgency=low
+
+  * process and process_chunk methods renamed into write and write_chunk -
+    Storage can be a processor too
+  * bugfix in Filter implementation
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sat, 30 May 2009 01:38:37 +0400
+
+libstream-perl (0.2.5) unstable; urgency=low
+
+  * piped filter can write directly into storage too
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 29 May 2009 22:41:55 +0400
+
+libstream-perl (0.2.4) unstable; urgency=low
+
+  * Stream::Filter implemented
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 29 May 2009 22:19:51 +0400
+
+libstream-perl (0.2.3) unstable; urgency=low
+
+  * FAQ started
+  * Stream::Log works (it's still a little ugly, but more consistent with
+    stream/cursor/engine conception)
+  * params validation where appropriate
+  * process_line renamed into process - more consistent
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 29 May 2009 21:22:34 +0400
+
+libstream-perl (0.2.2) unstable; urgency=low
+
+  * more simple methods in Streams
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 28 May 2009 23:52:08 +0400
+
+libstream-perl (0.2.1) unstable; urgency=low
+
+  * Stream.pod
+  * Catalog "stream" method
+  * Cursor "stream" method; cursors can keep association with catalog
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 27 May 2009 22:19:31 +0400
+
+libstream-perl (0.2.0) unstable; urgency=low
+
+  * Stream::DB module
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 22 May 2009 03:47:47 +0400
+
+libstream-perl (0.1.0) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 21 May 2009 21:44:41 +0400

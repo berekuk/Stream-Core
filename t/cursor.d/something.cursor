@@ -1,0 +1,3 @@
+use Streams;
+use Stream::File::Cursor;
+Stream::File::Cursor->new("tfiles/something.pos", storage("something"));

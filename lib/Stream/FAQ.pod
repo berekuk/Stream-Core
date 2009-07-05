@@ -1,0 +1,93 @@
+=head1 NAME
+
+Stream::FAQ - some recipes for people who are still afraid of streams.
+
+=head1 FAQ
+
+=head2 I just want to use Unrotate-like API! (or: what is a simplest way to migrate?)
+
+The simplest way to migrate your Unrotate code on C<Stream> framework is to replace C<Yandex::Unrotate> with C<Stream::Log::Stream>.
+
+It works as a proxy to C<Yandex::Unrotate> and provides following methods: C<readline>, C<showlag>, C<position>, C<commit>.
+
+(Although it's better to rename C<showlag> into C<lag> and C<readline> into C<read>, but you can do all this later).
+
+=head2 How can I reference my streams using short names?
+
+You should register them in catalog.
+
+This can be accomplished by creating small files in /etc/storage.d and /etc/cursor.d, which contains calls to constructors of storages and cursors, respectively.
+
+For example:
+
+ # /etc/storage.d/bulca-ds.links
+ use Stream::Log;
+ Stream::Log->new("/var/spool/yandex-ppb-bulca-ds/links.log");
+
+ # /etc/cursor.d/links2db
+ use Stream::Log::Cursor;
+ use Streams;
+ Stream::Log::Cursor->new({PosFile => "/var/lib/yandex-ppb-process-links/links.pos", LogFile => storage("bulca-ds.links")->file});
+
+After that, you can construct stream like this:
+
+ use Streams;
+ my $stream = stream("links2db"); # stream($cursor_name) is a shortcut to cursor($cursor_name)->stream().
+
+=head2 How do I rewrite my stream processor to be stream-agnostic?
+
+First, you should rewrite your code to be an actual stream processor.
+
+For example, if it looked like this:
+
+    my $reader = Yandex::Unrotate->new(...);
+    while ($reader->readline) {
+        ...
+    }
+
+You should rewrite it like this:
+
+    package PPB::Something;
+    use base qw(Stream::Processor);
+    sub write {
+        ...
+    }
+
+Second, for your code to keep working, you can choose one of two options:
+
+1) move all processing code into module and write a simple wrapper script:
+
+    use PPB::Something;
+    use Streams;
+    process(stream("links2db") => PPB::Something->new);
+
+2) leave all code in script and call processing conditionally:
+
+    ...
+    unless (caller) {
+        process(stream("links2db") => __PACKAGE__->new);
+    }
+
+=head2 How can I benefit from my new shiny stream-agnostic processor?
+
+You can write tests! It'll be mostly easy if your processor is a filter (that means it inherits from Stream::Filter and generates another "stream" of data as it works).
+
+In this case, your test can contain something like this:
+
+    use PPB::Something;
+    $processor = PPB::Something->new;
+    is($processor->write("incoming data"), "expected result");
+
+More you can refactor your code into several separated filters, more deeply you can test them.
+
+For example, if your program is a comment-fetching robot, it can be presented as C<comment_fetcher() | comment_parser() | culca_writer()>.
+
+=head1 AUTHOR
+
+Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2009 Yandex LTD. All rights reserved.
+
+=cut

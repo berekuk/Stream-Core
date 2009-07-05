@@ -1,0 +1,5 @@
+API is important, and so are terms
+
+Find better names:
+- for top namespace (Stream is too general and long)
+- for Storage (Pool? Tank, Reservoir, Cistern? Store?)

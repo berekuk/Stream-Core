@@ -1,0 +1,7 @@
+^\.git
+^debian
+^blib/
+^pm_to_blib
+^tfiles/
+^MANIFEST\.bak
+^Makefile$

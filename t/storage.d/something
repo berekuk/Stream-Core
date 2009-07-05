@@ -1,0 +1,2 @@
+use Stream::File;
+Stream::File->new("t/storage/something");
