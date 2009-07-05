@@ -16,10 +16,8 @@ lib/Stream/Log.pm
 lib/Stream/Log/Cursor.pm
 lib/Stream/Log/Stream.pm
 lib/Stream/Processor.pm
-lib/Stream/Seq.pm
 lib/Stream/Storage.pm
 lib/Stream/Stream.pm
-lib/Stream/Unrotate.pm
 lib/Stream/Utils.pm
 lib/Streams.pm
 Makefile.PL
