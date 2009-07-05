@@ -13,6 +13,8 @@ This module was renamed into Stream::Out and will be removed soon.
 
 =cut
 
+use Yandex::Version '{{DEBIAN_VERSION}}';
+
 use Exporter;
 use Stream::Out;
 
