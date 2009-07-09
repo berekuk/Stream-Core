@@ -65,7 +65,7 @@ use Stream::Filter qw(filter);
     use Stream::File;
     use Stream::File::Cursor;
     use Yandex::X;
-    use Stream::Simple qw(array_seq);
+    use Stream::Simple qw(array_seq); # FIXME! Stream::Simple doesn't exist when building core streams
 
     xsystem("rm -rf tfiles");
     xsystem("mkdir tfiles");
