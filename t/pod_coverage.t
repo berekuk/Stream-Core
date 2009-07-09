@@ -22,9 +22,6 @@ my @good_modules = qw(
     Stream::Stream
     Stream::Processor
     Stream::Storage
-    Stream::File::Stream
-    Stream::Log::Stream
-    Stream::DB::Stream
     Stream::Catalog::Out::File
     Stream::Catalog::Cursor::File
 );
