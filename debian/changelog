@@ -1,3 +1,9 @@
+libstream-perl (0.4.3) unstable; urgency=low
+
+  * support list of colon-separated paths as STREAM_*_DIR values
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 17 Jul 2009 18:05:50 +0400
+
 libstream-perl (0.4.2) unstable; urgency=low
 
   * many PODs, small cleanups
