@@ -14,40 +14,38 @@ Stream::Catalog - registry of all streams
     $catalog = new Stream::Catalog;
     $stream = $catalog->stream("enqueue");
 
+=head1 METHODS
+
+=over
+
 =cut
 
-use Stream::Catalog::Out::File;
-use Stream::Catalog::In::File;
-use Stream::Catalog::Cursor::File;
+use Stream::Catalog::Plugin::File;
+use Stream::Catalog::Plugin::Memory;
 
 sub new ($) {
     my ($class) = @_;
-    return bless {} => $class;
+    my $self = bless {
+        plugins => [ Stream::Catalog::Plugin::File->new ],
+    } => $class;
+    $self->{memory_plugin} = Stream::Catalog::Plugin::Memory->new();
+    push @{$self->{plugins}}, $self->{memory_plugin};
+    return $self;
 }
 
-{
-    my $file_module = Stream::Catalog::Out::File->new;
-    sub out_modules ($$) {
-        return $file_module;
-    }
-}
-{
-    my $file_module = Stream::Catalog::In::File->new;
-    sub in_modules ($$) {
-        return $file_module;
-    }
+sub plugins ($) {
+    my $self = shift;
+    return @{$self->{plugins}};
 }
 
-{
-    my $cursor_module = Stream::Catalog::Cursor::File->new;
-    sub cursor_modules ($$) {
-        return $cursor_module;
-    }
-}
+=item C<out($name)>
 
+Get output stream by name.
+
+=cut
 sub out ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->out_modules) {
+    for my $module ($self->plugins) {
         my $out = $module->out($name);
         if ($out) {
             return $out;
@@ -56,9 +54,14 @@ sub out ($$) {
     die "Can't find output stream by name '$name'";
 }
 
+=item C<in($name)>
+
+Get input stream by name. If stream doesn't exist, but cursor with the same name exists, return stream associated with this cursor instead.
+
+=cut
 sub in ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->in_modules) {
+    for my $module ($self->plugins) {
         my $stream = $module->in($name);
         if ($stream) {
             return $stream;
@@ -68,16 +71,25 @@ sub in ($$) {
     return $cursor->stream();
 }
 
-# just an alias to out() method
-# TODO - since Out stream must have special abilities to be storage, we should check for it's type
+=item C<storage($name)>
+
+Just an alias to out() method.
+
+=cut
 sub storage {
+    # TODO - since Out stream must have special abilities to be storage, we should check for it's type
     goto &out;
 }
 
+=item C<cursor($name)>
+
+Get cursor by name.
+
+=cut
 sub cursor ($$) {
     my ($self, $name) = @_;
 
-    for my $module ($self->cursor_modules) {
+    for my $module ($self->plugins) {
         my $cursor = $module->cursor($name);
         if ($cursor) {
             return $cursor;
@@ -85,6 +97,18 @@ sub cursor ($$) {
     }
     die "Can't find cursor by name '$name'";
 }
+
+=item C<bind_in($name, $object)>
+
+Bind existing input stream to given name.
+
+=cut
+sub bind_in($$$) {
+    my ($self, $name, $object) = @_;
+    $self->{memory_plugin}->bind($name, $object);
+}
+
+=back
 
 =head1 SEE ALSO
 
