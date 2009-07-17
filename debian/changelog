@@ -1,3 +1,10 @@
+libstream-perl (0.4.4) unstable; urgency=low
+
+  * catalog->in returns stream from cursor if stream can't be found but cursor
+    with the same name exists
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 17 Jul 2009 19:53:02 +0400
+
 libstream-perl (0.4.3) unstable; urgency=low
 
   * support list of colon-separated paths as STREAM_*_DIR values

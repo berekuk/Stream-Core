@@ -64,7 +64,8 @@ sub in ($$) {
             return $stream;
         }
     }
-    die "Can't find input stream by name '$name'";
+    my $cursor = $self->cursor($name) or die "Can't find input stream by name '$name'";
+    return $cursor->stream();
 }
 
 # just an alias to out() method
