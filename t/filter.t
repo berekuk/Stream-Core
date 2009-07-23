@@ -3,14 +3,14 @@
 use strict;
 use warnings;
 
-use Test::More tests => 11;
+use Test::More tests => 14;
 
 use lib qw(lib);
 
 use Stream::Processor qw(processor);
 use Stream::Filter qw(filter);
 
-# simple pipeline of filters
+# simple pipeline of filters (2)
 {
     my @values;
     my $p = (filter { chomp(my $x = shift); return $x; })
@@ -18,13 +18,13 @@ use Stream::Filter qw(filter);
         | (processor { push @values, shift; });
 
     $p->write(5);
-    is_deeply(\@values, [25]);
+    is_deeply(\@values, [25], 'f|f|p pipeline, write method');
 
     $p->write_chunk([6, 7]);
-    is_deeply(\@values, [25, 36, 49]);
+    is_deeply(\@values, [25, 36, 49], 'f|f|p pipeline, write_chunk method');
 }
 
-# checking that callback can return several items at once
+# checking that callback can return several items at once (2)
 {
     my @values;
     my $p = (filter { chomp(my $x = shift); return ($x, $x + 1); })
@@ -32,12 +32,13 @@ use Stream::Filter qw(filter);
         | (processor { push @values, shift; });
 
     $p->write(5);
-    is_deeply(\@values, [25, 36]);
+    is_deeply(\@values, [25, 36], 'f|f|p pipeline, write method, filter implements one-to-many');
 
     $p->write_chunk([6, 7]);
-    is_deeply(\@values, [25, 36, 36, 49, 49, 64]);
+    is_deeply(\@values, [25, 36, 36, 49, 49, 64], 'f|f|p pipeline, write_chunk method, filter implements one-to-many');
 }
 
+# reading from storage written by f|f|f|p (3)
 {
     use Stream::File;
     use Stream::File::Cursor;
@@ -56,11 +57,12 @@ use Stream::Filter qw(filter);
     $p->commit;
 
     my $reader = Stream::File::Cursor->new("tfiles/output.pos")->stream(Stream::File->new("tfiles/output"));
-    is($reader->read, "25\n");
-    is($reader->read, "36\n");
-    is($reader->read, "49\n");
+    is($reader->read, "25\n", 'reading from storage written by f|f|f|p');
+    is($reader->read, "36\n", 'reading - step 2');
+    is($reader->read, "49\n", 'reading - step 3');
 }
 
+# reading from filtered input stream (4)
 {
     use Stream::File;
     use Stream::File::Cursor;
@@ -76,9 +78,33 @@ use Stream::Filter qw(filter);
         | (filter { shift() ** 2 })
         | (filter { shift()."\n" });
 
-    is($reader->read, "25\n");
-    is($reader->read, "36\n");
-    is($reader->read, "49\n");
-    is($reader->read, undef);
+    is($reader->read, "25\n", 'i|f|f|f pipeline, read, step 1');
+    is($reader->read, "36\n", 'i|f|f|f pipeline, read, step 2');
+    is($reader->read, "49\n", 'i|f|f|f pipeline, read, step 3');
+    is($reader->read, undef, 'i|f|f|f pipeline, last read returns undef');
     $reader->commit; # just to make sure that it doesn't fail
+}
+
+# filtering Filterable input streams (3)
+{
+    use Stream::Log::In;
+    xsystem("echo abc >>tfiles/log");
+    xsystem("echo def >>tfiles/log");
+
+    my $stream = Stream::Log::In->new({
+        LogFile => 'tfiles/log',
+        PosFile => 'tfiles/pos',
+    });
+    my $filtered_stream = $stream | filter(sub {
+        my $item = shift;
+        chomp $item;
+        return "$item$item"; # dup
+    }) | filter(sub {
+        my $item = shift;
+        chomp $item;
+        return "$item-$item"; # double dup
+    });
+    is($stream, $filtered_stream, 'Stream::Log::In is Filterable and holds filters inside');
+    is($stream->read, 'abcabc-abcabc', 'all filter stack is applied');
+    is($stream->lag, 4, 'lag works for filtered input stream');
 }

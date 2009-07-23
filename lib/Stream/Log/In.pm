@@ -9,11 +9,17 @@ Stream::Log::In - reading stream which is a wrapper to Yandex::Unrotate.
 
 =cut
 
-use base qw(Stream::In);
+use base qw(
+    Stream::Mixin::Filterable
+    Stream::Mixin::Lag
+    Stream::In
+);
+
+use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Params::Validate qw(:all);
-
 use Carp;
+
 use Yandex::Unrotate;
 
 sub new {
@@ -32,7 +38,8 @@ sub new {
     return bless {unrotate => $unrotate} => $class;
 }
 
-sub read ($) {
+# do_read instead of read - Mixin::Filterable requires it
+sub do_read ($) {
     my ($self) = @_;
     return $self->{unrotate}->readline;
 }
@@ -47,6 +54,7 @@ sub lag {
     return $self->{unrotate}->showlag;
 }
 
+# deprecated
 sub showlag {
     my ($self) = @_;
     return $self->lag;
@@ -54,6 +62,7 @@ sub showlag {
 
 sub commit ($;$) {
     my ($self, $position) = @_;
+    $self->SUPER::commit();
     $self->{unrotate}->commit($position ? $position : ());
 }
 
@@ -64,4 +73,3 @@ Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
 =cut
 
 1;
-

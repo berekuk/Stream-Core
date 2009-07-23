@@ -25,6 +25,8 @@ my @good_modules = qw(
     Stream::Catalog::Plugin
     Stream::Catalog::Plugin::File
     Stream::Catalog::Plugin::Memory
+    Stream::Mixin::Filterable
+    Stream::Mixin::Lag
 );
 
 for (@good_modules) {

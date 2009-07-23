@@ -54,7 +54,13 @@ use overload '|' => sub {
     }
     elsif ($left->isa('Stream::In') and $right->isa('Stream::Filter')) {
         # left-side filter
-        return Stream::Filter::FilteredIn->new($left, $right);
+        if ($left->isa('Stream::Mixin::Filterable')) {
+            $left->add_filter($right);
+            return $left;
+        }
+        else {
+            return Stream::Filter::FilteredIn->new($left, $right);
+        }
     }
     else {
         croak "Strange arguments '$left' and '$right'";
@@ -147,6 +153,7 @@ sub commit {
 package Stream::Filter::FilteredIn;
 
 use base qw(Stream::In);
+use base qw(Stream::Mixin::Lag);
 
 sub new {
     my ($class, $in, $filter) = @_;
@@ -176,6 +183,12 @@ sub commit {
     my ($self) = @_;
     $self->{filter}->commit; # useless?
     $self->{in}->commit; # necessary!
+}
+
+sub lag {
+    my $self = shift;
+    die unless $self->{in}->isa('Stream::Mixin::Lag');
+    return $self->{in}->lag;
 }
 
 package Stream::Filter::FilteredFilter;
