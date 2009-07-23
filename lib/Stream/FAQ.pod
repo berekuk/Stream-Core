@@ -6,25 +6,25 @@ Stream::FAQ - some recipes for people who are still afraid of streams.
 
 =head2 I just want to use Unrotate-like API! (or: what is a simplest way to migrate?)
 
-The simplest way to migrate your Unrotate code on C<Stream> framework is to replace C<Yandex::Unrotate> with C<Stream::Log::Stream>.
+The simplest way to migrate your Unrotate code on C<Stream> framework is to replace C<Yandex::Unrotate> with C<Stream::Log::In>.
 
-It works as a proxy to C<Yandex::Unrotate> and provides following methods: C<readline>, C<showlag>, C<position>, C<commit>.
+It works as a proxy to C<Yandex::Unrotate> and provides following methods: C<readline>, C<show_lag>, C<position>, C<commit>.
 
-(Although it's better to rename C<showlag> into C<lag> and C<readline> into C<read>, but you can do all this later).
+(Although it's better to rename C<show_lag> into C<lag> and C<readline> into C<read>, but you can do all this later).
 
 =head2 How can I reference my streams using short names?
 
 You should register them in catalog.
 
-This can be accomplished by creating small files in /etc/storage.d and /etc/cursor.d, which contains calls to constructors of storages and cursors, respectively.
+This can be accomplished by creating small files in /etc/stream/in, /etc/stream/out and /etc/stream/cursor, which contains calls to constructors of input and output streams, and stream cursors, respectively.
 
 For example:
 
- # /etc/storage.d/bulca-ds.links
+ # /etc/stream/out/bulca-ds.links
  use Stream::Log;
  Stream::Log->new("/var/spool/yandex-ppb-bulca-ds/links.log");
 
- # /etc/cursor.d/links2db
+ # /etc/stream/cursor/links2db
  use Stream::Log::Cursor;
  use Streams;
  Stream::Log::Cursor->new({PosFile => "/var/lib/yandex-ppb-process-links/links.pos", LogFile => storage("bulca-ds.links")->file});
@@ -32,7 +32,7 @@ For example:
 After that, you can construct stream like this:
 
  use Streams;
- my $stream = stream("links2db"); # stream($cursor_name) is a shortcut to cursor($cursor_name)->stream().
+ my $in = catalog->in("links2db"); # catalog->in($cursor_name) is a shortcut to catalog->cursor($cursor_name)->stream().
 
 =head2 How do I rewrite my stream processor to be stream-agnostic?
 
@@ -59,13 +59,13 @@ Second, for your code to keep working, you can choose one of two options:
 
     use PPB::Something;
     use Streams;
-    process(stream("links2db") => PPB::Something->new);
+    process(catalog->in("links2db") => PPB::Something->new);
 
 2) leave all code in script and call processing conditionally:
 
     ...
     unless (caller) {
-        process(stream("links2db") => __PACKAGE__->new);
+        process(catalog->in("links2db") => __PACKAGE__->new);
     }
 
 =head2 How can I benefit from my new shiny stream-agnostic processor?

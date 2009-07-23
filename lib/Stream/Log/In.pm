@@ -60,6 +60,12 @@ sub showlag {
     return $self->lag;
 }
 
+# deprecated
+sub show_lag {
+    my ($self) = @_;
+    return $self->lag;
+}
+
 sub commit ($;$) {
     my ($self, $position) = @_;
     $self->SUPER::commit();
