@@ -15,14 +15,43 @@ Stream::Utils - common stream utilities
 
 =cut
 
+use Carp;
+use Scalar::Util qw(blessed);
 use Params::Validate;
 use Stream::Catalog;
 
 use base qw(Exporter);
 our @EXPORT_OK = qw/process storage cursor stream catalog /;
 
+our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance
+
+sub catalog() {
+    return $catalog;
+}
+
 sub process($$;$) {
-    my ($in, $out, $limit) = validate_pos(@_, {isa => 'Stream::In'}, {isa => 'Stream::Out'}, 0);
+    my ($in, $out, $limit) = validate_pos(@_, 1, 1, { optional => 1, regex => qr/^\d+$/ });
+
+    if (blessed($in)) {
+        unless ($in->isa('Stream::In')) {
+            croak "first argument expected to be Stream::In, you specified: '$in'";
+        }
+    }
+    else {
+        # looking in catalog
+        $in = $catalog->in($in);
+    }
+
+    if (blessed($out)) {
+        unless ($out->isa('Stream::Out')) {
+            croak "first argument expected to be Stream::Out, you specified: '$out'";
+        }
+    }
+    else {
+        # looking in catalog
+        $out = $catalog->in($out);
+    }
+
     my $i = 0;
     my $chunk_size = 1000;
     while (1) {
@@ -40,12 +69,6 @@ sub process($$;$) {
     $out->commit; # output is committed before input to make sure that all data was flushed down correctly
     $in->commit;
     return $i; # return number of actually processed lines
-}
-
-our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance
-
-sub catalog() {
-    return $catalog;
 }
 
 # Deprecated! Use catalog->out instead.

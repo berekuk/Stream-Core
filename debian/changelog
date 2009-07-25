@@ -1,3 +1,10 @@
+libstream-perl (0.4.9) unstable; urgency=low
+
+  * process() from Stream::Utils understand name of stream instead of stream
+    instance
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sat, 25 Jul 2009 22:25:54 +0400
+
 libstream-perl (0.4.8) unstable; urgency=low
 
   * FAQ updated
