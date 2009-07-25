@@ -47,6 +47,17 @@ sub out {
     return;
 }
 
+=item B<filter($name)>
+
+Get filter by name.
+
+Should return C<Stream::Filter> object or undef.
+
+=cut
+sub filter {
+    return;
+}
+
 =item B<cursor($name)>
 
 Get cursor by name.

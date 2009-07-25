@@ -1,3 +1,17 @@
+libstream-perl (0.5.1) unstable; urgency=low
+
+  * default constructor in Stream::In
+  * bugfixes
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sat, 25 Jul 2009 23:16:27 +0400
+
+libstream-perl (0.5.0) unstable; urgency=low
+
+  * some common streams described and packaged
+  * catalog->filter method
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sat, 25 Jul 2009 23:13:17 +0400
+
 libstream-perl (0.4.9) unstable; urgency=low
 
   * process() from Stream::Utils understand name of stream instead of stream

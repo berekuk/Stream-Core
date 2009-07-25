@@ -34,6 +34,10 @@ our $OUT_DIR =
     $ENV{STREAM_OUT_DIR}
     || '/etc/stream/out';
 
+our $FILTER_DIR =
+    $ENV{STREAM_FILTER_DIR}
+    || '/etc/stream/filter';
+
 =item C<new>
 
 Constructs plugin.
@@ -45,8 +49,9 @@ sub new {
         cursor_dir => $CURSOR_DIR,
         in_dir => $IN_DIR,
         out_dir => $OUT_DIR,
+        filter_dir => $FILTER_DIR,
     } => $class;
-    for (qw/ cursor_dir in_dir out_dir /) {
+    for (qw/ cursor_dir in_dir out_dir filter_dir /) {
         $self->{$_} = [ split /:/, $self->{$_} ];
     }
     return $self;
@@ -99,6 +104,16 @@ Loads output stream from file named C<$name> in catalog dir. Dir defaults to C</
 sub out {
     my ($self, $name) = @_;
     return $self->_load($name, $self->{out_dir}, 'AnonOut');
+}
+
+=item C<filter($name)>
+
+Loads filter from file named C<$name> in catalog dir. Dir defaults to C</etc/stream/filter>.
+
+=cut
+sub filter {
+    my ($self, $name) = @_;
+    return $self->_load($name, $self->{filter_dir}, 'AnonFilter');
 }
 
 1;

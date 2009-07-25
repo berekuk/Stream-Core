@@ -54,6 +54,22 @@ sub out ($$) {
     die "Can't find output stream by name '$name'";
 }
 
+=item C<filter($name)>
+
+Get filter by name.
+
+=cut
+sub filter ($$) {
+    my ($self, $name) = @_;
+    for my $module ($self->plugins) {
+        my $filter = $module->filter($name);
+        if ($filter) {
+            return $filter;
+        }
+    }
+    die "Can't find filter by name '$name'";
+}
+
 =item C<in($name)>
 
 Get input stream by name. If stream doesn't exist, but cursor with the same name exists, return stream associated with this cursor instead.

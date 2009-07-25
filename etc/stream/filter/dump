@@ -1,0 +1,15 @@
+# vim:ft=perl
+
+use base qw(Stream::Out);
+use warnings;
+use strict;
+
+use Data::Dumper;
+
+sub write {
+    local $Data::Dumper::Indent = 0;
+    return Dumper(shift);
+}
+
+__PACKAGE__->new;
+

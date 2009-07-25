@@ -1,0 +1,15 @@
+# vim:ft=perl
+
+use base qw(Stream::Out);
+use warnings;
+use strict;
+
+$|++;
+
+sub write {
+    my ($class, $item) = @_;
+    print $item;
+}
+
+__PACKAGE__->new;
+

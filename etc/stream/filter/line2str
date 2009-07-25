@@ -1,0 +1,13 @@
+# vim:ft=perl
+
+use Stream::Filter qw(filter);
+use warnings;
+use strict;
+
+filter(sub {
+    local $_ = shift;
+    s{(\\\\|\\n)}{
+        ($1 eq "\\\\") ? "\\" : "\n")
+    }e;
+    return $_;
+}

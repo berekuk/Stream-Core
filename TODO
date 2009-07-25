@@ -3,3 +3,17 @@ API is important, and so are terms
 Find better names:
 - for top namespace (Stream is too general and long)
 - for Storage (Pool? Tank, Reservoir, Cistern? Store?)
+
+Implement some common streams:
+- in
+    stdin
+- out
+    stdout
+    dump
+- filter
+    line2str
+    str2line
+    freeze
+    thaw
+    debug_dump # this differs from out:dump in that it isn't last element of stream... or does it really matters?
+    eval

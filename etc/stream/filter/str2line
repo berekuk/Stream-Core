@@ -1,0 +1,12 @@
+# vim:ft=perl
+
+use Stream::Filter qw(filter);
+use warnings;
+use strict;
+
+filter(sub {
+    local $_ = shift;
+    s{\\}{\\\\}g;
+    s{\n}{\\n}g;
+    return $_;
+});

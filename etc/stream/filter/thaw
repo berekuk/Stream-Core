@@ -1,0 +1,10 @@
+# vim:ft=perl
+use Storable qw(thaw);
+
+use Stream::Filter qw(filter);
+use warnings;
+use strict;
+
+filter(sub {
+    return thaw shift;
+});

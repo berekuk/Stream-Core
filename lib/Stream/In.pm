@@ -29,7 +29,14 @@ use Carp;
 
 =item I<new>
 
-Constructor is not specified in this class. Each input stream class should provide it's own implementation.
+Default constructor creates empty blessed hashref.
+
+=cut
+sub new {
+    my $class = shift;
+    croak 'no parameters expected' if @_;
+    return bless {} => $class;
+}
 
 =item I<read()>
 

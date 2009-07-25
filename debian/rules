@@ -3,3 +3,8 @@
 include /usr/share/cdbs/1/class/perlmodule.mk
 include /usr/share/cdbs/1/class/ppb.mk
 
+PACKAGE=$(shell dh_listpackages)
+
+install/$(PACKAGE)::
+	cp -r etc debian/$(PACKAGE)/
+
