@@ -14,30 +14,33 @@ my @modules = all_modules();
 plan tests => scalar @modules;
 my %modules = map { ($_ => 1) } @modules;
 
-my @good_modules = qw(
-    Streams
-    Stream::Log
-    Stream::In
-    Stream::Out
-    Stream::Stream
-    Stream::Processor
-    Stream::Storage
-    Stream::Catalog::Plugin
-    Stream::Catalog::Plugin::File
-    Stream::Catalog::Plugin::Memory
-    Stream::Mixin::Filterable
-    Stream::Mixin::Lag
+my @bad_modules = qw(
+    Stream::Cursor::Integer
+    Stream::Filter
+    Stream::File::In
+    Stream::File::Stream
+    Stream::DB::Stream
+    Stream::Utils
+    Stream::Mixin::Shift
+    Stream::Catalog
+    Stream::DB::Cursor
+    Stream::DB::In
+    Stream::Log::In
+    Stream::Log::Stream
+    Stream::File::Cursor
+    Stream::Log::Cursor
+    Stream::File
 );
-
-for (@good_modules) {
-    pod_coverage_ok($_);
-    delete $modules{$_};
-}
 
 TODO: {
     local $TODO = 'not all Stream modules are properly documented still';
-    for (keys %modules) {
+    for (@bad_modules) {
         pod_coverage_ok($_);
+        delete $modules{$_};
     }
+}
+
+for (keys %modules) {
+    pod_coverage_ok($_);
 }
 

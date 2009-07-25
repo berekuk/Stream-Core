@@ -7,29 +7,58 @@ use warnings;
 
 Stream::DB - DB-based storage
 
+=head1 METHODS
+
+=over
+
 =cut
 
 use Yandex::DB 2.2.0;
 use PPB::DB::Inserter;
 use Stream::DB::In;
 
+use Params::Validate qw(:all);
+
 use Carp;
 
 use base qw(Stream::Storage);
 
-sub new {
-    my ($class, $params) = @_;
-    my $table = $params->{table} or croak "No table specified";
-    my $db = $params->{db} or croak "No DB specified";
-    my $fields = $params->{fields} or croak "No fields specified";
-    my $pk = $params->{pk} || 'id';
+=item new($params)
 
-    my $self = bless {
-        table => $table,
-        db => $db,
-        fields => $fields,
-        pk => $pk,
-    } => $class;
+Construct storage.
+
+Possible params:
+
+=over
+
+=item I<db>
+
+DB name for L<Yandex::DB> to connect.
+
+=item I<table>
+
+Table name.
+
+=item I<fields>
+
+Array ref with field names.
+
+=item I<pk>
+
+Primary key. If not specified, assumed to be C<id>.
+
+=back
+
+=cut
+sub new {
+    my $class = shift;
+    my $params = validate(@_, {
+        table => { type => SCALAR },
+        db => { type => SCALAR },
+        fields => { type => ARRAYREF },
+        pk => { default => 'id' },
+    });
+    my $self = bless $params => $class;
 }
 
 sub _prepare_write {
@@ -41,6 +70,13 @@ sub _prepare_write {
     });
 }
 
+=item write($values)
+
+Write new row in storage.
+
+C<$values> should be hashref with data.
+
+=cut
 sub write {
     my ($self, $values) = @_;
     $self->_prepare_write unless $self->{inserter};
@@ -49,6 +85,11 @@ sub write {
     );
 }
 
+=item commit()
+
+Flush and commit remaining data in storage.
+
+=cut
 sub commit {
     my ($self) = @_;
     return unless $self->{inserter};
@@ -56,7 +97,13 @@ sub commit {
     delete $self->{inserter};
 }
 
-# used in Cursor when associating cursor with storage
+=item params()
+
+Get storage params as plain hashref.
+
+Used in Stream::DB::Cursor when associating cursor with storage.
+
+=cut
 sub params {
     my ($self) = @_;
     return {
@@ -67,10 +114,19 @@ sub params {
     };
 }
 
+=item stream($cursor)
+
+Construct input stream from storage, starting from position saved in cursor.
+
+C<$cursor> should be of C<Stream::DB::Cursor> class.
+
+=cut
 sub stream {
     my ($self, $cursor) = @_;
     return Stream::DB::In->new({storage => $self, cursor => $cursor});
 }
+
+=back
 
 =head1 AUTHOR
 
