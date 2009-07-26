@@ -5,8 +5,8 @@ use warnings;
 use strict;
 
 filter(sub {
-    my ($self, $item) = @_;
+    my $item = shift;
     $item =~ s{\\}{\\\\}g;
     $item =~ s{\n}{\\n}g;
-    return $item;
+    return "$item\n";
 });

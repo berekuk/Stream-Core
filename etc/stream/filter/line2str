@@ -6,8 +6,9 @@ use strict;
 
 filter(sub {
     my $item = shift;
+    chomp $item;
     $item =~ s{(\\\\|\\n)}{
         ($1 eq "\\\\") ? "\\" : "\n"
-    }e;
+    }ge;
     return $item;
 });

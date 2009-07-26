@@ -49,7 +49,7 @@ sub process($$;$) {
     }
     else {
         # looking in catalog
-        $out = $catalog->in($out);
+        $out = $catalog->out($out);
     }
 
     my $i = 0;
