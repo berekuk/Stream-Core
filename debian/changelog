@@ -1,3 +1,10 @@
+libstream-perl (0.5.2) unstable; urgency=low
+
+  * pump function implemented
+  * more PODs
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 04 Sep 2009 21:54:28 +0400
+
 libstream-perl (0.5.1) unstable; urgency=low
 
   * default constructor in Stream::In

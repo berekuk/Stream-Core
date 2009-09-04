@@ -37,6 +37,8 @@ our @EXPORT = qw(process storage cursor stream processor filter catalog);
 
 =head1 SEE ALSO
 
+L<Stream::Utils> - various stream functions.
+
 L<Stream::In> - interface which every every stream must implement.
 
 L<Stream::Out> - output stream interface and constructor for anonimous processor.

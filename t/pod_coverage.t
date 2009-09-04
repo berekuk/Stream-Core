@@ -16,13 +16,10 @@ my %modules = map { ($_ => 1) } @modules;
 
 my @bad_modules = qw(
     Stream::Cursor::Integer
-    Stream::Filter
     Stream::File::In
     Stream::File::Stream
     Stream::DB::Stream
-    Stream::Utils
     Stream::Mixin::Shift
-    Stream::Catalog
     Stream::DB::Cursor
     Stream::DB::In
     Stream::Log::In

@@ -94,8 +94,15 @@ sub write_chunk($$) {
 
 =back
 
-=cut
+=head1 EXPORTABLE FUNCTIONS
 
+=over
+
+=item filter(&callback)
+
+Create anonymous fitler which calls C<&callback> on each item.
+
+=cut
 # not a method! (TODO - remove it from method namespace using namespace::clean?)
 sub filter(&) {
     my ($callback) = @_;
@@ -103,6 +110,10 @@ sub filter(&) {
     # alternative constructor
     return Stream::Filter::Anon->new($callback);
 }
+
+=back
+
+=cut
 
 package Stream::Filter::Anon;
 

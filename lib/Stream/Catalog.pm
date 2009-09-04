@@ -23,6 +23,13 @@ Stream::Catalog - registry of all streams
 use Stream::Catalog::Plugin::File;
 use Stream::Catalog::Plugin::Memory;
 
+=item C<new()>
+
+Constructor.
+
+Usually you'll want to obtain singleton catalog object using C<catalog()> from L<Stream::Utils> instead.
+
+=cut
 sub new ($) {
     my ($class) = @_;
     my $self = bless {
@@ -33,7 +40,7 @@ sub new ($) {
     return $self;
 }
 
-sub plugins ($) {
+sub _plugins ($) {
     my $self = shift;
     return @{$self->{plugins}};
 }
@@ -45,7 +52,7 @@ Get output stream by name.
 =cut
 sub out ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->plugins) {
+    for my $module ($self->_plugins) {
         my $out = $module->out($name);
         if ($out) {
             return $out;
@@ -61,7 +68,7 @@ Get filter by name.
 =cut
 sub filter ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->plugins) {
+    for my $module ($self->_plugins) {
         my $filter = $module->filter($name);
         if ($filter) {
             return $filter;
@@ -77,7 +84,7 @@ Get input stream by name. If stream doesn't exist, but cursor with the same name
 =cut
 sub in ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->plugins) {
+    for my $module ($self->_plugins) {
         my $stream = $module->in($name);
         if ($stream) {
             return $stream;
@@ -105,7 +112,7 @@ Get cursor by name.
 sub cursor ($$) {
     my ($self, $name) = @_;
 
-    for my $module ($self->plugins) {
+    for my $module ($self->_plugins) {
         my $cursor = $module->cursor($name);
         if ($cursor) {
             return $cursor;
