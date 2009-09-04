@@ -27,13 +27,14 @@ use Carp;
 use Scalar::Util qw(blessed);
 use Params::Validate 0.83.0 qw(:all);
 use Stream::Catalog;
+use Yandex::Logger;
 
 use base qw(Exporter);
 our @EXPORT_OK = qw/process pump storage cursor stream catalog /;
 
 our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance
 
-=item I<catalog()>
+=item B<catalog()>
 
 Obtain catalog object. Catalog is almost always a singleton.
 
@@ -42,7 +43,7 @@ sub catalog() {
     return $catalog;
 }
 
-=item I<process($in => $out, $limit)>
+=item B<< process($in => $out, $limit) >>
 
 Process input stream into output stream.
 
@@ -91,9 +92,27 @@ sub process($$;$) {
     return $i; # return number of actually processed lines
 }
 
-=item I<pump($storage => $outs, $options)>
+=item B<< pump($storage => $outs, $options) >>
 
 Process storage into several outputs, each with its own cursor.
+
+If some output streams will fail, error will be logged, but processing into other outputs will continue.
+
+Options:
+
+=over
+
+=item I<limit>
+
+Process at most these number of items for each output.
+
+=item I<cursor_sub>
+
+For each pair C<($storage,$out)> specified coderef will be called to construct cursor.
+
+It's author's responsibility to make sure that resulting cursor can be used to construct input stream using C<$storage->stream($cursor)>.
+
+=back
 
 =cut
 sub pump($$;$) {
@@ -107,7 +126,6 @@ sub pump($$;$) {
         spec => {
             limit => { optional => 1 },
             cursor_sub => { type => CODEREF },
-            filter => { optional => 1 },
         }
     );
 
@@ -133,7 +151,8 @@ sub pump($$;$) {
             process($in => $out, $options->{limit});
         };
         if ($@) {
-            push @failures, $@;
+            ERROR $@;
+            push @failures, $@; # TODO - return failures
             $stat{failed}++;
         }
         else {
@@ -143,7 +162,7 @@ sub pump($$;$) {
     return { stat => \%stat };
 }
 
-=item I<storage($name)>
+=item B<storage($name)>
 
 Get storage by name.
 
@@ -155,7 +174,7 @@ sub storage($) {
     return $catalog->storage($name);
 }
 
-=item I<cursor($name)>
+=item B<cursor($name)>
 
 Get cursor by name.
 
@@ -167,7 +186,7 @@ sub cursor($) {
     return $catalog->cursor($name);
 }
 
-=item I<stream($name)>
+=item B<stream($name)>
 
 Get input stream by name.
 

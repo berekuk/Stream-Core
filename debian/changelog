@@ -1,3 +1,10 @@
+libstream-perl (0.5.3) unstable; urgency=low
+
+  * more POD for pump function
+  * first dependency on Yandex::Logger, sorry, it's too useful
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 04 Sep 2009 23:30:26 +0400
+
 libstream-perl (0.5.2) unstable; urgency=low
 
   * pump function implemented

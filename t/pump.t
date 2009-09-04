@@ -7,6 +7,7 @@ use Test::More tests => 6;
 
 use lib 'lib';
 
+use PPB::Test::Logger;
 use Yandex::X;
 xsystem("rm -rf tfiles");
 xsystem("mkdir tfiles");
