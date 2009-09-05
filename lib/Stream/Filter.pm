@@ -176,11 +176,14 @@ sub new {
 
 sub read {
     my ($self) = @_;
-    my $line = $self->{in}->read() or return;
-    my @filtered = $self->{filter}->write($line);
-    return unless @filtered;
-    die "One-to-many not implemented in source filters" unless @filtered == 1;
-    return $filtered[0];
+    my @filtered;
+    while (my $line = $self->{in}->read()) {
+        my @filtered = $self->{filter}->write($line);
+        next unless @filtered;
+        die "One-to-many not implemented in source filters" unless @filtered == 1;
+        return $filtered[0];
+    }
+    return; # underlying input stream is depleted
 }
 
 sub read_chunk {

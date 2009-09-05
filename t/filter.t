@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 use lib qw(lib);
 
@@ -107,4 +107,14 @@ use Stream::Filter qw(filter);
     is($stream, $filtered_stream, 'Stream::Log::In is Filterable and holds filters inside');
     is($stream->read, 'abcabc-abcabc', 'all filter stack is applied');
     is($stream->lag, 4, 'lag works for filtered input stream');
+}
+
+# if filter returns undef, next line should be pulled from input stream
+{
+    use Stream::Log::In;
+    my $i = 0;
+    my $reader = array_seq([5..10])
+        | (filter { return if $i++ % 2; return shift; });
+    is($reader->read, 5, 'first item from stripy stream');
+    is($reader->read, 7, 'third item from stripy stream');
 }

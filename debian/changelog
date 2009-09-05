@@ -1,3 +1,10 @@
+libstream-perl (0.5.4) unstable; urgency=low
+
+  * bugfix: when filter returns undef, next item is pulled from underlying
+    stream now
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sat, 05 Sep 2009 04:00:56 +0400
+
 libstream-perl (0.5.3) unstable; urgency=low
 
   * more POD for pump function
