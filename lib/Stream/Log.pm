@@ -20,6 +20,10 @@ use Params::Validate qw(:all);
 use Stream::File;
 use base qw(Stream::File);
 
+=head1 METHODS
+
+=over
+
 =item B<stream($cursor)>
 
 =item B<stream($cursor, $unrotate_params)>
@@ -36,6 +40,7 @@ sub stream($$;$) {
     return $cursor->stream($self, ($unrotate_params ? $unrotate_params : ()));
 }
 
+=back
 
 =head1 AUTHOR
 

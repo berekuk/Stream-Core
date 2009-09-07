@@ -36,6 +36,8 @@ sub stream {
     die "stream construction not implemented";
 }
 
+=back
+
 =head1 AUTHOR
 
 Vyacheslav Matjukhin <mmcleric@yandex-team.ru>

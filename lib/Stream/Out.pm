@@ -118,6 +118,8 @@ sub processor(&) {
     return Stream::Out::Anon->new($callback);
 }
 
+=back
+
 =head1 SEE ALSO
 
 L<Stream::Filter> - special kind of writing (or even reading) stream, which is wrapper of another stream.

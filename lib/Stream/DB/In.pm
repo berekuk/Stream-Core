@@ -83,6 +83,8 @@ sub commit {
     $self->{cursor}->commit($self->{position});
 }
 
+=back
+
 =head1 AUTHOR
 
 Vyacheslav Matjukhin <mmcleric@yandex-team.ru>

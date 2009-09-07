@@ -14,6 +14,8 @@ Stream::File - file storage
 
 =head1 METHODS
 
+=over
+
 =cut
 
 use Params::Validate;
