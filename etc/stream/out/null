@@ -1,0 +1,11 @@
+# vim: ft=perl
+
+use base qw(Stream::Out);
+
+sub write {
+}
+
+sub write_chunk {
+}
+
+__PACKAGE__->new;

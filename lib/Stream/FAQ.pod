@@ -4,6 +4,14 @@ Stream::FAQ - some recipes for people who are still afraid of streams.
 
 =head1 FAQ
 
+=head2 What are streams, anyway?
+
+There are two basic kinds of streams: input streams, inerhited from L<Stream::In>, and output streams, inherited from L<Stream::Out>.
+
+You can read from input streams and write to output streams, manually or using some helper functions.
+
+You can register streams in catalog and address them by name later from any script. You can pipeline streams into chains using filters, separate them and rewrite them into reusable components and monitor their processing globally.
+
 =head2 I just want to use Unrotate-like API! (or: what is a simplest way to migrate?)
 
 The simplest way to migrate your Unrotate code on C<Stream> framework is to replace C<Yandex::Unrotate> with C<Stream::Log::In>.
@@ -38,35 +46,46 @@ After that, you can construct stream like this:
 
 First, you should rewrite your code to be an actual stream processor.
 
-For example, if it looked like this:
+Your current code probably looks like this:
 
     my $reader = Yandex::Unrotate->new(...);
-    while ($reader->readline) {
-        ...
+    while (my $line = $reader->readline) {
+        ... # processing $line
     }
 
-You should rewrite it like this:
+It mixes reading actions and processing actions into one piece of code, which means you can't process data from any other source, or simply construct reader and process it differently.
+
+With streams, you should rewrite your processing part like this:
 
     package PPB::Something;
     use base qw(Stream::Out);
     sub write {
-        ...
+        my ($self, $line) = @_;
+        ... # processing $line
     }
 
-Second, for your code to keep working, you can choose one of two options:
+After that, to launch processing, you can choose one of two options:
 
-1) move all processing code into module and write a simple wrapper script:
-
-    use PPB::Something;
-    use Streams;
-    process(catalog->in("links2db") => PPB::Something->new);
-
-2) leave all code in script and call processing conditionally:
+1) simply leave all code in script and call processing conditionally:
 
     ...
     unless (caller) {
-        process(catalog->in("links2db") => __PACKAGE__->new);
+        process(
+            Stream::Log::In->new(...) # stream equivalent of Yandex::Unrotate
+            => __PACKAGE__->new
+        );
     }
+
+2) put all processing code into module and write a simple wrapper script:
+
+    use PPB::Something;
+    use Streams;
+    process(
+        Stream::Log::In->new(...) # stream equivalent of Yandex::Unrotate
+        => PPB::Something->new
+    );
+
+In latter case, you can register these input/output streams in catalog and be able to obtain them from any other script or one-liner.
 
 =head2 How can I benefit from my new shiny stream-agnostic processor?
 
@@ -81,6 +100,8 @@ In this case, your test can contain something like this:
 More you can refactor your code into several separated filters, more deeply you can test them.
 
 For example, if your program is a comment-fetching robot, it can be presented as C<comment_fetcher() | comment_parser() | culca_writer()>.
+
+If you want to test your script as a whole, you can also consider C<bind_in> method of C<Stream::Catalog> as a way to override input stream by name.
 
 =head1 AUTHOR
 

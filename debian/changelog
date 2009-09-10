@@ -1,3 +1,10 @@
+libstream-perl (0.5.5) unstable; urgency=low
+
+  * Stream::FAQ updated and expanded
+  * out/null stream
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 10 Sep 2009 18:56:36 +0400
+
 libstream-perl (0.5.4) unstable; urgency=low
 
   * bugfix: when filter returns undef, next item is pulled from underlying
