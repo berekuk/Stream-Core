@@ -3,6 +3,8 @@ package Stream::File;
 use strict;
 use warnings;
 
+use Yandex::Version '{{DEBIAN_VERSION}}';
+
 =head1 NAME
 
 Stream::File - file storage

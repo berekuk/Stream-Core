@@ -3,6 +3,8 @@ package Stream::Storage;
 use strict;
 use warnings;
 
+use Yandex::Version '{{DEBIAN_VERSION}}';
+
 =head1 NAME
 
 Stream::Storage - interface to any storage.

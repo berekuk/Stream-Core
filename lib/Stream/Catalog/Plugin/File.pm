@@ -66,11 +66,11 @@ sub _load {
             my $content;
             { local $/; $content = <$fh>; }
             $content = "package $package".int(rand(10 ** 6)).";\n# line 1 $dir/$name\n$content"; # FIXME - if file is loaded twice, shouldn't packages match?
-            my $cursor = eval $content;
+            my $object = eval $content;
             if ($@) {
                 die "Failed to eval '$content': $@";
             }
-            return $cursor;
+            return $object;
         }
     }
     return;

@@ -1,3 +1,9 @@
+libstream-perl (0.5.6) unstable; urgency=low
+
+  * using Yandex::Version to set versions of most modules
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 10 Sep 2009 19:13:20 +0400
+
 libstream-perl (0.5.5) unstable; urgency=low
 
   * Stream::FAQ updated and expanded
