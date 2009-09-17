@@ -37,18 +37,21 @@ Read new item from child class using C<do_read()> method and filter it using eac
 =cut
 sub read {
     my $self = shift;
-    my $item = $self->do_read; # child class should implement do_read() instead of read()
-    unless (defined $item) {
-        return;
-    }
 
-    for my $filter (@{$self->{_Filters}}) {
-        $item = $filter->write($item);
-        unless (defined $item) {
-            return;
+    ITEM: while (1) {
+        # child class should implement do_read() instead of read()
+        my $item = $self->do_read;
+        last unless defined $item;
+
+        for my $filter (@{$self->{_Filters}}) {
+            $item = $filter->write($item);
+            unless (defined $item) {
+                next ITEM;
+            }
         }
+        return $item;
     }
-    return $item;
+    return; # stream depleted
 }
 
 =item C<commit()>

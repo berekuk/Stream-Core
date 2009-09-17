@@ -1,3 +1,10 @@
+libstream-perl (0.5.7) unstable; urgency=low
+
+  * bugfix: pull next item from underlying stream when filtering using
+    Mixin::Filterable
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 17 Sep 2009 17:30:34 +0400
+
 libstream-perl (0.5.6) unstable; urgency=low
 
   * using Yandex::Version to set versions of most modules
