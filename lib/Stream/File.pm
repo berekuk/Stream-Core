@@ -31,7 +31,9 @@ use Stream::File::In;
 
 =item B<new($file)>
 
-Create new object. C<$file> should be a name of any existing file which we're going to read by one line at a time.
+Create new object. C<$file> should be a name of any writable file into which lines will be appended.
+
+If C<$file> does not yet exist, it will be created.
 
 =cut
 sub new($$) {
