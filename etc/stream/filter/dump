@@ -1,15 +1,13 @@
 # vim:ft=perl
 
-use base qw(Stream::Out);
 use warnings;
 use strict;
 
+use Stream::Filter qw(filter);
 use Data::Dumper;
 
-sub write {
+return filter(sub {
     local $Data::Dumper::Indent = 0;
     return Dumper(shift);
-}
-
-__PACKAGE__->new;
+});
 

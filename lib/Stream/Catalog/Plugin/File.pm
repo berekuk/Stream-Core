@@ -22,21 +22,15 @@ Stream::Catalog::Plugin::File - catalog plugin which load objects from files
 use Yandex::X;
 use base qw(Stream::Catalog::Plugin);
 
-our $CURSOR_DIR =
-    $ENV{STREAM_CURSOR_DIR} # TODO - rename in STREAM_CURSOR_PATH?
-    || '/etc/stream/cursor';
-
-our $IN_DIR =
-    $ENV{STREAM_IN_DIR}
-    || '/etc/stream/in';
-
-our $OUT_DIR =
-    $ENV{STREAM_OUT_DIR}
-    || '/etc/stream/out';
-
-our $FILTER_DIR =
-    $ENV{STREAM_FILTER_DIR}
-    || '/etc/stream/filter';
+our ($CURSOR_DIR, $IN_DIR, $OUT_DIR, $FILTER_DIR);
+for my $type (qw/ cursor in out filter /) {
+    my $TYPE = uc($type);
+    my $dir = "/etc/stream/$type";
+    $dir = $ENV{"STREAM_${TYPE}_DIR"}.":".$dir if $ENV{"STREAM_${TYPE}_DIR"}; # TODO - rename in STREAM_${TYPE}_PATH?
+    $dir = "$ENV{STREAM_DIR}/$type:$dir" if $ENV{STREAM_DIR};
+    no strict 'refs';
+    ${"${TYPE}_DIR"} = $dir;
+}
 
 =item C<new>
 

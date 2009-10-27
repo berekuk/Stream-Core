@@ -8,9 +8,7 @@ use Test::More tests => 4;
 use lib 'lib';
 
 BEGIN {
-    $ENV{STREAM_IN_DIR} = 'etc/stream/in';
-    $ENV{STREAM_OUT_DIR} = 'etc/stream/out';
-    $ENV{STREAM_FILTER_DIR} = 'etc/stream/filter';
+    $ENV{STREAM_DIR} = 'etc/stream';
 }
 
 use Yandex::X qw(xsystem);
