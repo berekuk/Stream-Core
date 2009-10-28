@@ -1,3 +1,9 @@
+libstream-perl (0.5.9) unstable; urgency=low
+
+  * support several colon-separted dirs in STREAM_DIR
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 28 Oct 2009 17:37:39 +0300
+
 libstream-perl (0.5.8) unstable; urgency=low
 
   * STREAM_DIR env variable

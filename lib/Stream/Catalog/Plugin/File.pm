@@ -27,7 +27,11 @@ for my $type (qw/ cursor in out filter /) {
     my $TYPE = uc($type);
     my $dir = "/etc/stream/$type";
     $dir = $ENV{"STREAM_${TYPE}_DIR"}.":".$dir if $ENV{"STREAM_${TYPE}_DIR"}; # TODO - rename in STREAM_${TYPE}_PATH?
-    $dir = "$ENV{STREAM_DIR}/$type:$dir" if $ENV{STREAM_DIR};
+    if ($ENV{STREAM_DIR}) {
+        for (reverse split /:/, $ENV{STREAM_DIR}) {
+            $dir = "$_/$type:$dir";
+        }
+    }
     no strict 'refs';
     ${"${TYPE}_DIR"} = $dir;
 }
