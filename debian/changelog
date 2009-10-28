@@ -1,3 +1,9 @@
+libstream-perl (0.5.10) unstable; urgency=low
+
+  * Stream::File: lock before writing
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 29 Oct 2009 01:07:35 +0300
+
 libstream-perl (0.5.9) unstable; urgency=low
 
   * support several colon-separted dirs in STREAM_DIR

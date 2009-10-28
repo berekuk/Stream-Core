@@ -27,6 +27,7 @@ use base qw(Stream::Storage);
 use Carp;
 use IO::Handle;
 use Yandex::X qw(xopen xprint);
+use Yandex::Lockf;
 use Stream::File::In;
 
 =item B<new($file)>
@@ -56,7 +57,9 @@ Write new line into file.
 sub write ($$) {
     my ($self, $line) = @_;
     $self->_open unless $self->{fh};
+    my $lock = lockf($self->{fh});
     xprint($self->{fh}, $line);
+    $self->{fh}->flush;
 }
 
 =item B<write($chunk)>
@@ -68,10 +71,11 @@ sub write_chunk ($$) {
     my ($self, $chunk) = @_;
     croak "write_chunk method expects arrayref" unless ref($chunk) eq 'ARRAY'; # can chunks be blessed into something?
     $self->_open unless $self->{fh};
-    # TODO - lock?
+    my $lock = lockf($self->{fh});
     for my $line (@$chunk) {
         xprint($self->{fh}, $line);
     }
+    $self->{fh}->flush;
     return; # TODO - what useful data can we return?
 }
 
