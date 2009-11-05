@@ -1,3 +1,9 @@
+libstream-perl (0.5.11) UNRELEASED; urgency=low
+
+  * Stream::File optimized
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 29 Oct 2009 05:24:40 +0300
+
 libstream-perl (0.5.10) unstable; urgency=low
 
   * Stream::File: lock before writing

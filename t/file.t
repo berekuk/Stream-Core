@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 use lib 'lib';
 
@@ -48,9 +48,11 @@ my $storage = Stream::File->new("tfiles/file");
 {
     $storage->write("xxx\n");
     $storage->write("yyy\n");
+    $storage->write_chunk(["zzz1\n", "zzz2\n"]);
     $storage->commit;
     my $stream = $storage->stream(Stream::File::Cursor->new("tfiles/pos"));
     is($stream->read, "xxx\n");
-    is($stream->read, "yyy\n");
+    is_deeply(scalar($stream->read_chunk(2)), ["yyy\n", "zzz1\n"]);
+    is($stream->read, "zzz2\n");
 }
 

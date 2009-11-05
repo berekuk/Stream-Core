@@ -49,6 +49,16 @@ sub _open($) {
     $self->{fh} = xopen(">>", $self->{file});
 }
 
+sub _flush($) {
+    my ($self) = @_;
+    if ($self->{data}) {
+        my $lock = lockf($self->{fh});
+        $self->{fh}->write($self->{data});
+        $self->{fh}->flush;
+        delete $self->{data};
+    }
+}
+
 =item B<write($line)>
 
 Write new line into file.
@@ -57,9 +67,15 @@ Write new line into file.
 sub write ($$) {
     my ($self, $line) = @_;
     $self->_open unless $self->{fh};
-    my $lock = lockf($self->{fh});
-    xprint($self->{fh}, $line);
-    $self->{fh}->flush;
+    if (defined $self->{data}) {
+        $self->{data} .= $line;
+    }
+    else {
+        $self->{data} = $line;
+    }
+    if (length($self->{data}) > 1_000) {
+        $self->_flush;
+    }
 }
 
 =item B<write($chunk)>
@@ -71,19 +87,23 @@ sub write_chunk ($$) {
     my ($self, $chunk) = @_;
     croak "write_chunk method expects arrayref" unless ref($chunk) eq 'ARRAY'; # can chunks be blessed into something?
     $self->_open unless $self->{fh};
-    my $lock = lockf($self->{fh});
     for my $line (@$chunk) {
-        xprint($self->{fh}, $line);
+        if (defined $self->{data}) {
+            $self->{data} .= $line;
+        }
+        else {
+            $self->{data} = $line;
+        }
     }
-    $self->{fh}->flush;
+    if (length($self->{data}) > 1_000) {
+        $self->_flush;
+    }
     return; # TODO - what useful data can we return?
 }
 
 sub commit ($) {
     my ($self) = @_;
-    if ($self->{fh}) {
-        $self->{fh}->flush;
-    }
+    $self->_flush;
 }
 
 sub file {
