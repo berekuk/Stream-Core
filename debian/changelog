@@ -1,9 +1,9 @@
-libstream-perl (0.5.11) UNRELEASED; urgency=low
+libstream-perl (0.5.11) unstable; urgency=low
 
   * Stream::File optimized
   * Stream::Log supports stream_by_name
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 29 Oct 2009 05:24:40 +0300
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 23 Nov 2009 01:19:44 +0300
 
 libstream-perl (0.5.10) unstable; urgency=low
 
