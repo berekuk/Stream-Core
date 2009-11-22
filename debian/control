@@ -11,7 +11,7 @@ XB-Homepage: http://search.cpan.org/dist/Stream/
 
 Package: libstream-perl
 Architecture: all
-Depends: ${perl:Depends}, ${misc:Depends}, 
+Depends: ${perl:Depends}, ${misc:Depends}
 Description:  stream-processing framework
  Streams is a next abstraction layer above Yandex::Unrotate, PPB::Join
  and some other PPB coding practices.

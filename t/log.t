@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 12;
 
 use lib 'lib';
 
@@ -50,6 +50,31 @@ xsystem("echo fff >>tfiles/log");
     $stream = $storage->stream(Stream::Log::Cursor->new({PosFile => "tfiles/pos"}));
     is($stream->read, "eee\n");
 }
+
+xsystem("echo ggg >>tfiles/log");
+xsystem("echo hhh >>tfiles/log");
+xsystem("echo iii >>tfiles/log");
+xsystem("echo jjj >>tfiles/log");
+
+# stream_by_name (6)
+{
+    diag('stream_by_name');
+    $ENV{STREAM_LOG_POSDIR} = 'tfiles';
+    my $first = $storage->stream_by_name('first');
+    is($first->read, "ddd\n");
+    is($first->read, "eee\n");
+    $first->commit;
+    my $second = $storage->stream_by_name('second');
+    is($second->read, "ddd\n");
+    $second->commit;
+    $first = $storage->stream_by_name('first');
+    is($first->read, "fff\n");
+    $first->commit;
+    is($first->read, "ggg\n");
+    $first = $storage->stream_by_name('first');
+    is($first->read, "ggg\n");
+}
+
 
 
 __END__
