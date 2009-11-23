@@ -6,5 +6,6 @@ use warnings;
 use strict;
 
 filter(sub {
-    return freeze shift;
+    my $item = shift;
+    return freeze(\$item);
 });

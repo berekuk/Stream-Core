@@ -6,5 +6,6 @@ use warnings;
 use strict;
 
 filter(sub {
-    return thaw shift;
+    my $str = shift;
+    return ${thaw($str)};
 });
