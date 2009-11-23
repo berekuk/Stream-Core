@@ -3,6 +3,12 @@ package Stream::Formatter::LinedStorable;
 use strict;
 use warnings;
 
+=head1 NAME
+
+Stream::Formatter::LinedStorable - storable line-oriented formatter
+
+=cut
+
 use Stream::Utils qw(catalog);
 
 use base qw(Stream::Formatter);

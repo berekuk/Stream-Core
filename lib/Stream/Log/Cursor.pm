@@ -11,7 +11,7 @@ Stream::Log::Cursor - log cursor - unrotate wrapper
 
 =cut
 
-use Stream::Log::Stream;
+use Stream::Log::In;
 use Carp;
 use Yandex::Unrotate;
 
@@ -64,14 +64,14 @@ sub stream {
             }
         }
         else {
-            # could associate with LogFile here, but it's useless anyway - Stream::Log::Stream currently implements commit logic itself
+            # could associate with LogFile here, but it's useless anyway - Stream::Log::In currently implements commit logic itself
             $self->{LogFile} = $storage->file;
         }
     }
 
     $unrotate_params = {%$self, %$unrotate_params};
 
-    return Stream::Log::Stream->new($unrotate_params);
+    return Stream::Log::In->new($unrotate_params);
 }
 
 =head1 AUTHOR

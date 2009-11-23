@@ -9,6 +9,7 @@ Stream::DB::Cursor - DB cursor
 
 =cut
 
+use Stream::DB::In;
 use base qw(Stream::Cursor::Integer);
 use Carp;
 
@@ -66,7 +67,7 @@ sub stream {
             croak "Cursor '$self' doesn't have any associated storage";
         }
     }
-    return Stream::DB::Stream->new({storage => $storage, cursor => $self});
+    return Stream::DB::In->new({storage => $storage, cursor => $self});
 }
 
 =head1 AUTHOR

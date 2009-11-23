@@ -5,7 +5,7 @@ Stream - stream-processing framework
 =head1 SYNOPSIS
 
     use Streams;
-    process stream('links') => processor {
+    process catalog->in('links') => processor {
         print "Link: ".shift;
     });
 
@@ -17,9 +17,23 @@ Common terms:
 
 =over
 
+=item I<Input stream>
+
+Input stream is an object in memory providing iterator-like API - C<read> and C<read_chunk> methods.
+
+You can construct input stream if you know storage and cursor.
+
+Implementations: L<Stream::File::In>, L<Stream::DB::In>.
+
+=item I<Output stream>
+
+Output stream is an object in memory providing writing API - C<write> and C<write_chunk> methods.
+
+Implementations: L<Stream::File::In>, L<Stream::DB::In>.
+
 =item I<Storage>
 
-Anything that can keep ordered information.
+Storage is a kind of output stream which can generate input streams by cursor.
 
 See L<Stream::Storage> for abstract base class and API.
 
@@ -27,19 +41,11 @@ Implementations: L<Stream::File>, L<Stream::Log>, L<Stream::DB>.
 
 =item I<Cursor>
 
-Persistent object which contains position of stream, usually associated with some storage.
+Persistent object which contains position of input stream, usually associated with some storage.
 
 If you know cursor, you usually don't have to explicitly construct storage, it's coordinates on disk (or in DB, or anywhere else) will be restored from cursor contents.
 
 Implementations: L<Stream::File::Cursor>, L<Stream::DB::Cursor>.
-
-=item I<Stream>
-
-Stream is an object in memory providing iterator-like API - C<read> and C<read_chunk> methods.
-
-You can construct stream if you know storage and cursor.
-
-Implementations: L<Stream::File::Stream>, L<Stream::DB::Stream>.
 
 =back
 
@@ -49,7 +55,7 @@ L<Stream::Catalog> allows to reference to any storage, cursor and stream by it's
 
 =head1 BUGS AND LIMITATIONS
 
-This is still a very early draft. API is still very unstable. Use with a caution.
+This is still a very early draft. API is still very unstable. Use with caution.
 
 =head1 SEE ALSO
 

@@ -80,7 +80,7 @@ xsystem("echo jjj >>tfiles/log");
 __END__
 1) create stream
 
-Stream::Log::Stream->new({
+Stream::Log::In->new({
     LogFile => "/var/log/file",
     PosFile => "/var/log/file.pos",
 });

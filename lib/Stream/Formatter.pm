@@ -27,6 +27,8 @@ Usual way to create new formatters is to inherit from this class and implement C
 
 =cut
 
+use Yandex::Version '{{DEBIAN_VERSION}}';
+
 use Carp;
 use Params::Validate qw(:all);
 
