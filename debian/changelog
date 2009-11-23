@@ -1,10 +1,10 @@
-libstream-perl (0.6.0) UNRELEASED; urgency=low
+libstream-perl (0.6.0) unstable; urgency=low
 
   * Stream::Formatter - both-way wrapper for any storage
   * Stream::Formatter::LinedStorable - first formatter
   * deprecated Stream::*::Stream packages removed
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 23 Nov 2009 03:48:37 +0300
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 23 Nov 2009 19:38:08 +0300
 
 libstream-perl (0.5.11) unstable; urgency=low
 

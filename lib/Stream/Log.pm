@@ -20,6 +20,7 @@ use Params::Validate qw(:all);
 use Stream::File;
 use Digest::MD5 qw(md5_hex);
 use base qw(Stream::File);
+use Stream::Log::Cursor;
 
 =head1 METHODS
 
