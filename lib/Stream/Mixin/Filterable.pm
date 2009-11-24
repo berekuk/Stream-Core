@@ -44,10 +44,12 @@ sub read {
         last unless defined $item;
 
         for my $filter (@{$self->{_Filters}}) {
-            $item = $filter->write($item);
-            unless (defined $item) {
+            my (@filtered) = $filter->write($item);
+            if (not @filtered or (@filtered == 1 and not defined $filtered[0])) {
                 next ITEM;
             }
+            die "One-to-many not implemented in mixin filters attached to input stream" unless @filtered == 1; # TODO - put items in stack and return them on following reads
+            $item = $filtered[0];
         }
         return $item;
     }

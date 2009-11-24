@@ -71,7 +71,7 @@ use overload '|' => sub {
 
 Processes one line and return some "filtered" lines.
 
-Number of filtered lines can be any, from zero to several.
+Number of filtered lines can be any, from zero to several, so returned data must always be processed in list context.
 
 Implementation should be provided by inherited class.
 

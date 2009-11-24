@@ -21,6 +21,8 @@ use Stream::File;
 use Digest::MD5 qw(md5_hex);
 use base qw(Stream::File);
 use Stream::Log::Cursor;
+use Scalar::Util qw(blessed reftype);
+use Carp;
 
 =head1 METHODS
 
@@ -37,9 +39,16 @@ C<$unrotate_params> can contain more unrotate options.
 =cut
 sub stream($$;$) {
     my $self = shift;
-    my ($cursor, $unrotate_params) = validate_pos(@_, {isa => 'Stream::Log::Cursor'}, {type => HASHREF, optional => 1});
+    my ($cursor_or_name, $unrotate_params) = validate_pos(@_, 1, {type => HASHREF, optional => 1});
+    if (reftype($cursor_or_name)) {
+        my $cursor = $cursor_or_name;
+        croak "Stream::Log::Cursor expected" unless blessed($cursor) and $cursor->isa('Stream::Log::Cursor');
+        return $cursor->stream($self, ($unrotate_params ? $unrotate_params : ()));
+    }
+    else {
+        return $self->stream_by_name(@_);
+    }
 
-    return $cursor->stream($self, ($unrotate_params ? $unrotate_params : ()));
 }
 
 =item B<stream_by_name($name)>

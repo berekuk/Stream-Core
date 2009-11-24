@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 use lib 'lib';
 
@@ -56,7 +56,7 @@ xsystem("echo hhh >>tfiles/log");
 xsystem("echo iii >>tfiles/log");
 xsystem("echo jjj >>tfiles/log");
 
-# stream_by_name (6)
+# stream_by_name (7)
 {
     diag('stream_by_name');
     $ENV{STREAM_LOG_POSDIR} = 'tfiles';
@@ -72,6 +72,8 @@ xsystem("echo jjj >>tfiles/log");
     $first->commit;
     is($first->read, "ggg\n");
     $first = $storage->stream_by_name('first');
+    is($first->read, "ggg\n");
+    $first = $storage->stream('first');
     is($first->read, "ggg\n");
 }
 
