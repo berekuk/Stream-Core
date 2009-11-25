@@ -1,10 +1,10 @@
-libstream-perl (0.6.1) UNRELEASED; urgency=low
+libstream-perl (0.6.1) unstable; urgency=low
 
   * Stream::Log: stream is a proxy to stream_by_name when parameter is a
     string
   * Stream::Mixin::Filterable: work correctly with complex filters
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 24 Nov 2009 20:19:07 +0300
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 25 Nov 2009 21:18:13 +0300
 
 libstream-perl (0.6.0) unstable; urgency=low
 
