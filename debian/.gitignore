@@ -3,3 +3,4 @@
 /files
 /libstream-perl
 /*.substvars
+/*.debhelper.log

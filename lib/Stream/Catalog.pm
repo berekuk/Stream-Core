@@ -83,7 +83,11 @@ sub filter ($$) {
 
 =item C<in($name)>
 
-Get input stream by name. If stream doesn't exist, but cursor with the same name exists, return stream associated with this cursor instead.
+Get input stream by name.
+
+If stream doesn't exist, but cursor with the same name exists, return stream associated with this cursor instead.
+
+If name looks like C<aaa[bbb]>, and no input stream found, this method will try to find storage with name C<aaa> and then get input stream from it using C<stream("bbb"> method.
 
 =cut
 sub in ($$) {
@@ -94,6 +98,11 @@ sub in ($$) {
             return $stream;
         }
     }
+
+    if (my ($storage, $in_name) = $name =~ /(.+)\[(.+)\]$/) {
+        return $self->storage($storage)->stream($in_name);
+    }
+
     my $cursor = $self->cursor($name) or die "Can't find input stream by name '$name'";
     return $cursor->stream();
 }

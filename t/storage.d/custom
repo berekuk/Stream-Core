@@ -1,0 +1,16 @@
+# vim: ft=perl
+
+use strict;
+use warnings;
+use base qw(Stream::Storage);
+
+sub stream {
+    my $self = shift;
+    my $name = shift;
+    unless ($name eq 'aaa' or $name eq 'bbb') {
+        die "unknown input stream name $name";
+    }
+    return bless ["$name-in"] => 'Stream::In';
+}
+
+return __PACKAGE__->new;

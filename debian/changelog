@@ -1,3 +1,9 @@
+libstream-perl (0.6.2) unstable; urgency=low
+
+  * bracket syntax in catalog implemented
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 14 Dec 2009 00:11:20 +0300
+
 libstream-perl (0.6.1) unstable; urgency=low
 
   * Stream::Log: stream is a proxy to stream_by_name when parameter is a
