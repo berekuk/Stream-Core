@@ -78,7 +78,7 @@ sub write ($$) {
     }
 }
 
-=item B<write($chunk)>
+=item B<write_chunk($chunk)>
 
 Write multiple lines into file.
 
@@ -86,6 +86,7 @@ Write multiple lines into file.
 sub write_chunk ($$) {
     my ($self, $chunk) = @_;
     croak "write_chunk method expects arrayref" unless ref($chunk) eq 'ARRAY'; # can chunks be blessed into something?
+    return unless @$chunk;
     $self->_open unless $self->{fh};
     for my $line (@$chunk) {
         if (defined $self->{data}) {
