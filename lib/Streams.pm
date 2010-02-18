@@ -10,7 +10,7 @@ use warnings;
 
 =head1 NAME
 
-Streams - stream-processing framework
+Streams - module for importing all common stream functions.
 
 =head1 SYNOPSIS
 
@@ -20,9 +20,9 @@ process($stream => processor { print "item: ", shift });
 
 =head1 DESCRIPTION
 
-C<Streams> is a next abstraction layer above L<Yandex::Unrotate>, L<PPB::Join> and some other PPB coding practices.
+L<Stream> framework is a next abstraction layer above L<Yandex::Unrotate>, L<PPB::Join> and some other PPB coding practices.
 
-This module is just a simple way to load most important subs from other Stream::* modules.
+This module is just a simple way to load most important subs from other Stream::* modules. Check out L<Stream> to learn more.
 
 =cut
 
@@ -36,6 +36,8 @@ use base qw(Exporter);
 our @EXPORT = qw(process storage cursor stream processor filter catalog);
 
 =head1 SEE ALSO
+
+L<Stream> - first doc to learn about streams.
 
 L<Stream::Utils> - various stream functions.
 

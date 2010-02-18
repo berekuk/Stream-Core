@@ -13,7 +13,7 @@ Stream::Utils - common stream utilities
 
     use Stream::Utils qw(process);
 
-    process($in => $out);
+    process($in => $out); # read all data from input stream and write them into output stream, then commit both
 
 =head1 DESCRIPTION
 
@@ -45,9 +45,11 @@ sub catalog() {
     return $catalog;
 }
 
+=item B<< process($in => $out) >>
+
 =item B<< process($in => $out, $limit) >>
 
-Process input stream into output stream.
+Process input stream into output stream. Both streams will be commited if processing was successful.
 
 Process at most C<$limit> items, or everything if C<$limit> is not specified.
 
@@ -91,7 +93,7 @@ sub process($$;$) {
     }
     $out->commit; # output is committed before input to make sure that all data was flushed down correctly
     $in->commit;
-    return $i; # return number of actually processed lines
+    return $i; # return number of actually processed items
 }
 
 =item B<< pump($storage => $outs, $options) >>

@@ -5,7 +5,7 @@ Stream - stream-processing framework
 =head1 SYNOPSIS
 
     use Streams;
-    process catalog->in('links') => processor {
+    process catalog->in('links') => processor(sub {
         print "Link: ".shift;
     });
 

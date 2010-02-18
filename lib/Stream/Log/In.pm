@@ -5,7 +5,25 @@ use warnings;
 
 =head1 NAME
 
-Stream::Log::In - reading stream which is a wrapper to Yandex::Unrotate.
+Stream::Log::In - input stream for Stream::Log storage.
+
+=head1 SYNOPSIS
+
+    $in = $log_storage->stream($cursor); # see Stream::Log and Stream::Log::Cursor for details
+
+    $line = $in->read; # read next line from log
+
+    $lag = $in->lag; # get log lag in bytes
+
+    $in->commit; # commit current position
+    # or:
+    $position = $in->position; # remember position
+    ... # read more lines
+    $in->commit($position); # commit saved position to cursor, ignoring all other lines
+
+=head1 METHODS
+
+=over
 
 =cut
 
@@ -44,11 +62,23 @@ sub do_read ($) {
     return $self->{unrotate}->readline;
 }
 
+=item C<< position() >>
+
+Get current position.
+
+You can commit this stream later using this position instead of position at the moment of commit.
+
+=cut
 sub position($) {
     my ($self) = @_;
     return $self->{unrotate}->position;
 }
 
+=item C<< lag() >>
+
+Get log lag in bytes.
+
+=cut
 sub lag {
     my ($self) = @_;
     return $self->{unrotate}->showlag;
@@ -66,11 +96,28 @@ sub show_lag {
     return $self->lag;
 }
 
+=item C<< commit() >>
+
+=item C<< commit($position) >>
+
+Commit position in stream's cursor.
+
+=cut
 sub commit ($;$) {
     my ($self, $position) = @_;
     $self->SUPER::commit();
     $self->{unrotate}->commit($position ? $position : ());
 }
+
+=back
+
+=head1 SEE ALSO
+
+L<Stream::Log> - output stream for writing logs.
+
+L<Stream::In> - base class for all input streams.
+
+L<Yandex::Unrotate> - module for reading rotated logs.
 
 =head1 AUTHOR
 

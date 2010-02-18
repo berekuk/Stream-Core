@@ -9,7 +9,7 @@ Stream::Mixin::Shift - mixin which allows your input stream to be used as PPB::J
 
 =cut
 
-# deprecated, PPB::Join rewritten using streams already
+# TODO - deprecate this module? PPB::Join rewritten using streams already...
 sub shift {
     return $_[0]->read;
 }

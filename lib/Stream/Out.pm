@@ -11,14 +11,18 @@ Stream::Out - output stream interface
 
     use Stream::Out qw(processor);
 
-    $out->write($line);
-    $out->write_chunk(\@lines);
+    $out->write($item);
+    $out->write_chunk(\@items);
     $out->commit;
 
     $dump_out = processor(sub {
         use Data::Dumper;
         print Dumper shift;
     });
+    $dump_out->write({ a => 5, b => 'c' });
+    $dump_out->write({ a => 6, b => 'd' });
+    ...
+    $dump_out->commit; # does nothing
 
 =head1 DESCRIPTION
 
@@ -79,8 +83,8 @@ Return value is unspecified, like in the C<write> method.
 sub write_chunk($$) {
     my ($self, $chunk) = @_;
     confess "write_chunk method expects arrayref, you specified: '$chunk'" unless ref($chunk) eq 'ARRAY'; # can chunks be blessed into something?
-    for my $line (@$chunk) {
-        $self->write($line);
+    for my $item (@$chunk) {
+        $self->write($item);
     }
     return;
 }
@@ -142,8 +146,8 @@ sub new {
 }
 
 sub write {
-    my ($self, $line) = @_;
-    $self->{callback}->($line);
+    my ($self, $item) = @_;
+    $self->{callback}->($item);
 }
 
 1;

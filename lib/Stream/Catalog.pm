@@ -138,6 +138,8 @@ sub cursor ($$) {
 
 Bind existing input stream to given name.
 
+Binding happens in-memory and will be lost when catalog object will be destroyed.
+
 =cut
 sub bind_in($$$) {
     my ($self, $name, $object) = @_;

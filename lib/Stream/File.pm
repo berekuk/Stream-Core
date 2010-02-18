@@ -107,6 +107,11 @@ sub commit ($) {
     $self->_flush;
 }
 
+=item B<file()>
+
+Get filename.
+
+=cut
 sub file {
     my ($self) = @_;
     return $self->{file};

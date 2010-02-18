@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 18;
 
 use lib qw(lib);
 
@@ -117,4 +117,13 @@ use Stream::Filter qw(filter);
         | (filter { return if $i++ % 2; return shift; });
     is($reader->read, 5, 'first item from stripy stream');
     is($reader->read, 7, 'third item from stripy stream');
+}
+
+# raw write() method in scalar context and in list context
+{
+    my $f = filter { return shift() ** 2 };
+    my ($x) = $f->write(5);
+    is($x, 25, 'write() in list context');
+    my $y = $f->write(5);
+    is($y, 25, 'write() in scalar context');
 }

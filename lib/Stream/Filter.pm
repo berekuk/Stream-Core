@@ -5,13 +5,29 @@ use warnings;
 
 =head1 NAME
 
-Stream::Filter - specialized processor which transform incoming stream into outcoming.
+Stream::Filter - specialized processor which transforms input or output streams.
 
 =head1 SYNOPSIS
 
-    $new_line = $filter->write($line);
-    $new_chunk = $filter->write_chunk(\@lines);
+    $new_item = $filter->write($item);
+    $new_chunk = $filter->write_chunk(\@items);
     $filter->commit; # commit is useless in filter, actually
+
+    $filtered_in = $input_stream | $filter; # resulting object is a input stream
+    $double_filter = $filter1 | $filter2; # resulting object is a filter
+    $filtered_out = $filter | $output_stream; # resulting object is a output stream
+
+=head1 DESCRIPTION
+
+<Stream::Filter> instances are output streams with some meaning for C<write> and C<write_chunk> return values.
+
+Depending on context, filters can filter input or output streams, or be attached to other filters to construct more complex filters.
+
+A simplest way to create new filter is to use C<filter(&)> function. Or you can inherit your class from C<Stream::Filter> and implement C<write> and/or C<write_chunk> methods (and optionally C<commit> too).
+
+C<|> operator is overloaded by all filters. It works differently depending on second parameter. Synopsis contains some examples which demostrate it more clearly.
+
+Filters don't have to return all filtered results after each C<write> call, and results don't have to match filter's input in one-to-one fashion. On the other hand, there exist some filter clients which assume it to be so. In future there'll probably emerge some specialization expressed in roles or subclasses of C<Stream::Filter> class.
 
 =head1 METHODS
 
@@ -67,11 +83,11 @@ use overload '|' => sub {
     }
 }, '""' => sub { $_[0] }; # strangely, when i overload |, i need to overload other operators too...
 
-=item write($line)
+=item write($item)
 
-Processes one line and return some "filtered" lines.
+Processes one item and return some "filtered" items.
 
-Number of filtered lines can be any, from zero to several, so returned data must always be processed in list context.
+Number of filtered items can be any, from zero to several, so returned data must always be processed in list context.
 
 Implementation should be provided by inherited class.
 
@@ -86,8 +102,8 @@ sub write_chunk($$) {
     my ($self, $chunk) = @_;
     confess "write_chunk method expects arrayref, you specified: '$chunk'" unless ref($chunk) eq 'ARRAY'; # can chunks be blessed into something?
     my @result_chunk;
-    for my $line (@$chunk) {
-        push @result_chunk, $self->write($line);
+    for my $item (@$chunk) {
+        push @result_chunk, $self->write($item);
     }
     return \@result_chunk;
 }
@@ -127,8 +143,8 @@ sub new {
 }
 
 sub write {
-    my ($self, $line) = @_;
-    return $self->{callback}->($line);
+    my ($self, $item) = @_;
+    return $self->{callback}->($item);
 }
 
 package Stream::Filter::FilteredOut;
@@ -144,9 +160,10 @@ sub new {
 }
 
 sub write {
-    my ($self, $line) = @_;
-    my @lines = $self->{filter}->write($line);
-    return map { $self->{out}->write($_) } @lines;
+    my ($self, $item) = @_;
+    my @items = $self->{filter}->write($item);
+    my @result = map { $self->{out}->write($_) } @items;
+    return (wantarray ? @result : $result[0]);
 }
 
 sub write_chunk {
@@ -177,8 +194,8 @@ sub new {
 sub read {
     my ($self) = @_;
     my @filtered;
-    while (my $line = $self->{in}->read()) {
-        my @filtered = $self->{filter}->write($line);
+    while (my $item = $self->{in}->read()) {
+        my @filtered = $self->{filter}->write($item);
         next unless @filtered;
         die "One-to-many not implemented in source filters" unless @filtered == 1;
         return $filtered[0];

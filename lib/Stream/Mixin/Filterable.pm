@@ -5,7 +5,23 @@ use warnings;
 
 =head1 NAME
 
-Stream::Mixin::Filterable - allows you to attach stack of filters to your input stream
+Stream::Mixin::Filterable - allows you to inject stack of filters into your input stream.
+
+=head1 SYNOPSIS
+
+    $in = ...; # $in have to implement do_read() instead of read()
+    $in->add_filter($f1);
+    $in->add_filter($f2);
+
+    $item = $in->read();
+
+=head1 DESCRIPTION
+
+Usual way to filter streams (C< $in | $filter >) has one defect, resulting filtered stream don't propagate custom methods to original input stream.
+
+You can use C<Stream::Mixin::Filterable> as workaround. This mixin allows to inject filters directly into your input stream using usual C<|> syntax (L<Stream::Filter> knows about this mixin for C<|> to work correctly in all cases).
+
+Remember that you have to implement C<do_read> method instead of C<read>, and your C<read_chunk> should call C<read> too for all these things to work.
 
 =head1 METHODS
 
@@ -56,6 +72,8 @@ sub read {
     return; # stream depleted
 }
 
+# TODO - read_chunk??
+
 =item C<commit()>
 
 Commits all filters in stack.
@@ -71,6 +89,10 @@ sub commit {
 }
 
 =back
+
+=head1 SEE ALSO
+
+L<Stream::Filter>
 
 =head1 AUTHOR
 

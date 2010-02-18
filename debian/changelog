@@ -1,3 +1,10 @@
+libstream-perl (0.6.4) UNRELEASED; urgency=low
+
+  * Stream::Filter: write method works in scalar context
+  * many doc improvements
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 18 Feb 2010 22:02:55 +0300
+
 libstream-perl (0.6.3) unstable; urgency=low
 
   * Stream::File: documentation fixed; write_chunk([]) don't print warning
