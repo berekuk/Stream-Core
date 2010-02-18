@@ -31,6 +31,14 @@ Output stream is an object in memory providing writing API - C<write> and C<writ
 
 Implementations: L<Stream::File::In>, L<Stream::DB::In>.
 
+=item I<Filter>
+
+Filter is a kind of output stream which returns transformed data further.
+
+Filters can be attached to input or output streams to modify their behavior.
+
+See L<Stream::Filter> for details.
+
 =item I<Storage>
 
 Storage is a kind of output stream which can generate input streams by cursor.
@@ -67,6 +75,6 @@ Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2009 Yandex LTD. All rights reserved.
+Copyright (c) 2009-2010 Yandex LTD. All rights reserved.
 
 =cut
