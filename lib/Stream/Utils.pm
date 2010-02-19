@@ -78,7 +78,7 @@ sub process($$;$) {
     }
 
     my $i = 0;
-    my $chunk_size = 1000;
+    my $chunk_size = 100;
     while (1) {
         if (defined $limit and $i + $chunk_size >= $limit) {
             $chunk_size = $limit - $i; # last chunk will be smaller than others
