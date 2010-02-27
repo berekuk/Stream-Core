@@ -1,3 +1,10 @@
+libstream-perl (0.6.6) unstable; urgency=low
+
+  * flushable filters cannot be attached to input streams
+  * FilteredOut commit result reverted
+
+ -- Andrei Mishchenko <druxa@yandex-team.ru>  Sat, 27 Feb 2010 18:20:13 +0300
+
 libstream-perl (0.6.5) unstable; urgency=low
 
   * commitable filters 

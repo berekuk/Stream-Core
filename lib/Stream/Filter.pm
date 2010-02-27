@@ -75,7 +75,7 @@ use overload '|' => sub {
             return $left;
         }
         else {
-            return Stream::Filter::FilteredIn->new($left, $right); #FIXME: prevent commitable filters to be used at the left-side!
+            return Stream::Filter::FilteredIn->new($left, $right);
         }
     }
     else {
@@ -170,8 +170,7 @@ sub new {
 sub write {
     my ($self, $item) = @_;
     my @items = $self->{filter}->write($item);
-    my @result = map { $self->{out}->write($_) } @items;
-    return (wantarray ? @result : $result[0]);
+    $self->{out}->write($_) for @items;
 }
 
 sub write_chunk {
@@ -183,9 +182,8 @@ sub write_chunk {
 sub commit {
     my ($self) = @_;
     my @items = $self->{filter}->commit;
-    my @result = map { $self->{out}->write($_) } @items;
-    push @result, $self->{out}->commit;
-    return @result;
+    $self->{out}->write_chunk(\@items);
+    return $self->{out}->commit;
 }
 
 package Stream::Filter::FilteredIn;
@@ -222,8 +220,10 @@ sub read_chunk {
 
 sub commit {
     my ($self) = @_;
-    $self->{filter}->commit; # useless?
-    $self->{in}->commit; # necessary!
+    my @items = $self->{filter}->commit;
+    die "flushable filters cannot be attached to input streams" if @items;
+    #FIXME: check it earlier
+    $self->{in}->commit;
 }
 
 sub lag {
@@ -239,6 +239,21 @@ our @ISA = qw(
     Stream::Filter::FilteredOut
     Stream::Filter
 );
+
+sub write {
+    my ($self, $item) = @_;
+    my @items = $self->{filter}->write($item);
+    my @result = map { $self->{out}->write($_) } @items;
+    return (wantarray ? @result : $result[0]);
+}
+
+sub commit {
+    my ($self) = @_;
+    my @items = $self->{filter}->commit;
+    my $result = $self->{out}->write_chunk(\@items);
+    push @$result, $self->{out}->commit;
+    return @$result;
+}
 
 =head1 AUTHOR
 

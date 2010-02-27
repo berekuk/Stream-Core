@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 22;
+use Test::Exception;
 
 use lib qw(lib);
 
@@ -160,4 +161,14 @@ use Stream::Filter qw(filter);
     $result = [];
     process(array_seq([1 .. 10]) => ($f1 | $f2) | $p);
     is_deeply($result, [3 .. 12], "buffered filters compositions via FilteredFilter are flushed");
+}
+
+# commitable left-side filters
+{
+    my $f = filter(sub {
+        return $_[0];
+    }, sub {
+        return (0);
+    });
+    throws_ok(sub { process(array_seq([1 .. 10]) | $f => processor(sub{})) }, qr/cannot/, "flushable filters cannot be attached to input streams");
 }
