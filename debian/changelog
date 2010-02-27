@@ -1,3 +1,9 @@
+libstream-perl (0.6.5) unstable; urgency=low
+
+  * commitable filters 
+
+ -- Andrei Mishchenko <druxa@yandex-team.ru>  Sat, 27 Feb 2010 16:18:04 +0300
+
 libstream-perl (0.6.4) unstable; urgency=low
 
   * Stream::Filter: write method works in scalar context

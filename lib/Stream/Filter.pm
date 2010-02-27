@@ -75,7 +75,7 @@ use overload '|' => sub {
             return $left;
         }
         else {
-            return Stream::Filter::FilteredIn->new($left, $right);
+            return Stream::Filter::FilteredIn->new($left, $right); #FIXME: prevent commitable filters to be used at the left-side!
         }
     }
     else {
@@ -120,11 +120,12 @@ Create anonymous fitler which calls C<&callback> on each item.
 
 =cut
 # not a method! (TODO - remove it from method namespace using namespace::clean?)
-sub filter(&) {
-    my ($callback) = @_;
-    croak "Expected callback" unless ref($callback) eq 'CODE';
+sub filter(&;&) {
+    my ($filter, $commit) = @_;
+    croak "Expected sub, got $filter" unless ref($filter) eq 'CODE';
+    croak "Expected sub, got $commit" if $commit and ref($commit) ne 'CODE';
     # alternative constructor
-    return Stream::Filter::Anon->new($callback);
+    return Stream::Filter::Anon->new($filter, $commit);
 }
 
 =back
@@ -136,15 +137,22 @@ package Stream::Filter::Anon;
 our @ISA = 'Stream::Filter';
 
 sub new {
-    my ($class, $callback) = @_;
+    my ($class, $callback, $commit) = @_;
     my $self = $class->SUPER::new;
     $self->{callback} = $callback;
+    $commit ||= sub {};
+    $self->{commit} = $commit;
     return $self;
 }
 
 sub write {
     my ($self, $item) = @_;
     return $self->{callback}->($item);
+}
+
+sub commit {
+    my ($self) = @_;
+    return $self->{commit}->();
 }
 
 package Stream::Filter::FilteredOut;
@@ -174,8 +182,10 @@ sub write_chunk {
 
 sub commit {
     my ($self) = @_;
-    $self->{filter}->commit; # useless?
-    $self->{out}->commit; # necessary!
+    my @items = $self->{filter}->commit;
+    my @result = map { $self->{out}->write($_) } @items;
+    push @result, $self->{out}->commit;
+    return @result;
 }
 
 package Stream::Filter::FilteredIn;

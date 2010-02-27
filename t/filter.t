@@ -3,10 +3,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18;
+use Test::More tests => 21;
 
 use lib qw(lib);
 
+use Streams qw(process);
 use Stream::Processor qw(processor);
 use Stream::Filter qw(filter);
 
@@ -126,4 +127,37 @@ use Stream::Filter qw(filter);
     is($x, 25, 'write() in list context');
     my $y = $f->write(5);
     is($y, 25, 'write() in scalar context');
+}
+
+# commitable right-side filters
+{
+    sub make_buffered_filter {
+        my $buffer;
+        return filter(
+            sub { 
+                push @$buffer, $_[0] + 1; 
+                return () unless @$buffer >= 5;
+                return splice (@$buffer, 0, 2);
+            }, sub {
+                return splice @$buffer;
+            }
+        );
+    }
+    my $f1 = make_buffered_filter();
+    my $result;
+    my $p = processor(sub {
+        push @$result, $_[0];
+    });
+
+    process(array_seq([1 .. 10]) => $f1 | $p);
+    is_deeply($result, [2 .. 11], "buffered filters are flushed");
+
+    $result = [];
+    my $f2 = make_buffered_filter();
+    process(array_seq([1 .. 10]) => $f1 | ($f2 | $p));
+    is_deeply($result, [3 .. 12], "buffered filters compositions are flushed");
+
+    $result = [];
+    process(array_seq([1 .. 10]) => ($f1 | $f2) | $p);
+    is_deeply($result, [3 .. 12], "buffered filters compositions via FilteredFilter are flushed");
 }
