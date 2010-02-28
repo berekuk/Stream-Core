@@ -1,0 +1,51 @@
+in:
+ - lag
+ - filterable
+ - async
+
+out:
+ - size
+
+filter:
+ - one-to-one
+ - flushable
+ - unsorted
+
+
+=head1 EXAMPLES
+
+Client code:
+
+    if ($in->cap('lag') and $in->cap('lag') eq 'bytes') {
+        ...
+    }
+
+    $caps_hash = $in->caps();
+
+Stream definition:
+
+    # subclass
+    sub class_caps() {
+        return {
+            async => 1,
+            lag => 'items',
+        };
+    }
+
+    # base class
+    sub caps() {
+        my $class = shift;
+        no strict 'refs';
+        my @ISA = @{ref($class).'::ISA'};
+        use strict 'refs';
+        my %classes = map { $_ => 1 } (@ISA, ref($class));
+        my @classes = keys %classes;
+        for my $class (@classes) {
+            next unless $class->can('class_caps');
+        }
+        ...
+    }
+
+
+
+
