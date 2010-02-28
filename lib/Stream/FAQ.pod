@@ -87,15 +87,15 @@ After that, to launch processing, you can choose one of two options:
 
 In latter case, you can register these input/output streams in catalog and be able to obtain them from any other script or one-liner.
 
-=head2 How can I benefit from my new shiny stream-agnostic processor?
+=head2 How can I benefit from my new shiny stream-agnostic code?
 
-You can write tests! It'll be mostly easy if your processor is a filter (that means it inherits from Stream::Filter and generates another "stream" of data as it works).
+You can write tests! It'll be mostly easy if your code is a filter (that means it inherits from Stream::Filter and generates another "stream" of data as it works).
 
 In this case, your test can contain something like this:
 
     use PPB::Something;
-    $processor = PPB::Something->new;
-    is($processor->write("incoming data"), "expected result");
+    $filter = PPB::Something->new;
+    is($filter->write("incoming data"), "expected result");
 
 More you can refactor your code into several separated filters, more deeply you can test them.
 

@@ -45,7 +45,7 @@ L<Stream::In> - interface which every every stream must implement.
 
 L<Stream::Out> - output stream interface and constructor for anonimous processor.
 
-L<Stream::Filter> - specific output stream which generates another stream
+L<Stream::Filter> - filter that can be attached to other streams.
 
 L<process.pl> - script which processes any specified stream.
 

@@ -17,7 +17,7 @@ Stream::Mixin::Filterable - allows you to inject stack of filters into your inpu
 
 =head1 DESCRIPTION
 
-Usual way to filter streams (C< $in | $filter >) has one defect, resulting filtered stream don't propagate custom methods to original input stream.
+Usual way to filter streams (C< $in | $filter >) has one defect: resulting filtered stream don't propagate custom methods to original input stream.
 
 You can use C<Stream::Mixin::Filterable> as workaround. This mixin allows to inject filters directly into your input stream using usual C<|> syntax (L<Stream::Filter> knows about this mixin for C<|> to work correctly in all cases).
 
@@ -84,7 +84,10 @@ Child class must call C<SUPER->commit()> to make sure that all filters was commi
 sub commit {
     my $self = shift;
     for my $filter (@{$self->{_Filters}}) {
-        $filter->commit;
+        my @result = $filter->commit;
+        if (@result) {
+            die "Filter $filter is flushable";
+        }
     }
 }
 

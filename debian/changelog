@@ -1,3 +1,9 @@
+libstream-perl (0.7.0) UNRELEASED; urgency=low
+
+  * Stream::Filter is not an ancestor of Stream::Out anymore
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sun, 28 Feb 2010 18:57:31 +0300
+
 libstream-perl (0.6.6) unstable; urgency=low
 
   * flushable filters cannot be attached to input streams

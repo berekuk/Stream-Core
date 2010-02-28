@@ -5,13 +5,17 @@ use warnings;
 
 =head1 NAME
 
-Stream::Filter - specialized processor which transforms input or output streams.
+Stream::Filter - objects for transforming input or output streams.
 
 =head1 SYNOPSIS
 
     $new_item = $filter->write($item);
+    # or when you know that filter can generate multiple items from one:
+    @items = $filter->write($item);
+
     $new_chunk = $filter->write_chunk(\@items);
-    $filter->commit; # commit is useless in filter, actually
+
+    @last_items = $filter->commit; # some filters keep items in internal buffer and process them at commit step
 
     $filtered_in = $input_stream | $filter; # resulting object is a input stream
     $double_filter = $filter1 | $filter2; # resulting object is a filter
@@ -19,7 +23,9 @@ Stream::Filter - specialized processor which transforms input or output streams.
 
 =head1 DESCRIPTION
 
-<Stream::Filter> instances are output streams with some meaning for C<write> and C<write_chunk> return values.
+C<Stream::Filter> instances can be attached to other streams to filter, expand and transform their data.
+
+It's API is currently identical to C<Stream::Out>, consisting of C<write>, C<write_chunk> and C<commit> methods, but unlike common output streams, values returned from these methods are always getting used.
 
 Depending on context, filters can filter input or output streams, or be attached to other filters to construct more complex filters.
 
@@ -38,12 +44,11 @@ Filters don't have to return all filtered results after each C<write> call, and 
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
-use Params::Validate;
+use Params::Validate qw(:all);
 use Scalar::Util qw(blessed);
 
 use Stream::Out;
 use base qw(
-    Stream::Out
     Exporter
 );
 our @EXPORT_OK = 'filter';
@@ -59,17 +64,16 @@ use overload '|' => sub {
     unless (blessed $right) {
         croak "Right side of pipe is not object, but '$right'";
     }
-    if ($left->isa('Stream::Filter') and $right->isa('Stream::Out')) {
-        # right-side filter
-        if ($right->isa('Stream::Filter')) {
-            return Stream::Filter::FilteredFilter->new($left, $right);
-        }
-        else {
-            return Stream::Filter::FilteredOut->new($left, $right);
-        }
+    if ($left->isa('Stream::Filter') and $right->isa('Stream::Filter')) {
+        # f | f
+        return Stream::Filter::FilteredFilter->new($left, $right);
+    }
+    elsif ($left->isa('Stream::Filter') and $right->isa('Stream::Out')) {
+        # f | o
+        return Stream::Filter::FilteredOut->new($left, $right);
     }
     elsif ($left->isa('Stream::In') and $right->isa('Stream::Filter')) {
-        # left-side filter
+        # i | f
         if ($left->isa('Stream::Mixin::Filterable')) {
             $left->add_filter($right);
             return $left;
@@ -83,15 +87,24 @@ use overload '|' => sub {
     }
 }, '""' => sub { $_[0] }; # strangely, when i overload |, i need to overload other operators too...
 
-=item write($item)
+=item I<new>
+
+Default constructor returns empty blessed hashref. You can redefine it with any parameters you want.
+
+=cut
+sub new {
+    return bless {} => shift;
+}
+
+=item I<write($item)>
 
 Processes one item and return some "filtered" items.
 
-Number of filtered items can be any, from zero to several, so returned data must always be processed in list context.
+Number of filtered items can be any, from zero to several, so returned data should always be processed in list context.
 
 Implementation should be provided by inherited class.
 
-=item write_chunk($chunk)
+=item I<write_chunk($chunk)>
 
 Processes one chunk and returns another, filtered chunk.
 
@@ -114,16 +127,18 @@ sub write_chunk($$) {
 
 =over
 
-=item filter(&callback)
+=item I<filter(&write_cb)>
 
-Create anonymous fitler which calls C<&callback> on each item.
+=item I<filter(&write_cb, &flush_cb)>
+
+Create anonymous fitler which calls C<&write_cb> on each item.
+
+If C<&flush_cb> is provided, it'll be called at commit step and it's results will be used too (but remember that flushable filters can't be attached to input streams).
 
 =cut
 # not a method! (TODO - remove it from method namespace using namespace::clean?)
 sub filter(&;&) {
-    my ($filter, $commit) = @_;
-    croak "Expected sub, got $filter" unless ref($filter) eq 'CODE';
-    croak "Expected sub, got $commit" if $commit and ref($commit) ne 'CODE';
+    my ($filter, $commit) = validate_pos(@_, { type => CODEREF }, { type => CODEREF, optional => 1 });
     # alternative constructor
     return Stream::Filter::Anon->new($filter, $commit);
 }
@@ -135,9 +150,11 @@ sub filter(&;&) {
 package Stream::Filter::Anon;
 
 our @ISA = 'Stream::Filter';
+use Params::Validate qw(:all);
 
 sub new {
-    my ($class, $callback, $commit) = @_;
+    my $class = shift;
+    my ($callback, $commit) = validate_pos(@_, { type => CODEREF }, { type => CODEREF | UNDEF, optional => 1 });
     my $self = $class->SUPER::new;
     $self->{callback} = $callback;
     $commit ||= sub {};
@@ -234,24 +251,34 @@ sub lag {
 
 package Stream::Filter::FilteredFilter;
 
-# FilteredFilter is the same as FilteredOut, but it's also a filter, which means it can be used on a left side of a pipe
-our @ISA = qw(
-    Stream::Filter::FilteredOut
-    Stream::Filter
-);
+use base qw(Stream::Filter);
+
+sub new {
+    my ($class, $f1, $f2) = @_;
+    return bless {
+        f1 => $f1,
+        f2 => $f2,
+    } => $class;
+}
 
 sub write {
     my ($self, $item) = @_;
-    my @items = $self->{filter}->write($item);
-    my @result = map { $self->{out}->write($_) } @items;
+    my @items = $self->{f1}->write($item);
+    my @result = map { $self->{f2}->write($_) } @items;
     return (wantarray ? @result : $result[0]);
+}
+
+sub write_chunk {
+    my ($self, $chunk) = @_;
+    $chunk = $self->{f1}->write_chunk($chunk);
+    return $self->{f2}->write_chunk($chunk);
 }
 
 sub commit {
     my ($self) = @_;
-    my @items = $self->{filter}->commit;
-    my $result = $self->{out}->write_chunk(\@items);
-    push @$result, $self->{out}->commit;
+    my @items = $self->{f1}->commit;
+    my $result = $self->{f2}->write_chunk(\@items);
+    push @$result, $self->{f2}->commit;
     return @$result;
 }
 

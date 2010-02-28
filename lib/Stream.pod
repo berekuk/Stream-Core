@@ -33,9 +33,9 @@ Implementations: L<Stream::File::In>, L<Stream::DB::In>.
 
 =item I<Filter>
 
-Filter is a kind of output stream which returns transformed data further.
+Filter is an object that modify data from some stream.
 
-Filters can be attached to input or output streams to modify their behavior.
+Filters can be attached to input or output streams using C<|> operator.
 
 See L<Stream::Filter> for details.
 

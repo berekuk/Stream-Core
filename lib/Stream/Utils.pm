@@ -62,9 +62,12 @@ sub process($$;$) {
             croak "first argument expected to be Stream::In, you specified: '$in'";
         }
     }
-    else {
+    elsif (ref($in) eq '') {
         # looking in catalog
         $in = $catalog->in($in);
+    }
+    else {
+        croak "Wrong argument '$in'";
     }
 
     if (blessed($out)) {
@@ -72,9 +75,12 @@ sub process($$;$) {
             croak "first argument expected to be Stream::Out, you specified: '$out'";
         }
     }
-    else {
+    elsif (ref($out) eq '') {
         # looking in catalog
         $out = $catalog->out($out);
+    }
+    else {
+        croak "Wrong argument '$in'";
     }
 
     my $i = 0;

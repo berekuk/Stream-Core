@@ -62,11 +62,11 @@ At the implementor's option, it can process C<$item> immediately or keep it's va
 Currently, C<Stream::Out> doesn't coerce C<write()> into C<write_chunk(1)>.
 This can be fixed in future (in a safe way, so that non-implementing both C<write> and C<write_chunk> still will be error), or there will be mixin for this task.
 
-Return value is unspecified (but consider L<Stream::Filter> which makes use of it to create simplest stream filters).
+Return value is not specified.
 
 =cut
 sub write($$) {
-    croak "write unimplemented";
+    croak "write method not implemented";
 }
 
 =item I<write_chunk($chunk)>
@@ -125,8 +125,6 @@ sub processor(&) {
 =back
 
 =head1 SEE ALSO
-
-L<Stream::Filter> - special kind of writing (or even reading) stream, which is wrapper of another stream.
 
 L<Stream::Storage> - skeleton of a persistent storage into which all data gets written.
 
