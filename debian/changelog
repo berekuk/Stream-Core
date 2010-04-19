@@ -1,6 +1,7 @@
 libstream-perl (0.7.0) UNRELEASED; urgency=low
 
   * Stream::Filter is not an ancestor of Stream::Out anymore
+  * process() function understands chunk_size and commit_step options
 
  -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Sun, 28 Feb 2010 18:57:31 +0300
 

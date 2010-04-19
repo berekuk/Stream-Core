@@ -121,6 +121,17 @@ sub write_chunk($$) {
     return \@result_chunk;
 }
 
+=item I<commit()>
+
+C<commit> method can flush cached data and return remaining transformed items as plain list.
+
+Default implementation does nothing.
+
+=cut
+sub commit {
+    return ();
+}
+
 =back
 
 =head1 EXPORTABLE FUNCTIONS

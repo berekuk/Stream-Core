@@ -49,13 +49,49 @@ sub catalog() {
 
 =item B<< process($in => $out, $limit) >>
 
+=item B<< process($in => $out, $options) >>
+
 Process input stream into output stream. Both streams will be commited if processing was successful.
 
-Process at most C<$limit> items, or everything if C<$limit> is not specified.
+Third argument can be either integer C<$limit>, or hashref with some of following options:
+
+=over
+
+=item I<limit>
+
+Process at most I<limit> items, or everything if I<limit> is not specified.
+
+=item I<commit_step>
+
+Commit both output and input streams every I<commit_step> items. By default, they'll be commited in the end of processing only.
+
+=item I<chunk_size>
+
+Force specific chunk size. Default is C<100>.
+
+=back
 
 =cut
 sub process($$;$) {
-    my ($in, $out, $limit) = validate_pos(@_, 1, 1, { optional => 1, regex => qr/^\d*$/ });
+    my ($in, $out, $options) = validate_pos(@_, 1, 1, { optional => 1, type => SCALAR | HASHREF });
+    my $limit;
+    my $chunk_size = 100;
+    my $commit_step; # TODO - choose some sane default?
+    if (ref($options)) {
+        my @list = ($options);
+        $options = validate(@list, {
+            limit => { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+            commit_step => { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+            chunk_size => { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+        });
+        $limit = $options->{limit};
+        $commit_step = $options->{commit_step};
+        $chunk_size = $options->{chunk_size} if $options->{chunk_size};
+    }
+    else {
+        $limit = $options;
+    }
+
 
     if (blessed($in)) {
         unless ($in->isa('Stream::In')) {
@@ -83,11 +119,20 @@ sub process($$;$) {
         croak "Wrong argument '$in'";
     }
 
+    my $commit_both_sub = sub {
+        $out->commit; # output is committed before input to make sure that all data was flushed down correctly
+        $in->commit;
+    };
+
     my $i = 0;
-    my $chunk_size = 100;
+    my $last_commit = 0;
     while (1) {
         if (defined $limit and $i + $chunk_size >= $limit) {
             $chunk_size = $limit - $i; # last chunk will be smaller than others
+        }
+        if ($commit_step and $i - $last_commit >= $commit_step) {
+            $commit_both_sub->();
+            $last_commit = $i;
         }
         my $chunk = $in->read_chunk($chunk_size);
         last unless $chunk;
@@ -97,8 +142,7 @@ sub process($$;$) {
             last;
         }
     }
-    $out->commit; # output is committed before input to make sure that all data was flushed down correctly
-    $in->commit;
+    $commit_both_sub->();
     return $i; # return number of actually processed items
 }
 
