@@ -5,9 +5,10 @@ Stream - stream-processing framework
 =head1 SYNOPSIS
 
     use Streams;
-    process catalog->in('links') => processor(sub {
-        print "Link: ".shift;
-    });
+    process
+        catalog->in('links') | filter(sub { "Link: ".shift() })
+        => processor(sub { print shift()."\n" })
+    ;
 
 =head1 DESCRIPTION
 
@@ -51,7 +52,7 @@ Implementations: L<Stream::File>, L<Stream::Log>, L<Stream::DB>.
 
 Persistent object which contains position of input stream, usually associated with some storage.
 
-If you know cursor, you usually don't have to explicitly construct storage, it's coordinates on disk (or in DB, or anywhere else) will be restored from cursor contents.
+If you know cursor, you usually don't have to explicitly construct storage, its coordinates on disk (or in DB, or anywhere else) will be restored from cursor contents.
 
 Implementations: L<Stream::File::Cursor>, L<Stream::DB::Cursor>.
 
@@ -59,15 +60,13 @@ Implementations: L<Stream::File::Cursor>, L<Stream::DB::Cursor>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-L<Stream::Catalog> allows to reference to any storage, cursor and stream by it's name in catalog.
-
-=head1 BUGS AND LIMITATIONS
-
-This is still a very early draft. API is still very unstable. Use with caution.
+L<Stream::Catalog> allows to reference to any storage, cursor and stream by its name in catalog.
 
 =head1 SEE ALSO
 
-L<http://search.cpan.org/~nuffin/Data-Stream-Bulk-0.04/> - another streaming framework.
+L<http://search.cpan.org/~mstrout/IO-Pipeline/> - unix pipe style expressions from Matt S Trout.
+
+L<http://search.cpan.org/~nuffin/Data-Stream-Bulk/> - N at a time iteration API, similar to C<read_chunk()> in Streams 
 
 =head1 AUTHOR
 
