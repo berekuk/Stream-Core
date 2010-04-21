@@ -59,14 +59,15 @@ sub new {
 sub _load {
     my ($self, $name, $path, $package) = @_;
     for my $dir (@$path) {
-        if (-e "$dir/$name") {
-            my $fh = xopen("$dir/$name");
+        my $file = "$dir/$name";
+        if (-e $file) {
+            my $fh = xopen($file);
             my $content;
             { local $/; $content = <$fh>; }
             $content = "package $package".int(rand(10 ** 6)).";\n# line 1 $dir/$name\n$content"; # FIXME - if file is loaded twice, shouldn't packages match?
             my $object = eval $content;
             if ($@) {
-                die "Failed to eval '$content': $@";
+                die "Failed to eval $file: $@";
             }
             return $object;
         }
