@@ -128,6 +128,10 @@ sub stream {
     return Stream::DB::In->new({storage => $self, cursor => $cursor});
 }
 
+sub class_caps {
+    return { persistent => 1 };
+}
+
 =back
 
 =head1 AUTHOR

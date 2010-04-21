@@ -34,6 +34,7 @@ C<Stream::In> defines interface which every writing stream must implement.
 
 =cut
 
+use base qw(Stream::Base);
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use base qw(Exporter);
