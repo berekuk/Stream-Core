@@ -1,5 +1,6 @@
 libstream-perl (0.7.0) UNRELEASED; urgency=low
 
+  * Stream::Base as a base class for ins, outs and filters
   * Stream::Filter is not an ancestor of Stream::Out anymore
   * process() function understands chunk_size and commit_step options
   * Stream::Catalog::Plugin::File: saner error message, don't dump full
