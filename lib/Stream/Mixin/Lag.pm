@@ -24,6 +24,10 @@ Get stream's lag.
 =cut
 sub lag($);
 
+sub class_caps {
+    return { lag => 1 };
+}
+
 =back
 
 =head1 AUTHOR

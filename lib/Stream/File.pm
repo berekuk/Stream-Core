@@ -129,6 +129,10 @@ sub stream($$) {
     return $cursor->stream($self);
 }
 
+sub class_caps {
+    return { persistent => 1 };
+}
+
 =back
 
 =head1 AUTHOR

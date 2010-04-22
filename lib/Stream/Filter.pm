@@ -41,6 +41,7 @@ Filters don't have to return all filtered results after each C<write> call, and 
 
 =cut
 
+use base qw(Stream::Base);
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
@@ -212,6 +213,17 @@ sub commit {
     my @items = $self->{filter}->commit;
     $self->{out}->write_chunk(\@items);
     return $self->{out}->commit;
+}
+
+sub class_caps {
+    my ($self) = @_;
+    my $out_caps = $self->{out}->caps;
+    if ($out_caps->{persistent}) {
+        return { persistent => $out_caps->{persistent} }; # TODO - which other caps can we propagate?
+    }
+    else {
+        return {};
+    }
 }
 
 package Stream::Filter::FilteredIn;
