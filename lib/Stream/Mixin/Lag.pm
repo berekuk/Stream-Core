@@ -3,6 +3,8 @@ package Stream::Mixin::Lag;
 use strict;
 use warnings;
 
+use base qw(Stream::Base);
+
 =head1 NAME
 
 Stream::Mixin::Lag - lag-showing trait

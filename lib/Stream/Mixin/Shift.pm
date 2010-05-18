@@ -3,6 +3,8 @@ package Stream::Mixin::Shift;
 use strict;
 use warnings;
 
+use base qw(Stream::In);
+
 =head1 NAME
 
 Stream::Mixin::Shift - mixin which allows your input stream to be used as PPB::Join-like sequence
