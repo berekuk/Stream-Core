@@ -268,7 +268,7 @@ sub commit {
 
 sub lag {
     my $self = shift;
-    die unless $self->{in}->isa('Stream::Mixin::Lag');
+    die unless $self->{in}->isa('Stream::Mixin::Lag'); # TODO - may be i really should replace my bycicles with Moose
     return $self->{in}->lag;
 }
 
