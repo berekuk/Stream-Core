@@ -81,7 +81,7 @@ Get log lag in bytes.
 =cut
 sub lag {
     my ($self) = @_;
-    return $self->{unrotate}->showlag;
+    return $self->{unrotate}->lag;
 }
 
 # deprecated
