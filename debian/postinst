@@ -2,6 +2,7 @@
 
 set -e
 
-dir=/var/lib/stream
-chmod 777 $dir
-chmod +t $dir
+for dir in /var/lib/stream /var/lib/stream/log_pos; do
+    chmod 777 $dir
+    chmod +t $dir
+done

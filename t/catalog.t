@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Exception;
 
 use lib 'lib';
@@ -20,12 +20,12 @@ use Yandex::X;
 xsystem("rm -rf tfiles");
 xsystem("mkdir tfiles");
 
-my $catalog = new Stream::Catalog;
+my $catalog = Stream::Catalog->new;
 
 # catalog->storage (1)
 {
     my $storage = $catalog->storage('something');
-    my $stream = $storage->stream(new Stream::File::Cursor('tfiles/pos'));
+    my $stream = $storage->stream(Stream::File::Cursor->new('tfiles/pos'));
     is($stream->read, "qqq\n", "stream 'something' is readable");
 }
 
@@ -42,10 +42,13 @@ my $catalog = new Stream::Catalog;
     is($stream->read, "www\n", 'in method constructs stream from cursor if neccesary');
 }
 
-# catalog->bind_in (2)
+# catalog->bind_in (3)
 {
     dies_ok { $catalog->in('aaa') } "can't get not existing yet stream";
-    $catalog->bind_in('aaa', $catalog->in('something.cursor'));
+    $catalog->bind_in(aaa => $catalog->in('something.cursor'));
     ok($catalog->in('aaa')->isa('Stream::In'), "now 'something.cursor' is binded as 'aaa' too");
+
+    $catalog->bind_in('something.cursor' => (bless { a => 'b' } => 'Stream::In'));
+    is($catalog->in('something.cursor')->{a}, 'b', "bind_in overrides configs");
 }
 

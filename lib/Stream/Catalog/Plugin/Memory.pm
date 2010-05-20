@@ -18,6 +18,8 @@ use Carp;
 use Yandex::X;
 use Params::Validate qw(:all);
 
+use base qw(Stream::Catalog::Plugin);
+
 =item C<new($params)>
 
 Constructs plugin.
@@ -38,29 +40,20 @@ sub new {
     return bless { bind => {} } => $class;
 }
 
-=item C<bind($name, $object)>
+=item C<bind_in($name, $in)>
 
-Bind C<$object> to name C<$name>.
+Bind input stream C<$in> to name C<$name>.
 
 =cut
-sub bind {
+sub bind_in {
     my $self = shift;
-    my ($name, $object) = validate_pos(@_, { type => SCALAR }, 1);
-    unless (blessed $object) {
-        croak "Expected blessed object instead of '$object'";
-    }
+    my ($name, $in) = validate_pos(@_, { type => SCALAR }, 1);
 
-    if ($object->isa('Stream::In')) {
-        $self->{bind}{in}{$name} = $object;
-    }
-    elsif ($object->isa('Stream::Out')) {
-        $self->{bind}{out}{$name} = $object;
-    }
-    elsif ($object->isa('Stream::Cursor')) {
-        $self->{bind}{cursor}{$name} = $object;
+    if ($in->isa('Stream::In')) {
+        $self->{bind}{in}{$name} = $in;
     }
     else {
-        croak "Unknown object '$object'";
+        croak "Unknown param '$in'";
     }
 }
 

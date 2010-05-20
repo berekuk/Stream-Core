@@ -40,7 +40,7 @@ sub new ($) {
         plugins => [ Stream::Catalog::Plugin::File->new ],
     } => $class;
     $self->{memory_plugin} = Stream::Catalog::Plugin::Memory->new();
-    push @{$self->{plugins}}, $self->{memory_plugin};
+    unshift @{$self->{plugins}}, $self->{memory_plugin};
     return $self;
 }
 
@@ -134,7 +134,7 @@ sub cursor ($$) {
     die "Can't find cursor by name '$name'";
 }
 
-=item C<bind_in($name, $object)>
+=item C<bind_in($name => $object)>
 
 Bind existing input stream to given name.
 
@@ -143,7 +143,7 @@ Binding happens in-memory and will be lost when catalog object will be destroyed
 =cut
 sub bind_in($$$) {
     my ($self, $name, $object) = @_;
-    $self->{memory_plugin}->bind($name, $object);
+    $self->{memory_plugin}->bind_in($name => $object);
 }
 
 =back

@@ -65,9 +65,21 @@ C<$unrotate_params> can contain more unrotate options.
 sub stream_by_name($$;$) {
     my $self = shift;
     my ($name, $unrotate_params) = validate_pos(@_, { type => SCALAR }, {type => HASHREF, optional => 1});
-    my $posdir = $ENV{STREAM_LOG_POSDIR} || '/var/lib/stream'; # env variable is neccesary for tests
-    my $posfile = $posdir.'/'.md5_hex($name).'.'.md5_hex($self->file).'.pos';
-    my $cursor = Stream::Log::Cursor->new({ LogFile => $self->file, PosFile => $posfile });
+
+    my $file_md5 = md5_hex($self->file);
+    my $name_md5 = md5_hex($name);
+    my $old_posdir = $ENV{STREAM_LOG_POSDIR} || '/var/lib/stream'; # env variable is neccesary for tests
+    my $old_posfile = "$old_posdir/$name_md5.$file_md5.pos";
+
+    my $new_posdir = $ENV{STREAM_LOG_POSDIR} || '/var/lib/stream/log_pos';
+    my $new_posfile = "$new_posdir/$file_md5.$name.pos";
+
+    if (-e $old_posfile) {
+        warn "Old posfile $old_posfile found, renaming according to new naming policy";
+        rename $old_posfile => $new_posfile or die "Can't rename $old_posfile to $new_posfile: $!";
+    }
+
+    my $cursor = Stream::Log::Cursor->new({ LogFile => $self->file, PosFile => $new_posfile });
     return $cursor->stream($self, ($unrotate_params ? $unrotate_params : ()));
 }
 
