@@ -1,3 +1,9 @@
+libstream-perl (0.7.1) unstable; urgency=low
+
+  * process() function works when third parameter is undef
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 25 May 2010 23:17:11 +0400
+
 libstream-perl (0.7.0) unstable; urgency=low
 
   * Stream::Base as a base class for ins, outs and filters

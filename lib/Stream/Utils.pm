@@ -73,16 +73,16 @@ Force specific chunk size. Default is C<100>.
 
 =cut
 sub process($$;$) {
-    my ($in, $out, $options) = validate_pos(@_, 1, 1, { optional => 1, type => SCALAR | HASHREF });
+    my ($in, $out, $options) = validate_pos(@_, 1, 1, { optional => 1, type => SCALAR | HASHREF | UNDEF });
     my $limit;
     my $chunk_size = 100;
     my $commit_step; # TODO - choose some sane default?
     if (ref($options)) {
         my @list = ($options);
         $options = validate(@list, {
-            limit => { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
-            commit_step => { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
-            chunk_size => { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+            limit => { type => SCALAR | UNDEF, regex => qr/^\d+$/, optional => 1 },
+            commit_step => { type => SCALAR | UNDEF, regex => qr/^\d+$/, optional => 1 },
+            chunk_size => { type => SCALAR | UNDEF, regex => qr/^\d+$/, optional => 1 },
         });
         $limit = $options->{limit};
         $commit_step = $options->{commit_step};

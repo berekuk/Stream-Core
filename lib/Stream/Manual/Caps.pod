@@ -24,9 +24,12 @@ If set for output stream, data written into it will be saved somewhere.
 
 If set for input stream, that stream is a sequence, i.e. it's sorted somehow. All streams from C<PPB::Join> family will have this cap soon.
 
+=item I<size>
+
+If set for storage, storage must implement C<size()> method returning storage size in bytes.
+
 =cut
 
 =back
 
 =cut
-

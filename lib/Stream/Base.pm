@@ -58,6 +58,8 @@ sub caps($) {
 
 This method should be implemented in your stream class if you want to add capabilities. It must return hashref.
 
+All common capabilities should be documented in C<Stream::Manual::Caps> for better interoperability.
+
 =back
 
 =head1 AUTHOR

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 use lib 'lib';
 
@@ -27,6 +27,13 @@ process(
     catalog->in('something.cursor') => $catcher
 );
 is_deeply(\@data, ["qqq\n", "www\n", "eee\n"], 'process processes all data when limit is not specified');
+xsystem("rm tfiles/something.pos");
+
+@data = ();
+process(
+    catalog->in('something.cursor') => $catcher, undef
+);
+is_deeply(\@data, ["qqq\n", "www\n", "eee\n"], 'process processes all data when limit is undef');
 
 @data = ();
 process(
