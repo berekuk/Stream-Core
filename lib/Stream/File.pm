@@ -53,8 +53,15 @@ sub _flush($) {
     my ($self) = @_;
     if ($self->{data}) {
         my $lock = lockf($self->{fh});
+        my $current_size = -s $self->{fh};
         $self->{fh}->write($self->{data});
-        $self->{fh}->flush;
+        my $flush_ok = $self->{fh}->flush;
+        unless ($flush_ok) {
+            if (defined $current_size) {
+                $self->{fh}->truncate($current_size); # try to rollback
+            }
+            die "write to $self->{file} failed";
+        }
         delete $self->{data};
     }
 }

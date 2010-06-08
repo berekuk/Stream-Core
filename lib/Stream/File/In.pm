@@ -32,7 +32,11 @@ sub new {
 sub read ($) {
     my ($self) = @_;
     my $fh = shift->{fh};
-    return scalar(<$fh>);
+    my $line = <$fh>;
+    if (defined $line and $line !~ /\n$/) {
+        return;
+    }
+    return $line;
 }
 
 sub commit ($) {
