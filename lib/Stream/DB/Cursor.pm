@@ -15,7 +15,7 @@ use Carp;
 
 sub load {
     my ($self) = @_;
-    my $state = new Yandex::Persistent($self->posfile);
+    my $state = Yandex::Persistent->new($self->posfile);
 
     if ($state->{storage}) {
         if ($self->{storage}) {
@@ -36,7 +36,7 @@ sub set_storage {
     # TODO - check storage type?
     # TODO - allow association by name in catalog?
 
-    my $state = new Yandex::Persistent($self->posfile);
+    my $state = Yandex::Persistent->new($self->posfile);
     if ($state->{storage}) {
         # TODO - what should we do, croak or silently overwrite?
         # probably we should overwrite association but print log message about all changed fields

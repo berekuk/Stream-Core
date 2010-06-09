@@ -16,7 +16,7 @@ BEGIN {
 diag('testing aaa[bbb] syntax');
 
 use Stream::Catalog;
-my $catalog = new Stream::Catalog;
+my $catalog = Stream::Catalog->new;
 $catalog->bind_in('aaa[bbb]', bless([5] => 'Stream::In'));
 is_deeply($catalog->in('aaa[bbb]'), [5], 'bind is checked for bracket syntax');
 

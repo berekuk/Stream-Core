@@ -17,7 +17,7 @@ use Carp;
 sub load {
     my $self = shift;
     validate_pos(@_);
-    my $state = new Yandex::Persistent($self->{posfile});
+    my $state = Yandex::Persistent->new($self->{posfile});
 
     if ($state->{storage_file}) {
         if ($self->{storage_file}) {
@@ -43,7 +43,7 @@ sub set_storage
     # TODO - check storage type?
     # TODO - allow association by name in catalog?
 
-    my $state = new Yandex::Persistent($self->{posfile});
+    my $state = Yandex::Persistent->new($self->{posfile});
     if ($state->{storage_file}) {
         if ($state->{storage_file} eq $storage->file) {
             # already associated

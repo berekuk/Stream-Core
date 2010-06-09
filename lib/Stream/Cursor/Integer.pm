@@ -41,7 +41,7 @@ sub position($) {
     my ($self) = @_;
 
     my $posfile = $self->{posfile};
-    my $state = new Yandex::Persistent($posfile);
+    my $state = Yandex::Persistent->new($posfile);
 
     my $position = $state->{position} || 0;
     $position =~ /^\d+$/ or croak "position must be integer, but $posfile contains: '$position'";
@@ -54,7 +54,7 @@ sub commit {
     my ($position) = validate_pos(@_, {type => SCALAR, regex => qr/^\d+$/});
 
     my $posfile = $self->{posfile};
-    my $state = new Yandex::Persistent($posfile);
+    my $state = Yandex::Persistent->new($posfile);
     $state->{position} = $position;
     $state->commit;
 }

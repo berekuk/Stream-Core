@@ -13,7 +13,7 @@ Stream::Catalog - registry of all streams
 
     use Stream::Catalog;
 
-    $catalog = new Stream::Catalog;
+    $catalog = Stream::Catalog->new; # although usually you'll want catalog() from Stream::Utils
     $output_stream = $catalog->out("enqueue");
     $input_stream = $catalog->in("bulca.storelog");
     $storage = $catalog->storage("bulca.storelog");
