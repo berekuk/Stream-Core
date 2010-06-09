@@ -28,7 +28,7 @@ xsystem("echo line4 >>tfiles/log");
             return;
         }
         if ($n == 3) {
-            return undef;
+            return (undef);
         }
         return $line;
     });

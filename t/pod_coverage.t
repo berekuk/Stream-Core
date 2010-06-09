@@ -7,8 +7,7 @@ use Test::More;
 
 use lib 'lib';
 
-eval "use Test::Pod::Coverage";
-plan skip_all => "Test::Pod::Coverage required for testing POD coverage" if $@;
+eval "use Test::Pod::Coverage; 1" or plan skip_all => "Test::Pod::Coverage required for testing POD coverage";
 
 my $trustparents = { coverage_class => 'Pod::Coverage::CountParents' };
 

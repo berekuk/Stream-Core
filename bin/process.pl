@@ -14,7 +14,7 @@ process.pl --file=/var/log/something.log --pos=/var/log/something.pos --module=S
 
 =cut
 
-use Getopt::Long;
+use Getopt::Long 2.33;
 use Pod::Usage;
 
 my $file;
@@ -33,8 +33,8 @@ pod2usage(2) unless $file and $pos and $module;
 use Stream::Unrotate;
 use Streams;
 
-eval "require $module";
-if ($@) {
+my $ok = eval "require $module; 1";
+unless ($ok) {
     die "Failed to load ${module}: $@";
 }
 

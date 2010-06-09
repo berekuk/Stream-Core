@@ -159,7 +159,7 @@ sub filter(&;&) {
 
 package Stream::Filter::Anon;
 
-our @ISA = 'Stream::Filter';
+use parent qw(Stream::Filter);
 use Params::Validate qw(:all);
 
 sub new {
@@ -239,7 +239,6 @@ sub new {
 
 sub read {
     my ($self) = @_;
-    my @filtered;
     while (my $item = $self->{in}->read()) {
         my @filtered = $self->{filter}->write($item);
         next unless @filtered;

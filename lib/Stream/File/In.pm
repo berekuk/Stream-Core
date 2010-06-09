@@ -26,7 +26,7 @@ sub new {
     $position =~ /^\d+$/ or croak "position must be integer, but cursor returned '$position'";
     my $fh = xopen($file);
     seek($fh, $position, 0);
-    my $self = bless {fh => $fh, cursor => $cursor};
+    my $self = bless {fh => $fh, cursor => $cursor} => $class;
 }
 
 sub read ($) {

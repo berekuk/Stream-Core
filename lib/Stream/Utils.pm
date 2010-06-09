@@ -30,6 +30,7 @@ use Scalar::Util qw(blessed);
 use Params::Validate 0.83.0 qw(:all);
 use Stream::Catalog;
 use Yandex::Logger;
+use Try::Tiny;
 
 use parent qw(Exporter);
 our @EXPORT_OK = qw/process pump storage cursor stream catalog /;
@@ -201,17 +202,15 @@ sub pump($$;$) {
     for my $out (@$outs) {
         my $cursor = $options->{cursor_sub}->($storage, $out);
         my $in = $storage->stream($cursor);
-        eval {
+        try {
             process($in => $out, $options->{limit});
-        };
-        if ($@) {
-            ERROR $@;
-            push @failures, $@; # TODO - return failures
-            $stat{failed}++;
-        }
-        else {
             $stat{ok}++;
         }
+        catch {
+            ERROR $_;
+            push @failures, $_; # TODO - return failures
+            $stat{failed}++;
+        };
     }
     return { stat => \%stat };
 }

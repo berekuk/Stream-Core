@@ -135,7 +135,7 @@ L<Stream::Storage> - skeleton of a persistent storage into which all data gets w
 
 package Stream::Out::Anon;
 
-our @ISA = 'Stream::Out';
+use parent qw(Stream::Out);
 
 sub new {
     my ($class, $callback) = @_;
