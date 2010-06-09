@@ -14,7 +14,7 @@ use Yandex::TmpFile;
 use Yandex::X qw(xopen xclose xprint);
 use Carp;
 
-use base qw(Stream::In);
+use parent qw(Stream::In);
 
 sub new {
     my ($class, $params) = @_;

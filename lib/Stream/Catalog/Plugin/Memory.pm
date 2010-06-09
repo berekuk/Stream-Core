@@ -18,7 +18,7 @@ use Carp;
 use Yandex::X;
 use Params::Validate qw(:all);
 
-use base qw(Stream::Catalog::Plugin);
+use parent qw(Stream::Catalog::Plugin);
 
 =item C<new($params)>
 

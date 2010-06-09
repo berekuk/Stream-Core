@@ -11,13 +11,14 @@ Stream::File::Cursor - file cursor
 
 =cut
 
-use base qw(Stream::Cursor::Integer);
+use parent qw(Stream::Cursor::Integer);
+use Yandex::Persistent;
 use Carp;
 
 sub load {
     my $self = shift;
     validate_pos(@_);
-    my $state = Yandex::Persistent->new($self->{posfile});
+    my $state = Yandex::Persistent->new($self->{posfile}, { format => 'json' });
 
     if ($state->{storage_file}) {
         if ($self->{storage_file}) {
@@ -43,7 +44,7 @@ sub set_storage
     # TODO - check storage type?
     # TODO - allow association by name in catalog?
 
-    my $state = Yandex::Persistent->new($self->{posfile});
+    my $state = Yandex::Persistent->new($self->{posfile}, { format => 'json' });
     if ($state->{storage_file}) {
         if ($state->{storage_file} eq $storage->file) {
             # already associated

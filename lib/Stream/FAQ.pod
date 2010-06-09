@@ -58,7 +58,7 @@ It mixes reading actions and processing actions into one piece of code, which me
 With streams, you should rewrite your processing part like this:
 
     package PPB::Something;
-    use base qw(Stream::Out);
+    use parent qw(Stream::Out);
     sub write {
         my ($self, $line) = @_;
         ... # processing $line

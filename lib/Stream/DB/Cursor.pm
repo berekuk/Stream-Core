@@ -10,7 +10,7 @@ Stream::DB::Cursor - DB cursor
 =cut
 
 use Stream::DB::In;
-use base qw(Stream::Cursor::Integer);
+use parent qw(Stream::Cursor::Integer);
 use Carp;
 
 sub load {

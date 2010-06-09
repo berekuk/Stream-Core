@@ -20,7 +20,7 @@ Stream::Catalog::Plugin::File - catalog plugin which load objects from files
 =cut
 
 use Yandex::X;
-use base qw(Stream::Catalog::Plugin);
+use parent qw(Stream::Catalog::Plugin);
 
 our ($CURSOR_DIR, $IN_DIR, $OUT_DIR, $FILTER_DIR);
 for my $type (qw/ cursor in out filter /) {

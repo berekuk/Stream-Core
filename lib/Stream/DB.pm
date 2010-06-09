@@ -23,7 +23,7 @@ use Params::Validate qw(:all);
 
 use Carp;
 
-use base qw(Stream::Storage);
+use parent qw(Stream::Storage);
 
 =item new($params)
 

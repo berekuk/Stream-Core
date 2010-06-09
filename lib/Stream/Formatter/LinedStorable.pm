@@ -11,7 +11,7 @@ Stream::Formatter::LinedStorable - storable line-oriented formatter
 
 use Stream::Utils qw(catalog);
 
-use base qw(Stream::Formatter);
+use parent qw(Stream::Formatter);
 
 sub read_filter {
     return catalog->filter('line2str') | catalog->filter('thaw');

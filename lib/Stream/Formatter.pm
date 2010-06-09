@@ -88,7 +88,7 @@ package Stream::Formatter::Wrapped;
 use warnings;
 use strict;
 
-use base qw(Stream::Storage);
+use parent qw(Stream::Storage);
 use Params::Validate;
 
 sub new {

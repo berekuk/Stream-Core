@@ -1,6 +1,6 @@
 # vim:ft=perl
 
-use base qw(Stream::In);
+use parent qw(Stream::In);
 use warnings;
 use strict;
 

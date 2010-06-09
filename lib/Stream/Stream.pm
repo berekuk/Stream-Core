@@ -13,7 +13,7 @@ This module was renamed into Stream::In and will be removed soon.
 
 =cut
 
-use base qw(Stream::In);
+use parent qw(Stream::In);
 
 use Yandex::Version '{{DEBIAN_VERSION}}';
 

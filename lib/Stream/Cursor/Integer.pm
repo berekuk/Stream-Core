@@ -17,7 +17,7 @@ use overload '""' => sub {
 };
 
 use Carp;
-use Yandex::Persistent;
+use Yandex::Persistent 1.2.1;
 
 sub new($$;$) {
     my $class = shift;
@@ -41,7 +41,7 @@ sub position($) {
     my ($self) = @_;
 
     my $posfile = $self->{posfile};
-    my $state = Yandex::Persistent->new($posfile);
+    my $state = Yandex::Persistent->new($posfile, { format => 'json' });
 
     my $position = $state->{position} || 0;
     $position =~ /^\d+$/ or croak "position must be integer, but $posfile contains: '$position'";
@@ -54,7 +54,7 @@ sub commit {
     my ($position) = validate_pos(@_, {type => SCALAR, regex => qr/^\d+$/});
 
     my $posfile = $self->{posfile};
-    my $state = Yandex::Persistent->new($posfile);
+    my $state = Yandex::Persistent->new($posfile, { format => 'json' });
     $state->{position} = $position;
     $state->commit;
 }

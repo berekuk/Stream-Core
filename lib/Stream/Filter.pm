@@ -41,7 +41,7 @@ Filters don't have to return all filtered results after each C<write> call, and 
 
 =cut
 
-use base qw(Stream::Base);
+use parent qw(Stream::Base);
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
@@ -49,9 +49,7 @@ use Params::Validate qw(:all);
 use Scalar::Util qw(blessed);
 
 use Stream::Out;
-use base qw(
-    Exporter
-);
+use parent qw(Exporter);
 our @EXPORT_OK = 'filter';
 
 use overload '|' => sub {
@@ -186,7 +184,7 @@ sub commit {
 
 package Stream::Filter::FilteredOut;
 
-use base qw(Stream::Out);
+use parent qw(Stream::Out);
 
 sub new {
     my ($class, $filter, $out) = @_;
@@ -228,8 +226,8 @@ sub class_caps {
 
 package Stream::Filter::FilteredIn;
 
-use base qw(Stream::In);
-use base qw(Stream::Mixin::Lag);
+use parent qw(Stream::In);
+use parent qw(Stream::Mixin::Lag);
 
 sub new {
     my ($class, $in, $filter) = @_;
@@ -274,7 +272,7 @@ sub lag {
 
 package Stream::Filter::FilteredFilter;
 
-use base qw(Stream::Filter);
+use parent qw(Stream::Filter);
 
 sub new {
     my ($class, $f1, $f2) = @_;

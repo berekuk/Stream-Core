@@ -26,7 +26,7 @@ Stream::Storage is an object which can act as a writing stream, and which can ge
 
 =cut
 
-use base qw(Stream::Out);
+use parent qw(Stream::Out);
 
 =item C<stream(...)>
 

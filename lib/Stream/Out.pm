@@ -34,10 +34,10 @@ C<Stream::In> defines interface which every writing stream must implement.
 
 =cut
 
-use base qw(Stream::Base);
+use parent qw(Stream::Base);
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
-use base qw(Exporter);
+use parent qw(Exporter);
 our @EXPORT_OK = 'processor';
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 

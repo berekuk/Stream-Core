@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use base qw(Stream::Storage);
+use parent qw(Stream::Storage);
 
 sub stream {
     my $self = shift;

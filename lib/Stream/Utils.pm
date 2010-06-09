@@ -31,7 +31,7 @@ use Params::Validate 0.83.0 qw(:all);
 use Stream::Catalog;
 use Yandex::Logger;
 
-use base qw(Exporter);
+use parent qw(Exporter);
 our @EXPORT_OK = qw/process pump storage cursor stream catalog /;
 
 our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance

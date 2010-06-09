@@ -3,7 +3,7 @@ package Stream::Mixin::Shift;
 use strict;
 use warnings;
 
-use base qw(Stream::In);
+use parent qw(Stream::In);
 
 =head1 NAME
 

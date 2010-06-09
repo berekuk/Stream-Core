@@ -22,7 +22,7 @@ Stream::File - file storage
 
 use Params::Validate;
 use Stream::Storage;
-use base qw(Stream::Storage);
+use parent qw(Stream::Storage);
 
 use Carp;
 use IO::Handle;

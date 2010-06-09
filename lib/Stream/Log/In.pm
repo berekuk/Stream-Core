@@ -27,7 +27,7 @@ Stream::Log::In - input stream for Stream::Log storage.
 
 =cut
 
-use base qw(
+use parent qw(
     Stream::Mixin::Filterable
     Stream::Mixin::Lag
     Stream::In

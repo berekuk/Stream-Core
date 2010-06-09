@@ -29,7 +29,7 @@ Remember that you have to implement C<do_read> method instead of C<read>, and yo
 
 =cut
 
-use base qw( Stream::In );
+use parent qw( Stream::In );
 
 use Params::Validate;
 

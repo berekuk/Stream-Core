@@ -23,7 +23,7 @@ C<Stream::In> defines interface which every reading stream must implement.
 
 =cut
 
-use base qw(Stream::Base);
+use parent qw(Stream::Base);
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;

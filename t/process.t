@@ -91,7 +91,7 @@ is_deeply(\@data, [qw/ qqq www /], 'process understands verbose options');
 {
     {
         package t::CommitCounter;
-        use base qw(Stream::Out);
+        use parent qw(Stream::Out);
         sub write_chunk {
             my ($self, $chunk) = @_;
             $self->{processed} += @$chunk;
@@ -124,7 +124,7 @@ is_deeply(\@data, [qw/ qqq www /], 'process understands verbose options');
 {
     {
         package t::ChunkCatcher;
-        use base qw(Stream::Out);
+        use parent qw(Stream::Out);
         sub write_chunk {
             push @{$_[0]->{chunks}}, $_[1];
         }
