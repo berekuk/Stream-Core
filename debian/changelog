@@ -3,8 +3,9 @@ libstream-perl (0.7.2) UNRELEASED; urgency=low
   * Stream::File - truncate on errors
   * Stream::File::In - don't read incomplete lines
   * 'use parent' instead of 'use base' in all modules
-  * Stream::Cursor::Integer sets json format for cursor persistents
   * perlcritic conformance (mostly)
+  * Stream::Cursor::Integer removed, Stream::*::Cursor refactored and
+    simplified
 
  -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 08 Jun 2010 21:14:41 +0400
 

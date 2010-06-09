@@ -41,7 +41,9 @@ sub read ($) {
 
 sub commit ($) {
     my ($self) = @_;
-    $self->{cursor}->commit(tell $self->{fh});
+    my $state = $self->{cursor}->state;
+    $state->{position} = tell $self->{fh};
+    $state->commit;
 }
 
 =head1 AUTHOR

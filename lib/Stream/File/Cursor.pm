@@ -3,48 +3,46 @@ package Stream::File::Cursor;
 use strict;
 use warnings;
 
-use Params::Validate;
-
 =head1 NAME
 
 Stream::File::Cursor - file cursor
 
 =cut
 
-use parent qw(Stream::Cursor::Integer);
-use Yandex::Persistent;
+use Params::Validate;
 use Carp;
 
-sub load {
+use Yandex::Persistent 1.2.1;
+
+sub new {
+    my $class = shift;
+    my ($posfile, $storage) = validate_pos(@_, 1, 0); # TODO - do we really need to set storage from cursor's constructor?
+
+    my $self = bless {posfile => $posfile} => $class;
+    $self->set_storage($storage) if $storage;
+    return $self;
+}
+
+sub state {
     my $self = shift;
     validate_pos(@_);
-    my $state = Yandex::Persistent->new($self->{posfile}, { format => 'json' });
+    return Yandex::Persistent->new($self->{posfile}, { format => 'json', auto_commit => 0 });
+}
 
-    if ($state->{storage_file}) {
-        if ($self->{storage_file}) {
-            # already associated
-            if ($state->{storage_file} eq $self->{storage_file}) {
-                return;
-            }
-            else {
-                croak "Cursor '$self->{posfile}' is already associated with file '$self->{storage_file}', but state file specifies '$state->{storage_file}'";
-            }
-        }
-        else {
-            $self->{storage_file} = $state->{storage_file}; # load association
-        }
-    }
+# I don't know if anyone uses this method.
+# It existed in old versions, and it could be handy to construct cursor without input stream,
+# but it requires high coupling between this module and Stream::File::In. Sigh...
+sub position {
+    my $self = shift;
+    return $self->state->{position} || 0;
 }
 
 sub set_storage
 {
     my $self = shift;
-    my ($storage) = validate_pos(@_, {isa => 'Stream::File'});
+    my ($storage) = validate_pos(@_, { isa => 'Stream::File' });
 
-    # TODO - check storage type?
-    # TODO - allow association by name in catalog?
-
-    my $state = Yandex::Persistent->new($self->{posfile}, { format => 'json' });
+    my $state = $self->state;
     if ($state->{storage_file}) {
         if ($state->{storage_file} eq $storage->file) {
             # already associated
@@ -54,36 +52,26 @@ sub set_storage
     }
     $state->{storage_file} = $storage->file;
     $state->commit;
-    $self->{storage} = $storage;
-    $self->{storage_file} = $storage->file;
 }
 
 sub stream {
     my $self = shift;
-    my ($storage) = validate_pos(@_, {isa => 'Stream::File', optional => 1});
+    my ($storage) = validate_pos(@_, { isa => 'Stream::File', optional => 1 });
 
     my $storage_file;
     if ($storage) {
         $storage_file = $storage->file;
-    }
-
-    if ($self->{storage_file}) {
-        if ($storage_file and $storage_file ne $self->{storage_file}) {
-            croak "cursor '$self->{posfile}' already have associated file $self->{storage_file}, can't redefine to $storage_file";
-        }
-        else {
-            $storage_file = $self->{storage_file};
-        }
+        $self->set_storage($storage);
     }
     else {
-        if ($storage_file) {
-            $self->set_storage($storage);
-        }
-        else {
-            croak "Cursor '$self->{posfile}' doesn't have any associated file";
-        }
+        $storage_file = $self->state->{storage_file};
     }
-    return Stream::File::In->new({file => $storage_file, cursor => $self});
+
+    unless (defined $storage_file) {
+        croak "Cursor '$self->{posfile}' doesn't have any associated file";
+    }
+
+    return Stream::File::In->new({ file => $storage_file, cursor => $self });
 }
 
 =head1 AUTHOR

@@ -32,7 +32,7 @@ sub new($$) {
     my ($storage, $cursor) = ($params->{storage}, $params->{cursor});
 
     my $self = bless {
-        dbh => connectdb($storage->{db}),
+        db_name => $storage->{db},
         table => $storage->{table},
         fields => $storage->{fields},
         pk => $storage->{pk},
@@ -42,7 +42,9 @@ sub new($$) {
     if (grep {$_ eq $storage->{pk}} @{$storage->{fields}}) {
         $self->{pk_in_fields} = 1;
     }
-    $self->{position} = $cursor->position;
+    my $position = $cursor->position;
+    $position =~ /^\d+$/ or croak "position must be integer, but cursor returned '$position'";
+    $self->{position} = $position;
     return $self;
 }
 
@@ -50,7 +52,7 @@ sub read_chunk($$) {
     my ($self, $limit) = @_;
     $limit =~ /^\d+$/ or croak "Wrong limit '$limit'";
     my $pk = $self->{pk};
-    my $sth = $self->{dbh}->prepare(qq{
+    my $sth = getdb($self->{db_name})->prepare(qq{
         SELECT $pk, }.join(',', @{$self->{fields}}).qq(
         FROM $self->{table}
         WHERE $pk > $self->{position}
@@ -80,7 +82,9 @@ sub read {
 
 sub commit {
     my ($self) = @_;
-    $self->{cursor}->commit($self->{position});
+    my $state = $self->{cursor}->state;
+    $state->{position} = $self->{position};
+    $state->commit;
 }
 
 =back

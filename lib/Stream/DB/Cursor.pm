@@ -9,65 +9,60 @@ Stream::DB::Cursor - DB cursor
 
 =cut
 
-use Stream::DB::In;
-use parent qw(Stream::Cursor::Integer);
+use Params::Validate;
 use Carp;
+use Yandex::Persistent 1.2.1;
 
-sub load {
-    my ($self) = @_;
-    my $state = Yandex::Persistent->new($self->posfile);
+use Stream::DB::In;
+use Stream::DB;
 
-    if ($state->{storage}) {
-        if ($self->{storage}) {
-            # already associated, reassociating is not implemented, and checking is not implemented too
-        }
-        else {
-            # load association
-            for (/table db fields pk/) {
-                $self->{storage}{$_} = $state->{storage}{$_};
-            }
-        }
-    }
+sub new {
+    my $class = shift;
+    my ($posfile, $storage) = validate_pos(@_, 1, 0);
+
+    my $self = bless { posfile => $posfile } => $class;
+    $self->set_storage($storage) if $storage;
+    return $self;
+}
+
+sub state {
+    my $self = shift;
+    validate_pos(@_);
+    return Yandex::Persistent->new($self->{posfile}, { format => 'json', auto_commit => 0 });
+}
+
+# see note for this method in Stream::File::Cursor
+sub position {
+    my $self = shift;
+    return $self->state->{position} || 0;
 }
 
 sub set_storage {
-    my ($self, $storage) = @_;
+    my $self = shift;
+    my ($storage) = validate_pos(@_, { isa => 'Stream::DB' });
 
-    # TODO - check storage type?
-    # TODO - allow association by name in catalog?
-
-    my $state = Yandex::Persistent->new($self->posfile);
+    my $state = $self->state;
     if ($state->{storage}) {
+        # some storage already associated
         # TODO - what should we do, croak or silently overwrite?
         # probably we should overwrite association but print log message about all changed fields
     }
     $state->{storage} = $storage->params;
     $state->commit;
-
-    for (/table db fields pk/) {
-        $self->{storage}{$_} = $state->{storage}{$_};
-    }
 }
 
 sub stream {
-    my ($self, $storage) = @_;
-    if ($self->{storage}) {
-        if ($storage) {
-            croak "cursor '$self' already have associated storage";
-        }
-        else {
-            $storage = $self->{storage};
-        }
-    }
-    else {
-        if ($storage) {
-            $self->set_storage($storage);
-        }
-        else {
+    my $self = shift;
+    my ($storage) = validate_pos(@_, { isa => 'Stream::File', optional => 1 });
+
+    unless ($storage) {
+        my $storage_params = $self->state->{storage};
+        unless ($storage_params) {
             croak "Cursor '$self' doesn't have any associated storage";
         }
+        $storage = Stream::DB->new($self->state->{storage});
     }
-    return Stream::DB::In->new({storage => $storage, cursor => $self});
+    return Stream::DB::In->new({ storage => $storage, cursor => $self });
 }
 
 =head1 AUTHOR
