@@ -9,7 +9,7 @@ use Test::Exception;
 use lib qw(lib);
 
 use Streams qw(process);
-use Stream::Processor qw(processor);
+use Stream::Out qw(processor);
 use Stream::Filter qw(filter);
 
 # simple pipeline of filters (2)
@@ -135,9 +135,9 @@ use Stream::Filter qw(filter);
     sub make_buffered_filter {
         my $buffer;
         return filter(
-            sub { 
-                push @$buffer, $_[0] + 1; 
-                return () unless @$buffer >= 5;
+            sub {
+                push @$buffer, $_[0] + 1;
+                return () if @$buffer < 5;
                 return splice (@$buffer, 0, 2);
             }, sub {
                 return splice @$buffer;
