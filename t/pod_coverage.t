@@ -12,11 +12,11 @@ eval "use Test::Pod::Coverage; 1" or plan skip_all => "Test::Pod::Coverage requi
 my $trustparents = { coverage_class => 'Pod::Coverage::CountParents' };
 
 my @modules = all_modules();
+
 plan tests => scalar @modules;
 my %modules = map { ($_ => 1) } @modules;
 
 my @bad_modules = qw(
-    Stream::Cursor::Integer
     Stream::Mixin::Shift
     Stream::DB::Cursor
     Stream::DB::In
@@ -29,7 +29,7 @@ TODO: {
     local $TODO = 'not all Stream modules are properly documented still';
     for (@bad_modules) {
         pod_coverage_ok($_, $trustparents);
-        delete $modules{$_};
+        delete $modules{$_} or die $_;
     }
 }
 

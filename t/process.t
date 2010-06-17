@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 14;
+use Test::More tests => 20;
 
 use lib 'lib';
 
@@ -156,6 +156,64 @@ is_deeply(\@data, [qw/ qqq www /], 'process understands verbose options');
         }
         push @expected, [map { "a$_" } (801..950)];
         is_deeply($chunks, \@expected, 'chunk_size option works');
+    }
+}
+
+# commit (6)
+{
+    {
+        package t::process::commit::out;
+        use parent qw(Stream::Out);
+        sub write { }
+        sub commit {
+            shift()->{'commit'} = 1;
+        }
+    }
+
+    {
+        package t::process::commit::in;
+        use parent qw(Stream::In);
+        sub new {
+            my $class = shift;
+            bless { data => [ @_ ] } => $class;
+        }
+        sub read {
+            my $self = shift;
+            return shift @{ $self->{data} };
+        }
+        sub commit {
+            shift()->{'commit'} = 1;
+        }
+    }
+
+    {
+        my $in = t::process::commit::in->new(1,2,3);
+        my $out = t::process::commit::out->new();
+        process(
+            $in => $out
+        );
+        is($in->{commit}, 1, 'input stream commited by default');
+        is($out->{commit}, 1, 'output stream commited by default');
+    }
+
+    {
+        my $in = t::process::commit::in->new(1,2,3);
+        my $out = t::process::commit::out->new();
+        process(
+            $in => $out, { commit => 1 }
+        );
+        is($in->{commit}, 1, 'commit=1 is default');
+        is($out->{commit}, 1, 'commit=1 is default');
+    }
+
+    {
+        my $in = t::process::commit::in->new(1,2,3);
+        my $out = t::process::commit::out->new();
+        process(
+            $in => $out, { commit => 0 }
+        );
+        is($in->{commit}, undef, 'commit=0 disables commit of input stream');
+        is($out->{commit}, undef, 'commit=0 disables commit of ouput stream');
     }
 }
 

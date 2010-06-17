@@ -70,6 +70,10 @@ Commit both output and input streams every I<commit_step> items. By default, the
 
 Force specific chunk size. Default is C<100>.
 
+=item I<commit>
+
+If set and false, streams will not be commited.
+
 =back
 
 =cut
@@ -78,16 +82,19 @@ sub process($$;$) {
     my $limit;
     my $chunk_size = 100;
     my $commit_step; # TODO - choose some sane default?
+    my $commit = 1;
     if (ref($options)) {
         my @list = ($options);
         $options = validate(@list, {
             limit => { type => SCALAR | UNDEF, regex => qr/^\d+$/, optional => 1 },
             commit_step => { type => SCALAR | UNDEF, regex => qr/^\d+$/, optional => 1 },
             chunk_size => { type => SCALAR | UNDEF, regex => qr/^\d+$/, optional => 1 },
+            commit => { type => SCALAR | UNDEF, optional => 1 },
         });
         $limit = $options->{limit};
         $commit_step = $options->{commit_step};
         $chunk_size = $options->{chunk_size} if $options->{chunk_size};
+        $commit = 0 if exists $options->{commit} and not $options->{commit};
     }
     else {
         $limit = $options;
@@ -121,6 +128,7 @@ sub process($$;$) {
     }
 
     my $commit_both_sub = sub {
+        return unless $commit;
         $out->commit; # output is committed before input to make sure that all data was flushed down correctly
         $in->commit;
     };
