@@ -15,7 +15,7 @@ libstream-perl (0.7.2) unstable; urgency=low
   * perlcritic conformance (mostly)
   * Stream::Cursor::Integer removed, Stream::*::Cursor refactored and
     simplified
-  * cursor => 0 option in process() function
+  * commit => 0 option in process() function
 
  -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 17 Jun 2010 23:11:43 +0400
 
