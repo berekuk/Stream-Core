@@ -34,12 +34,12 @@ my $catalog = Stream::Catalog->new;
 
 # lazy definitions (4)
 {
-    my $lazy_storage = $catalog->storage('lazy_something');
+    my $lazy_storage = $catalog->storage('something.lazy');
     ok($lazy_storage->isa('Stream::File'), 'anonimous subs in catalog files work too');
-    my $lazy_storage2 = $catalog->storage('lazy_something');
+    my $lazy_storage2 = $catalog->storage('something.lazy');
 
-    is(ref $lazy_storage, 'Stream::Catalog::Out::lazy_something', 'catalog object package when definition is lazy');
-    is(ref $lazy_storage2, 'Stream::Catalog::Out::lazy_something', 'lazy definitions are loaded only once');
+    is(ref $lazy_storage, 'Stream::Catalog::Out::something_lazy', 'catalog object package when definition is lazy');
+    is(ref $lazy_storage2, 'Stream::Catalog::Out::something_lazy', 'lazy definitions are loaded only once');
     isnt($lazy_storage, $lazy_storage2, 'lazy sub is cached, not object itself');
 }
 
@@ -68,10 +68,10 @@ my $catalog = Stream::Catalog->new;
 
 # list_* (3)
 {
-    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something lazy_something /], 'list_out returns names');
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something something.lazy /], 'list_out returns names');
     $catalog->bind_out('blah' => $catalog->out('custom'));
-    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something lazy_something blah /], 'list_out merges names from plugins');
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something something.lazy blah /], 'list_out merges names from plugins');
     $catalog->bind_out('something' => $catalog->out('custom'));
-    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something lazy_something blah /], 'list_out filters duplicates');
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something something.lazy blah /], 'list_out filters duplicates');
 }
 

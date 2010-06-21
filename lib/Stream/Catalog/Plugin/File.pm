@@ -87,7 +87,7 @@ sub _load {
             my $pp ||= $self->{name2pp}{$name};
             unless (defined $pp) {
                 $pp = $name;
-                $pp =~ s/\W/_/;
+                $pp =~ s/\W/_/g;
                 if ($self->{pp2name}{$pp}) {
                     # package name collsion (it can happen if one name is "blah-blah" and another is "blah_blah", for example)
                     # we call second one "blah_blah2" in this case
