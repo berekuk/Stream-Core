@@ -40,6 +40,19 @@ sub new {
     return bless { bind => {} } => $class;
 }
 
+sub _bind_any {
+    my $self = shift;
+    my ($name, $object, $type, $class) = validate_pos(@_, { type => SCALAR }, 1, 1, 1);
+
+    if ($object->isa($class)) {
+        $self->{bind}{$type}{$name} = $object;
+    }
+    else {
+        croak "Unknown param '$object'";
+    }
+
+}
+
 =item C<bind_in($name, $in)>
 
 Bind input stream C<$in> to name C<$name>.
@@ -48,13 +61,18 @@ Bind input stream C<$in> to name C<$name>.
 sub bind_in {
     my $self = shift;
     my ($name, $in) = validate_pos(@_, { type => SCALAR }, 1);
+    $self->_bind_any($name, $in, 'in', 'Stream::In');
+}
 
-    if ($in->isa('Stream::In')) {
-        $self->{bind}{in}{$name} = $in;
-    }
-    else {
-        croak "Unknown param '$in'";
-    }
+=item C<bind_out($name, $out)>
+
+Bind output stream C<$out> to name C<$name>.
+
+=cut
+sub bind_out {
+    my $self = shift;
+    my ($name, $out) = validate_pos(@_, { type => SCALAR }, 1);
+    $self->_bind_any($name, $out, 'out', 'Stream::Out');
 }
 
 =item C<in($name)>
@@ -86,5 +104,16 @@ sub cursor {
     my ($self, $name) = @_;
     return $self->{bind}{cursor}{$name};
 }
+
+=item C<list($type)>
+
+List objects of given type.
+
+=cut
+sub list {
+    my ($self, $type) = @_;
+    return keys %{ $self->{bind}{$type} };
+}
+
 1;
 

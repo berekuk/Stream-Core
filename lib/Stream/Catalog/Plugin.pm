@@ -81,6 +81,17 @@ sub pumper {
     return;
 }
 
+
+=item B<list($type)>
+List all objects of one type.
+
+Returns list with names.
+
+=cut
+sub list {
+    return ();
+}
+
 =back
 
 =head1 SEE ALSO

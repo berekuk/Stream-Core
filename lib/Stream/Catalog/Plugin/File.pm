@@ -20,6 +20,7 @@ Stream::Catalog::Plugin::File - catalog plugin which load objects from files
 =cut
 
 use Yandex::X;
+use File::Find;
 use parent qw(Stream::Catalog::Plugin);
 
 our @TYPES = qw/ cursor in out filter pumper /;
@@ -35,7 +36,11 @@ for my $type (@TYPES) {
         $dir = "$type_env:$dir";
     }
 
-    my $env = $ENV{STREAM_DIR} || $ENV{STREAM_PATH};
+    my $env = $ENV{STREAM_DIR};
+    if ($ENV{STREAM_PATH}) {
+        $env = $ENV{STREAM_PATH}; # unlike STREAM_DIR, STREAM_PATH completely overrides default paths
+        $dir = '';
+    }
     if ($env) {
         for (reverse split /:/, $env) {
             $dir = "$_/$type:$dir";
@@ -163,6 +168,26 @@ Loads pumper from file named C<$name> in catalog dir. Dir defaults to C</etc/str
 sub pumper {
     my ($self, $name) = @_;
     return $self->_load($name, $self->{pumper_dir}, 'Stream::Catalog::Pumper');
+}
+
+sub list {
+    my ($self, $type) = @_;
+
+    my $path = $self->{$type."_dir"} or die "Unknown type $type";
+    my @files;
+    for my $dir (@$path) {
+        next unless -d $dir;
+        find({
+            wanted => sub {
+                return unless -f;
+                my $file = $File::Find::name;
+                $file = File::Spec->abs2rel($file, $dir);
+                push @files, $file;
+            },
+            no_chdir => 1,
+        }, $dir);
+    }
+    return @files;
 }
 
 1;

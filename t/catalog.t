@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 15;
 use Test::Exception;
 
 use lib 'lib';
@@ -64,5 +64,14 @@ my $catalog = Stream::Catalog->new;
 
     $catalog->bind_in('something.cursor' => (bless { a => 'b' } => 'Stream::In'));
     is($catalog->in('something.cursor')->{a}, 'b', "bind_in overrides configs");
+}
+
+# list_* (3)
+{
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something lazy_something /], 'list_out returns names');
+    $catalog->bind_out('blah' => $catalog->out('custom'));
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something lazy_something blah /], 'list_out merges names from plugins');
+    $catalog->bind_out('something' => $catalog->out('custom'));
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something lazy_something blah /], 'list_out filters duplicates');
 }
 

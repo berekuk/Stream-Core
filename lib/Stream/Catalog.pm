@@ -132,6 +132,35 @@ sub pumper ($$) {
     $self->_any('pumper', $name) or die "Can't find pumper by name '$name'";
 }
 
+=item B<list_in()>
+
+=item B<list_out()>
+
+=item B<list_cursor()>
+
+=item B<list_filter()>
+
+=item B<list_pumper()>
+
+List all objects of one type.
+
+=cut
+sub _list_any {
+    my ($self, $type) = @_;
+    my $method = "list_$type";
+    my %uniq;
+    for my $module ($self->_plugins) {
+        my @list = $module->list($type);
+        $uniq{$_}++ for @list;
+    }
+    return keys %uniq;
+}
+sub list_in     { shift()->_list_any('in') }
+sub list_out    { shift()->_list_any('out') }
+sub list_cursor { shift()->_list_any('cursor') }
+sub list_filter { shift()->_list_any('filter') }
+sub list_pumper { shift()->_list_any('pumper') }
+
 =item C<bind_in($name => $object)>
 
 Bind existing input stream to given name.
@@ -142,6 +171,16 @@ Binding happens in-memory and will be lost when catalog object will be destroyed
 sub bind_in($$$) {
     my ($self, $name, $object) = @_;
     $self->{memory_plugin}->bind_in($name => $object);
+}
+
+=item C<bind_out($name => $object)>
+
+Bind output stream to given name.
+
+=cut
+sub bind_out($$$) {
+    my ($self, $name, $object) = @_;
+    $self->{memory_plugin}->bind_out($name => $object);
 }
 
 =back

@@ -3,6 +3,7 @@ libstream-perl (0.8.0) UNRELEASED; urgency=low
   * lazy style of stream definitions in catalog
   * Stream::Pumper and Stream::Pumper::Common
   * /usr/share/stream in catalog path
+  * list_* methods in catalog
 
  -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 21 Jun 2010 20:38:39 +0400
 
