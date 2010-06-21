@@ -9,8 +9,7 @@ use Test::Exception;
 use lib 'lib';
 
 BEGIN {
-    $ENV{STREAM_OUT_DIR} = 't/storage.d';
-    $ENV{STREAM_CURSOR_DIR} = 't/cursor.d';
+    $ENV{STREAM_PATH} = 't/catalog';
 }
 
 use Stream::Catalog;

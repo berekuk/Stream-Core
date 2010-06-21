@@ -49,6 +49,17 @@ sub _plugins ($) {
     return @{$self->{plugins}};
 }
 
+sub _any {
+    my ($self, $type, $name) = @_;
+    for my $module ($self->_plugins) {
+        my $object = $module->$type($name);
+        if ($object) {
+            return $object;
+        }
+    }
+    return;
+}
+
 =item C<out($name)>
 
 Get output stream by name.
@@ -56,13 +67,7 @@ Get output stream by name.
 =cut
 sub out ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->_plugins) {
-        my $out = $module->out($name);
-        if ($out) {
-            return $out;
-        }
-    }
-    die "Can't find output stream by name '$name'";
+    return $self->_any('out', $name) or die "Can't find output stream by name '$name'";
 }
 
 =item C<filter($name)>
@@ -72,13 +77,7 @@ Get filter by name.
 =cut
 sub filter ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->_plugins) {
-        my $filter = $module->filter($name);
-        if ($filter) {
-            return $filter;
-        }
-    }
-    die "Can't find filter by name '$name'";
+    $self->_any('filter', $name) or die "Can't find filter by name '$name'";
 }
 
 =item C<in($name)>
@@ -92,12 +91,8 @@ If name looks like C<aaa[bbb]>, and no input stream found, this method will try 
 =cut
 sub in ($$) {
     my ($self, $name) = @_;
-    for my $module ($self->_plugins) {
-        my $stream = $module->in($name);
-        if ($stream) {
-            return $stream;
-        }
-    }
+    my $in = $self->_any('in', $name);
+    return $in if $in;
 
     if (my ($storage, $in_name) = $name =~ /(.+)\[(.+)\]$/) {
         return $self->storage($storage)->stream($in_name);
@@ -113,7 +108,7 @@ Just an alias to out() method.
 
 =cut
 sub storage {
-    # TODO - since Out stream must have special abilities to be storage, we should check for it's type
+    # TODO - since Out stream must have special abilities to be storage, we should check for its type
     goto &out;
 }
 
@@ -124,14 +119,17 @@ Get cursor by name.
 =cut
 sub cursor ($$) {
     my ($self, $name) = @_;
+    $self->_any('cursor', $name) or die "Can't find cursor by name '$name'";
+}
 
-    for my $module ($self->_plugins) {
-        my $cursor = $module->cursor($name);
-        if ($cursor) {
-            return $cursor;
-        }
-    }
-    die "Can't find cursor by name '$name'";
+=item C<pumper($name)>
+
+Get pumper by name.
+
+=cut
+sub pumper ($$) {
+    my ($self, $name) = @_;
+    $self->_any('pumper', $name) or die "Can't find pumper by name '$name'";
 }
 
 =item C<bind_in($name => $object)>

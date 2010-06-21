@@ -69,6 +69,18 @@ sub cursor {
     return;
 }
 
+
+=item B<pumper($name)>
+
+Get pumper by name.
+
+Should return C<Stream::Pumper> object or undef.
+
+=cut
+sub pumper {
+    return;
+}
+
 =back
 
 =head1 SEE ALSO

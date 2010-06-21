@@ -22,18 +22,26 @@ Stream::Catalog::Plugin::File - catalog plugin which load objects from files
 use Yandex::X;
 use parent qw(Stream::Catalog::Plugin);
 
-our ($CURSOR_DIR, $IN_DIR, $OUT_DIR, $FILTER_DIR);
-for my $type (qw/ cursor in out filter /) {
+our @TYPES = qw/ cursor in out filter pumper /;
+our %TYPE2DIR;
+
+for my $type (@TYPES) {
     my $TYPE = uc($type);
     my $dir = "/etc/stream/$type";
-    $dir = $ENV{"STREAM_${TYPE}_DIR"}.":".$dir if $ENV{"STREAM_${TYPE}_DIR"}; # TODO - rename in STREAM_${TYPE}_PATH?
-    if ($ENV{STREAM_DIR}) {
-        for (reverse split /:/, $ENV{STREAM_DIR}) {
+
+    my $type_env = $ENV{"STREAM_${TYPE}_DIR"} || $ENV{"STREAM_${TYPE}_PATH"};
+    if ($type_env) {
+        warn "STREAM_*_DIR vars are deprecated, use STREAM_PATH instead";
+        $dir = "$type_env:$dir";
+    }
+
+    my $env = $ENV{STREAM_DIR} || $ENV{STREAM_PATH};
+    if ($env) {
+        for (reverse split /:/, $env) {
             $dir = "$_/$type:$dir";
         }
     }
-    no strict 'refs';
-    ${"${TYPE}_DIR"} = $dir;
+    $TYPE2DIR{$type} = $dir;
 }
 
 =item C<new>
@@ -43,14 +51,9 @@ Constructs plugin.
 =cut
 sub new {
     my $class = shift;
-    my $self = bless {
-        cursor_dir => $CURSOR_DIR,
-        in_dir => $IN_DIR,
-        out_dir => $OUT_DIR,
-        filter_dir => $FILTER_DIR,
-    } => $class;
-    for (qw/ cursor_dir in_dir out_dir filter_dir /) {
-        $self->{$_} = [ split /:/, $self->{$_} ];
+    my $self = bless {} => $class;
+    for (@TYPES) {
+        $self->{ $_."_dir" } = [ split /:/, $TYPE2DIR{$_} ];
     }
 
     $self->{name2pp} = {};
@@ -150,6 +153,16 @@ Loads filter from file named C<$name> in catalog dir. Dir defaults to C</etc/str
 sub filter {
     my ($self, $name) = @_;
     return $self->_load($name, $self->{filter_dir}, 'Stream::Catalog::Filter');
+}
+
+=item C<pumper($name)>
+
+Loads pumper from file named C<$name> in catalog dir. Dir defaults to C</etc/stream/pumper>.
+
+=cut
+sub pumper {
+    my ($self, $name) = @_;
+    return $self->_load($name, $self->{pumper_dir}, 'Stream::Catalog::Pumper');
 }
 
 1;
