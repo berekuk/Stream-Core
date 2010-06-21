@@ -27,7 +27,7 @@ our %TYPE2DIR;
 
 for my $type (@TYPES) {
     my $TYPE = uc($type);
-    my $dir = "/etc/stream/$type";
+    my $dir = "/etc/stream/$type:/usr/share/stream/$type";
 
     my $type_env = $ENV{"STREAM_${TYPE}_DIR"} || $ENV{"STREAM_${TYPE}_PATH"};
     if ($type_env) {
