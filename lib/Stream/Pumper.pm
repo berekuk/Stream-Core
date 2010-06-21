@@ -52,10 +52,6 @@ sub pump {
 
 =back
 
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
 =cut
 
 1;
