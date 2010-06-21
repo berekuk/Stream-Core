@@ -18,7 +18,7 @@ xsystem("mkdir tfiles");
 
 use Streams;
 
-is(stream('something.cursor')->read, "qqq\n", 'streams export stream function');
+is(catalog->in('something.cursor')->read, "qqq\n", 'streams export stream function');
 
 # TODO - check other exported functions from Streams
 

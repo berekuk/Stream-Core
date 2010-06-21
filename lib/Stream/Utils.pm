@@ -33,7 +33,7 @@ use Yandex::Logger;
 use Try::Tiny;
 
 use parent qw(Exporter);
-our @EXPORT_OK = qw/process pump storage cursor stream catalog /;
+our @EXPORT_OK = qw/process pump catalog /;
 
 our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance
 
@@ -221,42 +221,6 @@ sub pump($$;$) {
         };
     }
     return { stat => \%stat };
-}
-
-=item B<storage($name)>
-
-Get storage by name.
-
-DEPRECATED! Use catalog->out instead.
-
-=cut
-sub storage($) {
-    my ($name) = @_;
-    return $catalog->storage($name);
-}
-
-=item B<cursor($name)>
-
-Get cursor by name.
-
-DEPRECATED! Use catalog->cursor instead.
-
-=cut
-sub cursor($) {
-    my ($name) = @_;
-    return $catalog->cursor($name);
-}
-
-=item B<stream($name)>
-
-Get input stream by name.
-
-DEPRECATED! Use catalog->in instead.
-
-=cut
-sub stream($) {
-    my ($name) = @_;
-    return $catalog->in($name);
 }
 
 =back

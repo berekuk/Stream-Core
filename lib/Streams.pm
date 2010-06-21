@@ -28,7 +28,7 @@ This module is just a simple way to load most important subs from other Stream::
 
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
-use Stream::Utils qw(process storage cursor stream catalog);
+use Stream::Utils qw(process catalog);
 use Stream::Out qw(processor);
 use Stream::Filter qw(filter);
 
