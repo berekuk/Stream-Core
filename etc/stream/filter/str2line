@@ -4,9 +4,11 @@ use Stream::Filter qw(filter);
 use warnings;
 use strict;
 
-filter(sub {
-    my $item = shift;
-    $item =~ s{\\}{\\\\}g;
-    $item =~ s{\n}{\\n}g;
-    return "$item\n";
-});
+sub {
+    filter(sub {
+        my $item = shift;
+        $item =~ s{\\}{\\\\}g;
+        $item =~ s{\n}{\\n}g;
+        return "$item\n";
+    });
+}

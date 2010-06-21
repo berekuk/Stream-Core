@@ -1,2 +1,2 @@
-use Stream::File;
-Stream::File->new("t/storage/something");
+use parent qw(Stream::File);
+__PACKAGE__->new("t/storage/something");

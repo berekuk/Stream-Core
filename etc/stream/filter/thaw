@@ -5,7 +5,9 @@ use Stream::Filter qw(filter);
 use warnings;
 use strict;
 
-filter(sub {
-    my $str = shift;
-    return ${thaw($str)};
-});
+sub {
+    filter(sub {
+        my $str = shift;
+        return ${thaw($str)};
+    });
+}

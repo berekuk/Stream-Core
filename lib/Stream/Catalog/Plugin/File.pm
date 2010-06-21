@@ -52,22 +52,59 @@ sub new {
     for (qw/ cursor_dir in_dir out_dir filter_dir /) {
         $self->{$_} = [ split /:/, $self->{$_} ];
     }
+
+    $self->{name2pp} = {};
+    $self->{pp2name} = {};
+    $self->{lazy} = {};
+    $self->{stat} = {};
+
     return $self;
 }
 
 # load any object from file
 sub _load {
-    my ($self, $name, $path, $package) = @_;
+    my ($self, $name, $path, $package_prefix) = @_;
+
+    if ($self->{lazy}{$name}) {
+        return $self->{lazy}{$name}->();
+    }
+
     for my $dir (@$path) {
         my $file = "$dir/$name";
         if (-e $file) {
-            my $fh = xopen($file);
-            my $content;
-            { local $/ = undef; $content = <$fh>; }
-            $content = "package $package".int(rand(10 ** 6)).";\n# line 1 $dir/$name\n$content"; # FIXME - if file is loaded twice, shouldn't packages match?
+            my $fh = xopen('<', $file);
+            my $content = do { local $/ = undef; <$fh> };
+
+            # pp is short for "package postfix"
+            my $pp ||= $self->{name2pp}{$name};
+            unless (defined $pp) {
+                $pp = $name;
+                $pp =~ s/\W/_/;
+                if ($self->{pp2name}{$pp}) {
+                    # package name collsion (it can happen if one name is "blah-blah" and another is "blah_blah", for example)
+                    # we call second one "blah_blah2" in this case
+                    my $i = 2;
+                    $i++ while $self->{pp2name}{"$pp$i"};
+                }
+                $self->{pp2name}{$pp} = $name;
+                $self->{name2pp}{$name} = $pp;
+            }
+
+            my $stat = ++$self->{stat}{$name};
+            $package_prefix = $package_prefix.$stat if $stat > 1;
+            if ($stat == 100) {
+                warn "100 evals of $file detected, please migrate it to lazy style instead to avoid memory leak";
+            }
+
+            $content = "package ${package_prefix}::$pp;\n# line 1 $dir/$name\n$content";
             my $object = eval $content;
             if ($@) {
                 die "Failed to eval $file: $@";
+            }
+            if (ref $object and ref $object eq 'CODE') {
+                # great, new-style file containing coderef which generates object
+                $self->{lazy}{$name} = $object;
+                return $self->{lazy}{$name}->();
             }
             return $object;
         }
@@ -82,7 +119,7 @@ Loads cursor from file named C<$name> in catalog dir. Dir defaults to C</etc/str
 =cut
 sub cursor {
     my ($self, $name) = @_;
-    return $self->_load($name, $self->{cursor_dir}, 'AnonCursor');
+    return $self->_load($name, $self->{cursor_dir}, 'Stream::Catalog::Cursor');
 }
 
 =item C<in($name)>
@@ -92,7 +129,7 @@ Loads input stream from file named C<$name> in catalog dir. Dir defaults to C</e
 =cut
 sub in {
     my ($self, $name) = @_;
-    return $self->_load($name, $self->{in_dir}, 'AnonIn');
+    return $self->_load($name, $self->{in_dir}, 'Stream::Catalog::In');
 }
 
 =item C<out($name)>
@@ -102,7 +139,7 @@ Loads output stream from file named C<$name> in catalog dir. Dir defaults to C</
 =cut
 sub out {
     my ($self, $name) = @_;
-    return $self->_load($name, $self->{out_dir}, 'AnonOut');
+    return $self->_load($name, $self->{out_dir}, 'Stream::Catalog::Out');
 }
 
 =item C<filter($name)>
@@ -112,7 +149,7 @@ Loads filter from file named C<$name> in catalog dir. Dir defaults to C</etc/str
 =cut
 sub filter {
     my ($self, $name) = @_;
-    return $self->_load($name, $self->{filter_dir}, 'AnonFilter');
+    return $self->_load($name, $self->{filter_dir}, 'Stream::Catalog::Filter');
 }
 
 1;

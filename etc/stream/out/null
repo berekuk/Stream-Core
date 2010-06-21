@@ -8,4 +8,6 @@ sub write {
 sub write_chunk {
 }
 
-__PACKAGE__->new;
+sub {
+    __PACKAGE__->new;
+}

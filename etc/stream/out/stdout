@@ -4,12 +4,15 @@ use parent qw(Stream::Out);
 use warnings;
 use strict;
 
-$|++;
+use IO::Handle;
+
+STDOUT->autoflush(1);
 
 sub write {
     my ($class, $item) = @_;
     print $item;
 }
 
-__PACKAGE__->new;
-
+sub {
+    __PACKAGE__->new;
+}

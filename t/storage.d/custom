@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use parent qw(Stream::Storage);
 
+print "package: ". __PACKAGE__ ."\n";
 sub stream {
     my $self = shift;
     my $name = shift;

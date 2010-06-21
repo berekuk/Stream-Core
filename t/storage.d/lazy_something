@@ -1,0 +1,4 @@
+use parent qw(Stream::File);
+sub {
+    __PACKAGE__->new("t/storage/something");
+}

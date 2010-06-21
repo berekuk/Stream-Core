@@ -4,11 +4,13 @@ use Stream::Filter qw(filter);
 use warnings;
 use strict;
 
-filter(sub {
-    my $item = shift;
-    chomp $item;
-    $item =~ s{(\\\\|\\n)}{
-        ($1 eq "\\\\") ? "\\" : "\n"
-    }ge;
-    return $item;
-});
+sub {
+    filter(sub {
+        my $item = shift;
+        chomp $item;
+        $item =~ s{(\\\\|\\n)}{
+            ($1 eq "\\\\") ? "\\" : "\n"
+        }ge;
+        return $item;
+    });
+}

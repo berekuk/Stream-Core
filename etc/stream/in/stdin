@@ -14,5 +14,6 @@ sub read {
     return $item;
 }
 
-__PACKAGE__->new;
-
+sub {
+    __PACKAGE__->new;
+}

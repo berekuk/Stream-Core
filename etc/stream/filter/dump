@@ -6,8 +6,10 @@ use strict;
 use Stream::Filter qw(filter);
 use Data::Dumper;
 
-return filter(sub {
-    local $Data::Dumper::Indent = 0;
-    return Dumper(shift);
-});
+return sub {
+    filter(sub {
+        local $data::dumper::indent = 0;
+        return Dumper(shift);
+    });
+}
 

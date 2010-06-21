@@ -5,7 +5,9 @@ use Stream::Filter qw(filter);
 use warnings;
 use strict;
 
-filter(sub {
-    my $item = shift;
-    return freeze(\$item);
-});
+sub {
+    filter(sub {
+        my $item = shift;
+        return freeze(\$item);
+    });
+};

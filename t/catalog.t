@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 12;
 use Test::Exception;
 
 use lib 'lib';
@@ -22,11 +22,26 @@ xsystem("mkdir tfiles");
 
 my $catalog = Stream::Catalog->new;
 
-# catalog->storage (1)
+# catalog->storage (3)
 {
     my $storage = $catalog->storage('something');
     my $stream = $storage->stream(Stream::File::Cursor->new('tfiles/pos'));
     is($stream->read, "qqq\n", "stream 'something' is readable");
+
+    my $storage2 = $catalog->storage('something');
+    is(ref $storage, 'Stream::Catalog::Out::something', 'catalog object package');
+    is(ref $storage2, 'Stream::Catalog::Out2::something', 'different ->storage calls construct new packages');
+}
+
+# lazy definitions (4)
+{
+    my $lazy_storage = $catalog->storage('lazy_something');
+    ok($lazy_storage->isa('Stream::File'), 'anonimous subs in catalog files work too');
+    my $lazy_storage2 = $catalog->storage('lazy_something');
+
+    is(ref $lazy_storage, 'Stream::Catalog::Out::lazy_something', 'catalog object package when definition is lazy');
+    is(ref $lazy_storage2, 'Stream::Catalog::Out::lazy_something', 'lazy definitions are loaded only once');
+    isnt($lazy_storage, $lazy_storage2, 'lazy sub is cached, not object itself');
 }
 
 # catalog->cursor (1)
