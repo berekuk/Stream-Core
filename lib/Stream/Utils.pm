@@ -33,7 +33,10 @@ use Yandex::Logger;
 use Try::Tiny;
 
 use parent qw(Exporter);
-our @EXPORT_OK = qw/process pump catalog /;
+our %EXPORT_TAGS = (
+    vivify => [ map { "vivify_$_" } qw/ in out cursor filter storage pumper / ],
+);
+our @EXPORT_OK = (qw/ process pump catalog /, @{ $EXPORT_TAGS{vivify} });
 
 our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance
 
@@ -100,32 +103,8 @@ sub process($$;$) {
         $limit = $options;
     }
 
-
-    if (blessed($in)) {
-        unless ($in->isa('Stream::In')) {
-            croak "first argument expected to be Stream::In, you specified: '$in'";
-        }
-    }
-    elsif (ref($in) eq '') {
-        # looking in catalog
-        $in = $catalog->in($in);
-    }
-    else {
-        croak "Wrong argument '$in'";
-    }
-
-    if (blessed($out)) {
-        unless ($out->isa('Stream::Out')) {
-            croak "first argument expected to be Stream::Out, you specified: '$out'";
-        }
-    }
-    elsif (ref($out) eq '') {
-        # looking in catalog
-        $out = $catalog->out($out);
-    }
-    else {
-        croak "Wrong argument '$in'";
-    }
+    $in = vivify_in($in);
+    $out = vivify_out($out);
 
     my $commit_both_sub = sub {
         return unless $commit;
@@ -192,14 +171,7 @@ sub pump($$;$) {
         }
     );
 
-    if (blessed($storage)) {
-        unless ($storage->isa('Stream::Storage')) {
-            croak "first argument expected to be Stream::Storage, you specified: '$storage'";
-        }
-    }
-    else {
-        $storage = $catalog->storage($storage);
-    }
+    $storage = vivify_storage($storage);
 
     my %stat = (
         ok      => 0,
@@ -222,6 +194,39 @@ sub pump($$;$) {
     }
     return { stat => \%stat };
 }
+
+sub _vivify_any {
+    my ($obj, $type) = @_;
+    my $class = "Stream::".ucfirst($type);
+    if (blessed($obj)) {
+        unless ($obj->isa($class)) {
+            croak "argument expected to be $class, you specified: '$obj'";
+        }
+        return $obj;
+    }
+    if (ref($obj) eq '') {
+        # looking in catalog
+        return $catalog->$type($obj);
+    }
+    croak "Wrong argument '$obj'";
+}
+
+=item B<< vivify_in($str_or_object) >>
+=item B<< vivify_out($str_or_object) >>
+=item B<< vivify_filter($str_or_object) >>
+=item B<< vivify_pumper($str_or_object) >>
+=item B<< vivify_cursor($str_or_object) >>
+=item B<< vivify_storage($str_or_object) >>
+
+Helpers which take objects from catalog if called with string, or return their parameter as is if it's object already.
+
+=cut
+sub vivify_in { _vivify_any(shift, 'in') }
+sub vivify_out { _vivify_any(shift, 'out'); }
+sub vivify_filter { _vivify_any(shift, 'filter'); }
+sub vivify_pumper { _vivify_any(shift, 'pumper'); }
+sub vivify_cursor { _vivify_any(shift, 'cursor'); }
+sub vivify_storage { _vivify_any(shift, 'storage'); }
 
 =back
 
