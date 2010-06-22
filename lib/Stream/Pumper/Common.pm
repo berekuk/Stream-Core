@@ -17,15 +17,18 @@ Stream::Pumper::Common - common class for simple in-filter-out pumpers.
 use parent qw(Stream::Pumper);
 
 use Params::Validate qw(:all);
-use Stream::Utils qw(process);
+use Stream::Utils qw(process catalog :vivify);
 
 sub new {
     my $class = shift;
     my $self = validate(@_, {
-        in => { isa => 'Stream::In' },
-        out => { isa => 'Stream::Out' },
-        filter => { isa => 'Stream::Filter', optional => 1 },
+        in => 1,
+        out => 1,
+        filter => { optional => 1 },
     });
+    $self->{in} = vivify_in($self->{in});
+    $self->{out} = vivify_out($self->{out});
+    $self->{filter} = vivify_filter($self->{filter}) if defined $self->{filter};
     return bless $self => $class;
 }
 
