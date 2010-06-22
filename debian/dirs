@@ -1,5 +1,2 @@
-etc/stream/in
-etc/stream/out
-etc/stream/cursor
 var/lib/stream
 var/lib/stream/log_pos
