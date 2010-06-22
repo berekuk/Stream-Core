@@ -1,3 +1,9 @@
+libstream-perl (0.8.2) UNRELEASED; urgency=low
+
+  * catalog collection packaged into /usr/share/stream instead of /etc/stream
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 22 Jun 2010 20:22:20 +0400
+
 libstream-perl (0.8.1) unstable; urgency=low
 
   *  loading streams with multiple non-alphanumerical symbols fixed

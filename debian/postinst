@@ -2,7 +2,21 @@
 
 set -e
 
-for dir in /var/lib/stream /var/lib/stream/log_pos; do
-    chmod 777 $dir
-    chmod +t $dir
-done
+if [ "$1" = "configure" ]; then
+    for dir in /var/lib/stream /var/lib/stream/log_pos; do
+        chmod 777 $dir
+        chmod +t $dir
+    done
+
+    if [ -n "$2" ]; then
+        rm -f /etc/stream/out/stdout \
+        /etc/stream/out/null \
+        /etc/stream/in/stdin \
+        /etc/stream/filter/str2line \
+        /etc/stream/filter/thaw \
+        /etc/stream/filter/line2str \
+        /etc/stream/filter/dump \
+        /etc/stream/filter/freeze
+    fi
+fi
+

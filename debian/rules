@@ -6,5 +6,5 @@ include /usr/share/cdbs/1/class/ppb.mk
 PACKAGE=$(shell dh_listpackages)
 
 install/$(PACKAGE)::
-	cp -r etc debian/$(PACKAGE)/
-
+	mkdir -p debian/$(PACKAGE)/usr/share/stream/
+	cp -r catalog/* debian/$(PACKAGE)/usr/share/stream/

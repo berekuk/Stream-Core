@@ -7,7 +7,7 @@ use Test::More tests => 4;
 
 use lib 'lib';
 BEGIN {
-    $ENV{STREAM_PATH} = 'etc/stream';
+    $ENV{STREAM_PATH} = 'catalog';
 }
 
 use Yandex::X;
