@@ -1,9 +1,13 @@
-libstream-perl (0.8.2) UNRELEASED; urgency=low
+libstream-perl (0.8.2) unstable; urgency=low
 
   * catalog collection packaged into /usr/share/stream instead of /etc/stream
   * Stream::Catalog::Plugin::Package implemented
+  * Stream::Utils: vivify_* functions
+  * Stream::Pumper::Common:
+   - pump method returns number of processed items
+   - support names in place of objects
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 22 Jun 2010 20:22:20 +0400
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 22 Jun 2010 22:28:06 +0400
 
 libstream-perl (0.8.1) unstable; urgency=low
 
