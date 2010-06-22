@@ -1,8 +1,8 @@
-libstream-perl (0.8.1) UNRELEASED; urgency=low
+libstream-perl (0.8.1) unstable; urgency=low
 
   *  loading streams with multiple non-alphanumerical symbols fixed
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 22 Jun 2010 01:57:01 +0400
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 22 Jun 2010 13:34:21 +0400
 
 libstream-perl (0.8.0) unstable; urgency=low
 
