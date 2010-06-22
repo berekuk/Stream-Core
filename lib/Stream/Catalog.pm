@@ -25,6 +25,7 @@ Stream::Catalog - registry of all streams
 =cut
 
 use Stream::Catalog::Plugin::File;
+use Stream::Catalog::Plugin::Package;
 use Stream::Catalog::Plugin::Memory;
 
 =item C<new()>
@@ -37,7 +38,10 @@ Usually you'll want to obtain singleton catalog object using C<catalog()> from L
 sub new ($) {
     my ($class) = @_;
     my $self = bless {
-        plugins => [ Stream::Catalog::Plugin::File->new ],
+        plugins => [
+            Stream::Catalog::Plugin::File->new,
+            Stream::Catalog::Plugin::Package->new,
+        ],
     } => $class;
     $self->{memory_plugin} = Stream::Catalog::Plugin::Memory->new();
     unshift @{$self->{plugins}}, $self->{memory_plugin};
