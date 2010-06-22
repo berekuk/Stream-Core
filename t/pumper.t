@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 6;
 
 use lib 'lib';
 
@@ -39,10 +39,14 @@ my $pumper = Stream::Pumper::Common->new({
     filter => filter(sub { shift() x 2 }),
 });
 
-$pumper->pump({ limit => 2 });
-is_deeply($out->data, [ qw/ aa bb / ]);
-$pumper->pump();
-is_deeply($out->data, [ qw/ aa bb cc dd / ]);
+{
+    my $result = $pumper->pump({ limit => 2 });
+    is_deeply($out->data, [ qw/ aa bb / ]);
+    is($result, 2);
+    $result = $pumper->pump();
+    is_deeply($out->data, [ qw/ aa bb cc dd / ]);
+    is($result, 2);
+}
 
 use Stream::Utils qw(catalog);
 
@@ -55,7 +59,8 @@ use Stream::Utils qw(catalog);
         in => 'my.in',
         out => 'my.out',
     });
-    $pumper->pump();
+    my $result = $pumper->pump();
     is_deeply($out->data, [ qw/ aa bb cc dd a1 a2 a3 a4 a5 / ]);
+    is($result, 5);
 }
 

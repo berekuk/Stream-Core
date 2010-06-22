@@ -40,10 +40,10 @@ sub pump {
     my $limit = $options->{limit};
     my $out = $self->{out};
     $out = $self->{filter} | $out if $self->{filter};
-    process($self->{in} => $out, {
+    my $result = process($self->{in} => $out, {
         defined($limit) ? (limit => $limit) : (),
     });
-    return; # don't want anyone to rely on pump() return value too soon
+    return $result;
 }
 
 1;

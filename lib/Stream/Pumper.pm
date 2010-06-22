@@ -7,7 +7,7 @@ use Carp;
 
 =head1 NAME
 
-Stream::Pump - pumper interface
+Stream::Pumper - pumper interface
 
 =head1 SYNOPSIS
 
@@ -44,6 +44,8 @@ Process only I<limit> items.
 =cut
 
 =back
+
+Returns number of processed items.
 
 =cut
 sub pump {
