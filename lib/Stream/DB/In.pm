@@ -9,6 +9,8 @@ Stream::DB::In - DB reading stream
 
 =cut
 
+use parent qw(Stream::In);
+
 use Yandex::DB;
 use Carp;
 
