@@ -71,7 +71,7 @@ Get output stream by name.
 =cut
 sub out ($$) {
     my ($self, $name) = @_;
-    return $self->_any('out', $name) or die "Can't find output stream by name '$name'";
+    return $self->_any('out', $name) || die "Can't find output stream by name '$name'";
 }
 
 =item C<filter($name)>
@@ -81,7 +81,7 @@ Get filter by name.
 =cut
 sub filter ($$) {
     my ($self, $name) = @_;
-    $self->_any('filter', $name) or die "Can't find filter by name '$name'";
+    $self->_any('filter', $name) || die "Can't find filter by name '$name'";
 }
 
 =item C<in($name)>
@@ -102,7 +102,7 @@ sub in ($$) {
         return $self->storage($storage)->stream($in_name);
     }
 
-    my $cursor = $self->cursor($name) or die "Can't find input stream by name '$name'";
+    my $cursor = $self->cursor($name) || die "Can't find input stream by name '$name'";
     return $cursor->stream();
 }
 
@@ -123,7 +123,7 @@ Get cursor by name.
 =cut
 sub cursor ($$) {
     my ($self, $name) = @_;
-    $self->_any('cursor', $name) or die "Can't find cursor by name '$name'";
+    $self->_any('cursor', $name) || die "Can't find cursor by name '$name'";
 }
 
 =item C<pumper($name)>
@@ -133,7 +133,7 @@ Get pumper by name.
 =cut
 sub pumper ($$) {
     my ($self, $name) = @_;
-    $self->_any('pumper', $name) or die "Can't find pumper by name '$name'";
+    $self->_any('pumper', $name) || die "Can't find pumper by name '$name'";
 }
 
 =item B<list_in()>

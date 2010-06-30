@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 15;
+use Test::More tests => 20;
 use Test::Exception;
 
 use lib 'lib';
@@ -75,3 +75,22 @@ my $catalog = Stream::Catalog->new;
     is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something something.lazy blah /], 'list_out filters duplicates');
 }
 
+# unknown name (1)
+{
+    throws_ok(sub {
+        $catalog->storage('abcd');
+    }, qr/Can't find /, 'catalog throws exception on unknown names');
+    throws_ok(sub {
+        $catalog->in('abcd');
+    }, qr/Can't find /, 'catalog throws exception on unknown names');
+    throws_ok(sub {
+        $catalog->cursor('abcd');
+    }, qr/Can't find /, 'catalog throws exception on unknown names');
+    throws_ok(sub {
+        $catalog->storage('abcd');
+    }, qr/Can't find /, 'catalog throws exception on unknown names');
+    throws_ok(sub {
+        $catalog->pumper('abcd');
+    }, qr/Can't find /, 'catalog throws exception on unknown names');
+
+}

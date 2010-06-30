@@ -1,8 +1,9 @@
-libstream-perl (0.8.3) UNRELEASED; urgency=low
+libstream-perl (0.8.3) unstable; urgency=low
 
   * bugfix: Stream::DB::In is an input straem
+  * catalog throws exceptions on unknown names
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 23 Jun 2010 18:31:40 +0400
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 30 Jun 2010 13:49:23 +0400
 
 libstream-perl (0.8.2) unstable; urgency=low
 
