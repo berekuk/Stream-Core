@@ -51,7 +51,6 @@ sub _open($) {
 
 sub _write ($) {
     my ($self) = @_;
-    return unless defined $self->{data};
     my $current_size = -s $self->{fh};
     $self->{fh}->write($self->{data});
     my $flush_ok = $self->{fh}->flush;
@@ -66,6 +65,8 @@ sub _write ($) {
 
 sub _flush($) {
     my ($self) = @_;
+    return unless defined $self->{data};
+    $self->_open unless $self->{fh};
     my $lock = lockf($self->{fh});
     $self->_write();
 }
@@ -77,7 +78,6 @@ Write new line into file.
 =cut
 sub write ($$) {
     my ($self, $line) = @_;
-    $self->_open unless $self->{fh};
     if (defined $self->{data}) {
         $self->{data} .= $line;
     }
@@ -98,7 +98,6 @@ sub write_chunk ($$) {
     my ($self, $chunk) = @_;
     croak "write_chunk method expects arrayref" unless ref($chunk) eq 'ARRAY'; # can chunks be blessed into something?
     return unless @$chunk;
-    $self->_open unless $self->{fh};
     for my $line (@$chunk) {
         if (defined $self->{data}) {
             $self->{data} .= $line;

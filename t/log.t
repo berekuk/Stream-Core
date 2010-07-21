@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 15;
+use Test::Exception;
 
 use lib 'lib';
 
@@ -49,6 +50,13 @@ xsystem("echo fff >>tfiles/log");
     is($stream->read, "eee\n");
     $stream = $storage->stream(Stream::Log::Cursor->new({PosFile => "tfiles/pos"}));
     is($stream->read, "eee\n");
+}
+
+# commit
+{
+    my $out = Stream::Log->new("tfiles/out");
+    lives_ok(sub { $out->commit() }, "commit of an empty log");
+    ok(! -e "tfiles/out", "empty commit does not create a log");
 }
 
 xsystem("echo ggg >>tfiles/log");

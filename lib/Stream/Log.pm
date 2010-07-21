@@ -29,6 +29,7 @@ use Yandex::Lockf;
 
 sub _flush($) {
     my ($self) = @_;
+    return unless defined $self->{data};
     my $lock = lockf("$self->{file}.lock");
     $self->_open();
     $self->_write();

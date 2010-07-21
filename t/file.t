@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 12;
+use Test::Exception;
 
 use lib 'lib';
 
@@ -55,4 +56,12 @@ my $storage = Stream::File->new("tfiles/file");
     is_deeply(scalar($stream->read_chunk(2)), ["yyy\n", "zzz1\n"]);
     is($stream->read, "zzz2\n");
 }
+
+# commit
+{
+    my $out = Stream::File->new("tfiles/out");
+    lives_ok(sub { $out->commit() }, "commit of an empty file");
+    ok(! -e "tfiles/out", "empty commit does not create a file");
+}
+
 
