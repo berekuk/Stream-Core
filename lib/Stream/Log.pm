@@ -24,6 +24,16 @@ use Stream::Log::Cursor;
 use Scalar::Util qw(blessed reftype);
 use Carp;
 
+use Yandex::Lockf;
+
+
+sub _flush($) {
+    my ($self) = @_;
+    my $lock = lockf("$self->{file}.lock");
+    $self->_open();
+    $self->_write();
+}
+
 =head1 METHODS
 
 =over

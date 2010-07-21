@@ -49,21 +49,25 @@ sub _open($) {
     $self->{fh} = xopen(">>", $self->{file});
 }
 
+sub _write ($) {
+    my ($self) = @_;
+    return unless defined $self->{data};
+    my $current_size = -s $self->{fh};
+    $self->{fh}->write($self->{data});
+    my $flush_ok = $self->{fh}->flush;
+    unless ($flush_ok) {
+        if (defined $current_size) {
+            $self->{fh}->truncate($current_size); # try to rollback
+        }
+        die "write to $self->{file} failed";
+    }
+    delete $self->{data};
+}
+
 sub _flush($) {
     my ($self) = @_;
-    if ($self->{data}) {
-        my $lock = lockf($self->{fh});
-        my $current_size = -s $self->{fh};
-        $self->{fh}->write($self->{data});
-        my $flush_ok = $self->{fh}->flush;
-        unless ($flush_ok) {
-            if (defined $current_size) {
-                $self->{fh}->truncate($current_size); # try to rollback
-            }
-            die "write to $self->{file} failed";
-        }
-        delete $self->{data};
-    }
+    my $lock = lockf($self->{fh});
+    $self->_write();
 }
 
 =item B<write($line)>
