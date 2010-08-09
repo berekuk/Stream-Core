@@ -1,21 +1,9 @@
 API is important, and so are terms
 
-Implement some common streams:
-- in
-    stdin
-- out
-    stdout
-    dump
 - filter
-    line2str
-    str2line
-    freeze
-    thaw
     debug_dump # this differs from out:dump in that it isn't last element of stream... or does it really matters?
     eval
 
 Formatters (hashref <=> string):
  - Data::Dumper
- - Storable
- - JSON
  - XML

@@ -1,3 +1,9 @@
+libstream-perl (0.8.6) unstable; urgency=low
+
+  * syswrite in Stream::File
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 09 Aug 2010 18:46:01 +0400
+
 libstream-perl (0.8.5) unstable; urgency=low
 
   * fix an empty commit issue in File and Log streams

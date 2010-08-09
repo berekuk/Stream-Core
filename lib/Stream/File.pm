@@ -51,14 +51,11 @@ sub _open($) {
 
 sub _write ($) {
     my ($self) = @_;
-    my $current_size = -s $self->{fh};
-    $self->{fh}->write($self->{data});
-    my $flush_ok = $self->{fh}->flush;
-    unless ($flush_ok) {
-        if (defined $current_size) {
-            $self->{fh}->truncate($current_size); # try to rollback
-        }
-        die "write to $self->{file} failed";
+    my $bytes = $self->{fh}->syswrite($self->{data});
+    if (not defined $bytes) {
+        die "syswrite failed: $!";
+    } elsif ($bytes != length $self->{data}) {
+        die "syswrite failed: $bytes < ".length($self->{data}).", $!";
     }
     delete $self->{data};
 }
