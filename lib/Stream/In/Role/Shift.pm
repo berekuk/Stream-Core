@@ -7,7 +7,7 @@ use parent qw(Stream::In);
 
 =head1 NAME
 
-Stream::In::Role::Shift - mixin which allows your input stream to be used as PPB::Join-like sequence
+Stream::In::Role::Shift - role which allows your input stream to be used as PPB::Join-like sequence
 
 =cut
 

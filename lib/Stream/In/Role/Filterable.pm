@@ -19,7 +19,7 @@ Stream::In::Role::Filterable - allows you to inject stack of filters into your i
 
 Usual way to filter streams (C< $in | $filter >) has one defect: resulting filtered stream don't propagate custom methods to original input stream.
 
-You can use C<Stream::In::Role::Filterable> as workaround. This mixin allows to inject filters directly into your input stream using usual C<|> syntax (L<Stream::Filter> knows about this mixin for C<|> to work correctly in all cases).
+You can use C<Stream::In::Role::Filterable> as workaround. This role allows to inject filters directly into your input stream using usual C<|> syntax (L<Stream::Filter> knows about this role for C<|> to work correctly in all cases).
 
 Remember that you have to implement C<do_read> method instead of C<read>, and your C<read_chunk> should call C<read> too for all these things to work.
 
