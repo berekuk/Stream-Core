@@ -30,7 +30,11 @@ use parent qw(Stream::Out);
 
 =item C<stream(...)>
 
-C<stream> method usually accepts associated cursor, but implementations may vary...
+Constructs input stream for this storage.
+
+Most storages are able to have several different input streams with different positions in storage.
+
+C<stream> method usually accepts either associated cursor or clients name as plain string.
 
 =cut
 sub stream {
