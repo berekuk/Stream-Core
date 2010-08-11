@@ -227,7 +227,9 @@ sub class_caps {
 package Stream::Filter::FilteredIn;
 
 use parent qw(Stream::In);
-use parent qw(Stream::Mixin::Lag);
+use parent qw(Stream::In::Role::Lag);
+
+use parent qw(Stream::Mixin::Lag); # to be removed
 
 sub new {
     my ($class, $in, $filter) = @_;
@@ -265,8 +267,18 @@ sub commit {
 
 sub lag {
     my $self = shift;
-    die unless $self->{in}->isa('Stream::Mixin::Lag'); # TODO - may be i really should replace my bycicles with Moose
+    die "underlying input stream doesn't implement Lag role" unless $self->{in}->does('Stream::In::Role::Lag');
     return $self->{in}->lag;
+}
+
+sub does {
+    my ($self, $role) = @_;
+    if ($role eq 'Stream::In::Role::Lag') {
+        # Lag role is propagated to underlying input stream.
+        # I guess in future we'll have lots of such role propagating logic... in this case moose metaclasses would be handy.
+        return $self->{in}->does($role);
+    }
+    return $self->SUPER::does($role);
 }
 
 package Stream::Filter::FilteredFilter;

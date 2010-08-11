@@ -29,9 +29,11 @@ Stream::Log::In - input stream for Stream::Log storage.
 
 use parent qw(
     Stream::Mixin::Filterable
-    Stream::Mixin::Lag
     Stream::In
 );
+
+# deprecated, to be removed after culca-ds rebuild
+use parent qw( Stream::Mixin::Lag );
 
 use Yandex::Version '{{DEBIAN_VERSION}}';
 
