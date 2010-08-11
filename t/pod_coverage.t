@@ -17,7 +17,6 @@ plan tests => scalar @modules;
 my %modules = map { ($_ => 1) } @modules;
 
 my @bad_modules = qw(
-    Stream::Mixin::Shift
     Stream::DB::Cursor
     Stream::Log::In
     Stream::File::Cursor

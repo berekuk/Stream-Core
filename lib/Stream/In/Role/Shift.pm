@@ -3,6 +3,8 @@ package Stream::In::Role::Shift;
 use strict;
 use warnings;
 
+# TODO - deprecate this module? PPB::Join rewritten using streams already...
+
 use parent qw(Stream::In);
 
 =head1 NAME
@@ -11,7 +13,15 @@ Stream::In::Role::Shift - role which allows your input stream to be used as PPB:
 
 =cut
 
-# TODO - deprecate this module? PPB::Join rewritten using streams already...
+=head1 METHODS
+
+=over
+
+=item B<< shift() >>
+
+Alias for C<read()> method.
+
+=cut
 sub shift {
     return $_[0]->read;
 }
