@@ -19,7 +19,6 @@ my %modules = map { ($_ => 1) } @modules;
 my @bad_modules = qw(
     Stream::Mixin::Shift
     Stream::DB::Cursor
-    Stream::DB::In
     Stream::Log::In
     Stream::File::Cursor
     Stream::Log::Cursor
