@@ -20,6 +20,7 @@ use Params::Validate qw(:all);
 use Stream::File;
 use Digest::MD5 qw(md5_hex);
 use parent qw(Stream::File);
+use parent qw(Stream::Storage::Role::ClientList);
 use Stream::Log::Cursor;
 use Scalar::Util qw(blessed reftype);
 use Carp;
@@ -92,6 +93,23 @@ sub stream_by_name($$;$) {
 
     my $cursor = Stream::Log::Cursor->new({ LogFile => $self->file, PosFile => $new_posfile });
     return $cursor->stream($self, ($unrotate_params ? $unrotate_params : ()));
+}
+
+sub client_names {
+    my $self = shift;
+    my $file_md5 = md5_hex($self->file);
+    my $posdir = $ENV{STREAM_LOG_POSDIR} || '/var/lib/stream/log_pos';
+    my @posfiles = glob "$posdir/$file_md5.*.pos";
+    my @names;
+    for my $posfile (@posfiles) {
+        if ($posfile =~ m{^\Q$posdir\E/\Q$file_md5\E\.(.*)\.pos$}) {
+            push @names, $1;
+        }
+        else {
+            warn "Strange posfile $posfile, looks like internal error";
+        }
+    }
+    return @names;
 }
 
 =back

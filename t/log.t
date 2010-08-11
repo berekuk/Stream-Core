@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 15;
+use parent qw(Test::Class);
+use Test::More;
 use Test::Exception;
 
 use lib 'lib';
@@ -13,61 +14,61 @@ use Yandex::X;
 use Stream::Log;
 use Stream::Log::Cursor;
 
-xsystem("rm -rf tfiles");
-xsystem("mkdir tfiles");
-
-xsystem("echo aaa >>tfiles/log");
-xsystem("echo bbb >>tfiles/log");
-xsystem("echo ccc >>tfiles/log");
+sub setup :Test(setup) {
+    xsystem("rm -rf tfiles");
+    xsystem("mkdir tfiles");
+}
 
 
-my $storage = Stream::Log->new("tfiles/log");
+sub reading :Test(4) {
+    xsystem("echo aaa >>tfiles/log");
+    xsystem("echo bbb >>tfiles/log");
+    xsystem("echo ccc >>tfiles/log");
 
-# first reading iteration (1)
-{
+    my $storage = Stream::Log->new("tfiles/log");
+
     my $stream = $storage->stream(Stream::Log::Cursor->new({PosFile => "tfiles/pos"}));
     is($stream->read, "aaa\n");
     $stream->commit;
-}
 
-xsystem("mv tfiles/log tfiles/log.1");
-xsystem("echo ddd >>tfiles/log");
-xsystem("echo eee >>tfiles/log");
-xsystem("echo fff >>tfiles/log");
+    xsystem("mv tfiles/log tfiles/log.1");
+    xsystem("echo ddd >>tfiles/log");
+    xsystem("echo eee >>tfiles/log");
+    xsystem("echo fff >>tfiles/log");
 
-# second reading iteration (3)
-{
-    my $stream = Stream::Log::Cursor->new({PosFile => "tfiles/pos"})->stream({LogFile => "tfiles/log"});
+    $stream = Stream::Log::Cursor->new({PosFile => "tfiles/pos"})->stream({LogFile => "tfiles/log"});
     is($stream->read, "bbb\n");
     is($stream->read, "ccc\n");
     is($stream->read, "ddd\n");
     $stream->commit;
 }
 
-# reading without commit (2)
-{
+
+sub reading_without_commit :Test(2) {
+    xsystem("echo eee >>tfiles/log");
+    xsystem("echo fff >>tfiles/log");
+
+    my $storage = Stream::Log->new("tfiles/log");
     my $stream = $storage->stream(Stream::Log::Cursor->new({PosFile => "tfiles/pos"}));
     is($stream->read, "eee\n");
     $stream = $storage->stream(Stream::Log::Cursor->new({PosFile => "tfiles/pos"}));
     is($stream->read, "eee\n");
 }
 
-# commit
-{
+
+sub commit :Test(2) {
     my $out = Stream::Log->new("tfiles/out");
     lives_ok(sub { $out->commit() }, "commit of an empty log");
     ok(! -e "tfiles/out", "empty commit does not create a log");
 }
 
-xsystem("echo ggg >>tfiles/log");
-xsystem("echo hhh >>tfiles/log");
-xsystem("echo iii >>tfiles/log");
-xsystem("echo jjj >>tfiles/log");
 
-# stream_by_name (7)
-{
-    diag('stream_by_name');
+sub stream_by_name :Test(7) {
+    xsystem("echo ".($_ x 3)." >>tfiles/log") for 'd'..'g';
+
     $ENV{STREAM_LOG_POSDIR} = 'tfiles';
+    my $storage = Stream::Log->new("tfiles/log");
+
     my $first = $storage->stream_by_name('first');
     is($first->read, "ddd\n");
     is($first->read, "eee\n");
@@ -85,6 +86,27 @@ xsystem("echo jjj >>tfiles/log");
     is($first->read, "ggg\n");
 }
 
+
+sub clients :Test(3) {
+    xsystem("echo ".($_ x 3)." >>tfiles/log") for 'd'..'g';
+
+    $ENV{STREAM_LOG_POSDIR} = 'tfiles';
+    my $storage = Stream::Log->new("tfiles/log");
+
+    is_deeply([ $storage->client_names ], [], 'initially there are no clients');
+
+    my $in = $storage->stream_by_name('xxx');
+    undef $in;
+    is_deeply([ $storage->client_names ], [], "uncommited input stream don't create posfile and so don't register itself in storage");
+
+    $in = $storage->stream_by_name('xxx');
+    $in->commit;
+    $in = $storage->stream_by_name('yyy');
+    $in->read;
+    $in->commit;
+    is_deeply([ $storage->client_names ], ['xxx', 'yyy'], "client_names returns all clients");
+}
+__PACKAGE__->new->runtests;
 
 
 __END__

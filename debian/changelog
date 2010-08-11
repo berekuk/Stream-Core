@@ -5,8 +5,9 @@ libstream-perl (0.9.0) UNRELEASED; urgency=low
     Stream::Mixin::Lag renamed to Stream::In::Role::Lag,
     Stream::Mixin::Shift renamed to Stream::In::Role::Shift
   * Stream::Storage::Role::ClientList role
+  * Stream::File implements ClientList role
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 11 Aug 2010 19:54:53 +0400
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 11 Aug 2010 21:46:40 +0400
 
 libstream-perl (0.8.6) unstable; urgency=low
 
