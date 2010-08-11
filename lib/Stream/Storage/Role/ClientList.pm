@@ -24,6 +24,8 @@ Some storages implement ability to generate stream by client's name. This role g
 
 =head1 METHODS
 
+=over
+
 =item B<< client_names() >>
 
 Get all storage client names as plain list.
@@ -63,6 +65,8 @@ sub has_client($$) {
     my $name = shift;
     return grep { $_ eq $name } $self->client_names;
 }
+
+=back
 
 =head1 AUTHOR
 
