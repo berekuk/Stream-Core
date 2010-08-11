@@ -28,7 +28,7 @@ Stream::Log::In - input stream for Stream::Log storage.
 =cut
 
 use parent qw(
-    Stream::Mixin::Filterable
+    Stream::In::Role::Filterable
     Stream::In
 );
 
@@ -58,7 +58,7 @@ sub new {
     return bless {unrotate => $unrotate} => $class;
 }
 
-# do_read instead of read - Mixin::Filterable requires it
+# do_read instead of read - Filterable role requires it
 sub do_read ($) {
     my ($self) = @_;
     return $self->{unrotate}->readline;
@@ -84,18 +84,6 @@ Get log lag in bytes.
 sub lag {
     my ($self) = @_;
     return $self->{unrotate}->lag;
-}
-
-# deprecated
-sub showlag {
-    my ($self) = @_;
-    return $self->lag;
-}
-
-# deprecated
-sub show_lag {
-    my ($self) = @_;
-    return $self->lag;
 }
 
 =item C<< commit() >>

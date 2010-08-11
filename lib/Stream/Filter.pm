@@ -73,7 +73,7 @@ use overload '|' => sub {
     }
     elsif ($left->isa('Stream::In') and $right->isa('Stream::Filter')) {
         # i | f
-        if ($left->isa('Stream::Mixin::Filterable')) {
+        if ($left->isa('Stream::In::Role::Filterable')) {
             $left->add_filter($right);
             return $left;
         }

@@ -1,20 +1,11 @@
 package Stream::Mixin::Shift;
 
-use strict;
-use warnings;
-
-use parent qw(Stream::In);
+use parent qw(Stream::In::Role::Shift);
 
 =head1 NAME
 
-Stream::Mixin::Shift - mixin which allows your input stream to be used as PPB::Join-like sequence
+Stream::Mixin::Shift - renamed to Stream::In::Role::Shift
 
 =cut
 
-# TODO - deprecate this module? PPB::Join rewritten using streams already...
-sub shift {
-    return $_[0]->read;
-}
-
 1;
-
