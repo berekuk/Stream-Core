@@ -1,4 +1,4 @@
-libstream-perl (0.9.0) UNRELEASED; urgency=low
+libstream-perl (0.9.0) unstable; urgency=low
 
   * 'does' method in Stream::Base - not Moose yet, but at least we'll get roles
   * Stream::Mixin::Filterable renamed to Stream::In::Role::Filterable,
@@ -7,7 +7,7 @@ libstream-perl (0.9.0) UNRELEASED; urgency=low
   * Stream::Storage::Role::ClientList role
   * Stream::File implements ClientList role
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 11 Aug 2010 21:46:40 +0400
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 16 Aug 2010 18:16:28 +0400
 
 libstream-perl (0.8.6) unstable; urgency=low
 
