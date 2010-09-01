@@ -126,4 +126,34 @@ sub atomic_large :Test(1) {
     pass;
 }
 
+sub commit_after_incomplete_line :Tests(4) {
+    my $self = shift;
+    my $fh = xopen('>', 'tfiles/file');
+    print {$fh} "abc\n";
+    print {$fh} "def";
+    $fh->flush;
+    my $gen_in = sub { Stream::File->new('tfiles/file')->stream(Stream::File::Cursor->new('tfiles/pos')) };
+
+    {
+        my $in = $gen_in->();
+        is($in->read, "abc\n", 'first line');
+        is($in->read, undef, 'incomplete line ignored');
+        $in->commit;
+    }
+
+    {
+        my $in = $gen_in->();
+        is($in->read, undef, 'incomplete line still ignored');
+        $in->commit;
+    }
+
+    print {$fh} "g\n";
+    $fh->flush;
+
+    {
+        my $in = $gen_in->();
+        is($in->read, "defg\n", "complete line");
+    }
+}
+
 __PACKAGE__->new->runtests;

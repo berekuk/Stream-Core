@@ -33,9 +33,13 @@ sub read ($) {
     my ($self) = @_;
     my $fh = shift->{fh};
     my $line = <$fh>;
-    if (defined $line and $line !~ /\n$/) {
+    return unless defined $line;
+    if ($line !~ /\n$/) {
+        # incomplete line => backstep
+        seek $fh, - length $line, 1;
         return;
     }
+
     return $line;
 }
 

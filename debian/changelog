@@ -1,3 +1,10 @@
+libstream-perl (0.9.1) unstable; urgency=low
+
+  * Stream::File: don't break posfile when commiting after reading incomplete
+    line
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 01 Sep 2010 16:40:29 +0400
+
 libstream-perl (0.9.0) unstable; urgency=low
 
   * 'does' method in Stream::Base - not Moose yet, but at least we'll get roles
