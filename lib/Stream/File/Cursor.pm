@@ -48,7 +48,7 @@ sub set_storage
             # already associated
             return;
         }
-        croak "Cursor '$self->{posfile}' is already associated with file '$state->{storage_file}'";
+        warn "Cursor '$self->{posfile}' is already associated with file '$state->{storage_file}'";
     }
     $state->{storage_file} = $storage->file;
     $state->commit;
