@@ -34,6 +34,8 @@ my $catalog = Stream::Catalog->new;
 
 # lazy definitions (4)
 {
+    my $lazy_in = $catalog->in('something.lazy'); # side-effect from caching error could break following code, checking that this is not the case
+
     my $lazy_storage = $catalog->storage('something.lazy');
     ok($lazy_storage->isa('Stream::File'), 'anonimous subs in catalog files work too');
     my $lazy_storage2 = $catalog->storage('something.lazy');

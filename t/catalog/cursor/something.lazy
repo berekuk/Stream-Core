@@ -1,0 +1,10 @@
+# vim: ft=perl
+
+use strict;
+use warnings;
+
+use Streams;
+use Stream::File::Cursor;
+sub {
+    Stream::File::Cursor->new("tfiles/something.pos", catalog->storage("something"));
+}

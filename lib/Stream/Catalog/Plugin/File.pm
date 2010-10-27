@@ -73,8 +73,8 @@ sub new {
 sub _load {
     my ($self, $name, $path, $package_prefix) = @_;
 
-    if ($self->{lazy}{$name}) {
-        return $self->{lazy}{$name}->();
+    if ($self->{lazy}{$package_prefix}{$name}) {
+        return $self->{lazy}{$package_prefix}{$name}->();
     }
 
     for my $dir (@$path) {
@@ -84,35 +84,36 @@ sub _load {
             my $content = do { local $/ = undef; <$fh> };
 
             # pp is short for "package postfix"
-            my $pp ||= $self->{name2pp}{$name};
+            my $pp ||= $self->{name2pp}{$package_prefix}{$name};
             unless (defined $pp) {
                 $pp = $name;
                 $pp =~ s/\W/_/g;
-                if ($self->{pp2name}{$pp}) {
+                if ($self->{pp2name}{$package_prefix}{$pp}) {
                     # package name collsion (it can happen if one name is "blah-blah" and another is "blah_blah", for example)
                     # we call second one "blah_blah2" in this case
                     my $i = 2;
-                    $i++ while $self->{pp2name}{"$pp$i"};
+                    $i++ while $self->{pp2name}{$package_prefix}{"$pp$i"};
                 }
-                $self->{pp2name}{$pp} = $name;
-                $self->{name2pp}{$name} = $pp;
+                $self->{pp2name}{$package_prefix}{$pp} = $name;
+                $self->{name2pp}{$package_prefix}{$name} = $pp;
             }
 
-            my $stat = ++$self->{stat}{$name};
-            $package_prefix = $package_prefix.$stat if $stat > 1;
+            my $stat = ++$self->{stat}{$package_prefix}{$name};
+            my $numbered_package_prefix = $package_prefix;
+            $numbered_package_prefix .= $stat if $stat > 1;
             if ($stat == 100) {
                 warn "100 evals of $file detected, please migrate it to lazy style instead to avoid memory leak";
             }
 
-            $content = "package ${package_prefix}::$pp;\n# line 1 $dir/$name\n$content";
+            $content = "package ${numbered_package_prefix}::$pp;\n# line 1 $dir/$name\n$content";
             my $object = eval $content;
             if ($@) {
                 die "Failed to eval $file: $@";
             }
             if (ref $object and ref $object eq 'CODE') {
                 # great, new-style file containing coderef which generates object
-                $self->{lazy}{$name} = $object;
-                return $self->{lazy}{$name}->();
+                $self->{lazy}{$package_prefix}{$name} = $object;
+                return $self->{lazy}{$package_prefix}{$name}->();
             }
             return $object;
         }
