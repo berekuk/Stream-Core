@@ -14,7 +14,10 @@ use Yandex::TmpFile;
 use Yandex::X qw(xopen xclose xprint);
 use Carp;
 
-use parent qw(Stream::In);
+use parent qw(
+    Stream::In::Role::Lag
+    Stream::In
+);
 
 sub new {
     my ($class, $params) = @_;
@@ -41,6 +44,22 @@ sub read ($) {
     }
 
     return $line;
+}
+
+sub lag ($) {
+    my ($self) = @_;
+    my @stat = stat $self->{fh};
+    unless (@stat) {
+        die "stat failed: $!";
+    }
+    my $size = $stat[7];
+
+    my $pos = tell $self->{fh};
+    if ($pos == -1) {
+        die "tell failed: $!";
+    }
+
+    return $size - $pos;
 }
 
 sub commit ($) {

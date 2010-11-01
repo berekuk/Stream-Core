@@ -215,10 +215,10 @@ sub commit {
 
 package Stream::Filter::FilteredIn;
 
-use parent qw(Stream::In);
-use parent qw(Stream::In::Role::Lag);
-
-use parent qw(Stream::Mixin::Lag); # to be removed
+use parent qw(
+    Stream::In
+    Stream::In::Role::Lag
+);
 
 sub new {
     my ($class, $in, $filter) = @_;

@@ -26,7 +26,7 @@ use parent qw(Stream::Storage);
 
 use Carp;
 use IO::Handle;
-use Yandex::X qw(xopen xprint);
+use autodie;
 use Yandex::Lockf;
 use Stream::File::In;
 
@@ -46,7 +46,7 @@ sub new($$) {
 
 sub _open($) {
     my ($self) = @_;
-    $self->{fh} = xopen(">>", $self->{file});
+    open $self->{fh}, ">>", $self->{file};
 }
 
 sub _write ($) {

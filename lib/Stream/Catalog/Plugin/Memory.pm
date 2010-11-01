@@ -15,7 +15,6 @@ Stream::Catalog::Plugin::Memory - catalog plugin which binds objects by names in
 
 use Scalar::Util qw(blessed);
 use Carp;
-use Yandex::X;
 use Params::Validate qw(:all);
 
 use parent qw(Stream::Catalog::Plugin);

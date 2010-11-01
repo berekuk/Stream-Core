@@ -156,4 +156,27 @@ sub commit_after_incomplete_line :Tests(4) {
     }
 }
 
+sub lag :Tests(7) {
+    my $self = shift;
+    my $fh = xopen('>', 'tfiles/file');
+    print {$fh} "abc\n";
+    print {$fh} "def\n";
+    $fh->flush;
+    my $gen_in = sub { Stream::File->new('tfiles/file')->stream(Stream::File::Cursor->new('tfiles/pos')) };
+
+    my $in = $gen_in->();
+    ok($in->does('Stream::In::Role::Lag'));
+    is($in->lag, 8);
+    $in->read;
+    is($in->lag, 4);
+    $in->commit;
+    is($in->lag, 4);
+    $in = $gen_in->();
+    is($in->lag, 4);
+    $in->read;
+    is($in->lag, 0);
+    $in->read;
+    is($in->lag, 0);
+}
+
 __PACKAGE__->new->runtests;
