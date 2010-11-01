@@ -213,17 +213,6 @@ sub commit {
     return $self->{out}->commit;
 }
 
-sub class_caps {
-    my ($self) = @_;
-    my $out_caps = $self->{out}->caps;
-    if ($out_caps->{persistent}) {
-        return { persistent => $out_caps->{persistent} }; # TODO - which other caps can we propagate?
-    }
-    else {
-        return {};
-    }
-}
-
 package Stream::Filter::FilteredIn;
 
 use parent qw(Stream::In);

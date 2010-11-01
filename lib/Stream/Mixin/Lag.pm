@@ -16,9 +16,5 @@ Deprecated, use L<Stream::In::Role::Lag> instead.
 =cut
 sub lag($);
 
-sub class_caps {
-    return { lag => 1 };
-}
-
 1;
 
