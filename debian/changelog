@@ -1,3 +1,10 @@
+libstream-perl (0.9.5) UNRELEASED; urgency=low
+
+  * storage generated with Stream::Formatter now inherits ClientList role from
+    underlying storage
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 02 Nov 2010 15:52:37 +0300
+
 libstream-perl (0.9.4) unstable; urgency=low
 
   * Stream::Base: 'cap', 'caps', 'class_caps' methods removed

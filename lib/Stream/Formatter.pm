@@ -131,6 +131,19 @@ sub commit {
     $self->{storage}->commit;
 }
 
+sub does {
+    my ($self, $role) = @_;
+    if ($role eq 'Stream::Storage::Role::ClientList') {
+        return $self->{storage}->does($role);
+    }
+    return $self->SUPER::does($role);
+}
+
+sub client_names { return shift->{storage}->client_names }
+sub register_client { return shift->{storage}->register_client }
+sub unregister_client { return shift->{storage}->unregister_client }
+sub has_client { return shift->{storage}->has_client }
+
 =head1 AUTHOR
 
 Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
