@@ -217,7 +217,6 @@ package Stream::Filter::FilteredIn;
 
 use parent qw(
     Stream::In
-    Stream::In::Role::Lag
 );
 
 sub new {
@@ -260,10 +259,16 @@ sub lag {
     return $self->{in}->lag;
 }
 
+sub shift {
+    my $self = shift;
+    my $item = $self->read or return;
+    return @$item;
+}
+
 sub does {
     my ($self, $role) = @_;
-    if ($role eq 'Stream::In::Role::Lag') {
-        # Lag role is propagated to underlying input stream.
+    if ($role eq 'Stream::In::Role::Lag' or $role eq 'Stream::In::Role::Shift') {
+        # Some roles depen on being implemented by the underlying input stream.
         # I guess in future we'll have lots of such role propagating logic... in this case moose metaclasses would be handy.
         return $self->{in}->does($role);
     }

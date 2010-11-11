@@ -1,9 +1,10 @@
-libstream-perl (0.9.5) UNRELEASED; urgency=low
+libstream-perl (0.9.5) unstable; urgency=low
 
   * storage generated with Stream::Formatter now inherits ClientList role from
     underlying storage
+  * Stream::Filter::FilteredIn propagates Shift role
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 02 Nov 2010 15:52:37 +0300
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 11 Nov 2010 19:01:48 +0300
 
 libstream-perl (0.9.4) unstable; urgency=low
 
