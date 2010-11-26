@@ -1,3 +1,9 @@
+libstream-perl (0.9.6) UNRELEASED; urgency=low
+
+  * Stream::In::Role::ShiftAsScalar and Stream::In::Role::ShiftAsList roles
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 26 Nov 2010 18:53:29 +0300
+
 libstream-perl (0.9.5) unstable; urgency=low
 
   * storage generated with Stream::Formatter now inherits ClientList role from
