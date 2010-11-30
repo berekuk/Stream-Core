@@ -28,6 +28,7 @@ Stream::Log::In - input stream for Stream::Log storage.
 =cut
 
 use parent qw(
+    Stream::Role::Clonable
     Stream::In::Role::Filterable
     Stream::In::Role::Lag
     Stream::In
@@ -53,7 +54,15 @@ sub new {
     );
 
     my $unrotate = Yandex::Unrotate->new($params);
-    return bless {unrotate => $unrotate} => $class;
+    return bless {
+        unrotate => $unrotate,
+        params => $params,
+    } => $class;
+}
+
+sub clone {
+    my $self = shift;
+    return __PACKAGE__->new($self->{params});
 }
 
 # do_read instead of read - Filterable role requires it

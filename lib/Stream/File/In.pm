@@ -16,6 +16,7 @@ use Carp;
 
 use parent qw(
     Stream::In::Role::Lag
+    Stream::In::Role::Advance
     Stream::In
 );
 
