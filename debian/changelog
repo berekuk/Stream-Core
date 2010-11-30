@@ -1,11 +1,11 @@
-libstream-perl (0.9.6) UNRELEASED; urgency=low
+libstream-perl (0.9.6) unstable; urgency=low
 
   * Stream::In::Role::ShiftAsScalar and Stream::In::Role::ShiftAsList roles
   * Stream::Role::Clone
   * Stream::Stream removed
   * migrating to dzil
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Fri, 26 Nov 2010 18:53:29 +0300
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 30 Nov 2010 22:15:59 +0300
 
 libstream-perl (0.9.5) unstable; urgency=low
 
