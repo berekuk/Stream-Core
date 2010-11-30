@@ -3,9 +3,7 @@ package Stream::Log::In;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Log::In - input stream for Stream::Log storage.
+# ABSTRACT: input stream for Stream::Log storage.
 
 =head1 SYNOPSIS
 
@@ -33,8 +31,6 @@ use parent qw(
     Stream::In::Role::Lag
     Stream::In
 );
-
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Params::Validate qw(:all);
 use Carp;

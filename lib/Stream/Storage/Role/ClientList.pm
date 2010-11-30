@@ -3,9 +3,7 @@ package Stream::Storage::Role::ClientList;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Storage::Role::ClientList - common storage methods for working with named clients
+# ABSTRACT: common storage methods for working with named clients
 
 =head1 SYNOPSIS
 

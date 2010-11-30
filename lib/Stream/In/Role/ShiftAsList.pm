@@ -3,9 +3,7 @@ package Stream::In::Role::ShiftAsList;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::In::Role::ShiftAsList - role for classes which want 'shift' method to return lists.
+# ABSTRACT: role for classes which want 'shift' method to return lists.
 
 =cut
 
@@ -23,5 +21,9 @@ sub shift {
     return unless $item;
     return @$item;
 }
+
+=back
+
+=cut
 
 1;

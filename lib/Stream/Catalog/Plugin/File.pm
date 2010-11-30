@@ -3,9 +3,7 @@ package Stream::Catalog::Plugin::File;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Catalog::Plugin::File - catalog plugin which load objects from files
+# ABSTRACT: catalog plugin which load objects from files
 
 =head1 SYNOPSIS
 
@@ -190,6 +188,10 @@ sub list {
     }
     return @files;
 }
+
+=back
+
+=cut
 
 1;
 

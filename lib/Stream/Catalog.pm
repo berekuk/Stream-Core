@@ -3,11 +3,7 @@ package Stream::Catalog;
 use strict;
 use warnings;
 
-use Yandex::Version '{{DEBIAN_VERSION}}';
-
-=head1 NAME
-
-Stream::Catalog - registry of all streams
+# ABSTRACT: registry of all streams
 
 =head1 SYNOPSIS
 

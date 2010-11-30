@@ -5,11 +5,7 @@ use warnings;
 
 use parent qw(Stream::In);
 
-=head1 NAME
-
-Stream::In::Role::ShiftAsScalar - role for classes which want 'shift' method to be aliased to 'read'
-
-=cut
+# ABSTRACT: role for classes which want 'shift' method to be aliased to 'read'
 
 =head1 METHODS
 
@@ -23,6 +19,10 @@ Alias for C<read()> method.
 sub shift {
     return $_[0]->read;
 }
+
+=back
+
+=cut
 
 1;
 

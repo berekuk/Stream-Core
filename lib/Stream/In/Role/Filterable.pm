@@ -3,9 +3,7 @@ package Stream::In::Role::Filterable;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::In::Role::Filterable - allows you to inject stack of filters into your input stream.
+# ABSTRACT: allows you to inject stack of filters into your input stream.
 
 =head1 SYNOPSIS
 

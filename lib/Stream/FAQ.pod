@@ -1,6 +1,6 @@
-=head1 NAME
+package Stream::FAQ;
 
-Stream::FAQ - some recipes for people who are still afraid of streams.
+# ABSTRACT: some recipes for people who are still afraid of streams.
 
 =head1 FAQ
 

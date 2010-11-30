@@ -3,9 +3,7 @@ package Stream::Catalog::Plugin::Memory;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Catalog::Plugin::Memory - catalog plugin which binds objects by names into catalog
+# ABSTRACT: catalog plugin which binds objects by names into catalog
 
 =head1 METHODS
 
@@ -113,6 +111,10 @@ sub list {
     my ($self, $type) = @_;
     return keys %{ $self->{bind}{$type} };
 }
+
+=back
+
+=cut
 
 1;
 

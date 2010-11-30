@@ -3,9 +3,7 @@ package Stream::Log;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Log - storage implemented as log.
+# ABSTRACT: storage implemented as log.
 
 =head1 DESCRIPTION
 

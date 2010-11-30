@@ -3,9 +3,7 @@ package Stream::Out;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Out - output stream interface
+# ABSTRACT: output stream interface
 
 =head1 SYNOPSIS
 
@@ -35,7 +33,6 @@ C<Stream::In> defines interface which every writing stream must implement.
 =cut
 
 use parent qw(Stream::Base);
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use parent qw(Exporter);
 our @EXPORT_OK = 'processor';

@@ -3,11 +3,7 @@ package Stream::DB;
 use strict;
 use warnings;
 
-use Yandex::Version '{{DEBIAN_VERSION}}';
-
-=head1 NAME
-
-Stream::DB - DB-based storage
+# ABSTRACT: DB-based storage
 
 =head1 METHODS
 

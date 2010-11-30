@@ -5,11 +5,7 @@ use warnings;
 
 use parent qw(Stream::In::Role::ShiftAsScalar);
 
-=head1 NAME
-
-Stream::In::Role::Shift - see Stream::In::Role::ShiftAsScalar
-
-=cut
+# ABSTRACT: see Stream::In::Role::ShiftAsScalar
 
 1;
 

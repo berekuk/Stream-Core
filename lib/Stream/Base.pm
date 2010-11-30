@@ -5,9 +5,7 @@ use warnings;
 
 use MRO::Compat;
 
-=head1 NAME
-
-Stream::Base - base class for In, Out and Filter classes
+# ABSTRACT: base class for In, Out and Filter classes
 
 =head1 DESCRIPTION
 

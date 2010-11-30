@@ -5,9 +5,7 @@ use warnings;
 
 use parent qw(Stream::Base);
 
-=head1 NAME
-
-Stream::Mixin::Lag - lag-showing trait
+# ABSTRACT: lag-showing trait
 
 =head1 DESCRIPTION
 

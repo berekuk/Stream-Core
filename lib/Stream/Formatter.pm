@@ -3,9 +3,7 @@ package Stream::Formatter;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Formatter - interface for both-way formatter of any storage.
+# ABSTRACT: interface for both-way formatter of any storage.
 
 =head1 SYNOPSIS
 
@@ -26,8 +24,6 @@ Usual way to create new formatters is to inherit from this class and implement C
 =over
 
 =cut
-
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
 use Params::Validate qw(:all);

@@ -3,9 +3,7 @@ package Stream::Filter;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Filter - objects for transforming input or output streams.
+# ABSTRACT: objects for transforming input or output streams.
 
 =head1 SYNOPSIS
 
@@ -42,7 +40,6 @@ Filters don't have to return all filtered results after each C<write> call, and 
 =cut
 
 use parent qw(Stream::Base);
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
 use Params::Validate qw(:all);

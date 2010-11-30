@@ -1,3 +1,5 @@
 /tfiles
 /man
 /debuild
+/Streams-*
+/.build

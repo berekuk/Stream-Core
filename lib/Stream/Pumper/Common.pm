@@ -3,9 +3,7 @@ package Stream::Pumper::Common;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Pumper::Common - common class for simple in-filter-out pumpers.
+# ABSTRACT: common class for simple in-filter-out pumpers.
 
 =head1 SYNOPSIS
 

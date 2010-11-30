@@ -5,11 +5,7 @@ use warnings;
 
 use Params::Validate qw(:all);
 
-=head1 NAME
-
-Stream::Log::Cursor - log cursor - unrotate wrapper
-
-=cut
+# ABSTRACT: log cursor - unrotate wrapper
 
 use Stream::Log::In;
 use Carp;

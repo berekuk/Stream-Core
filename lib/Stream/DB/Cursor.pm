@@ -3,11 +3,7 @@ package Stream::DB::Cursor;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::DB::Cursor - DB cursor
-
-=cut
+# ABSTRACT: DB cursor
 
 use Params::Validate;
 use Carp;

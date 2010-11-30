@@ -3,11 +3,7 @@ package Stream::File::In;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::File::In - input stream from any file.
-
-=cut
+# ABSTRACT: input stream from any file.
 
 use File::Basename;
 use Yandex::TmpFile;
@@ -16,7 +12,6 @@ use Carp;
 
 use parent qw(
     Stream::In::Role::Lag
-    Stream::In::Role::Advance
     Stream::In
 );
 
