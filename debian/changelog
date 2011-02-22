@@ -1,3 +1,9 @@
+libstream-perl (0.9.4) unstable; urgency=low
+
+  * File::In->lag
+
+ -- Andrei Mishchenko <druxa@yandex-team.ru>  Tue, 22 Feb 2011 19:40:13 +0300
+
 libstream-perl (0.9.3) unstable; urgency=low
 
   * Stream::Catalog::Plugin::File - correctly handle cross-namespace name

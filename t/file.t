@@ -156,4 +156,18 @@ sub commit_after_incomplete_line :Tests(4) {
     }
 }
 
+sub lag :Test(3) {
+    my $self = shift;
+    my $out = Stream::File->new('tfiles/file');
+    my $in = $out->stream(Stream::File::Cursor->new('tfiles/pos'));
+    is($in->lag(), 25, "simple lag");
+    $in->read;
+    is($in->lag(), 15, "uncommited lag");
+    $in->commit;
+    $in = $out->stream(Stream::File::Cursor->new('tfiles/pos'));
+    $out->write("blah\n");
+    $out->commit;
+    is($in->lag(), 20, "realtime lag");
+}
+
 __PACKAGE__->new->runtests;

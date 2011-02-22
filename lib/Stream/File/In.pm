@@ -31,7 +31,7 @@ sub new {
 
 sub read ($) {
     my ($self) = @_;
-    my $fh = shift->{fh};
+    my $fh = $self->{fh};
     my $line = <$fh>;
     return unless defined $line;
     if ($line !~ /\n$/) {
@@ -48,6 +48,13 @@ sub commit ($) {
     my $state = $self->{cursor}->state;
     $state->{position} = tell $self->{fh};
     $state->commit;
+}
+
+sub lag ($) {
+    my ($self) = @_;
+    my $fh = $self->{fh};
+    my @stat = stat $fh;
+    return $stat[7] - tell $fh;
 }
 
 =head1 AUTHOR
