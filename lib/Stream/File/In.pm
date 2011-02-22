@@ -13,8 +13,7 @@ use File::Basename;
 use Yandex::TmpFile;
 use Yandex::X qw(xopen xclose xprint);
 use Carp;
-
-use parent qw(Stream::In);
+use parent qw(Stream::In Stream::In::Role::Lag);
 
 sub new {
     my ($class, $params) = @_;
