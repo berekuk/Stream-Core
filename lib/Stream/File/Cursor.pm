@@ -23,10 +23,16 @@ sub new {
     return $self;
 }
 
+sub new_ro {
+    my $self = new(@_);
+    $self->{read_only} = 1;
+    return $self;
+}
+
 sub state {
     my $self = shift;
     validate_pos(@_);
-    return Yandex::Persistent->new($self->{posfile}, { format => 'json', auto_commit => 0 });
+    return Yandex::Persistent->new($self->{posfile}, { format => 'json', auto_commit => 0, read_only => $self->{read_only} });
 }
 
 # I don't know if anyone uses this method.
