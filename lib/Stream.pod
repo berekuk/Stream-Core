@@ -1,6 +1,6 @@
-=head1 NAME
+package Stream;
 
-Stream - stream-processing framework
+# ABSTRACT: stream-processing framework
 
 =head1 SYNOPSIS
 

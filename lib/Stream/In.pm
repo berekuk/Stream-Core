@@ -3,9 +3,7 @@ package Stream::In;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::In - input stream interface
+# ABSTRACT: input stream interface
 
 =head1 SYNOPSIS
 
@@ -24,7 +22,6 @@ C<Stream::In> defines interface which every reading stream must implement.
 =cut
 
 use parent qw(Stream::Base);
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
 

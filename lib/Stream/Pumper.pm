@@ -5,9 +5,7 @@ use warnings;
 
 use Carp;
 
-=head1 NAME
-
-Stream::Pumper - pumper interface
+# ABSTRACT: pumper interface
 
 =head1 SYNOPSIS
 

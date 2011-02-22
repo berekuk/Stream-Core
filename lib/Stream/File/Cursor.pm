@@ -3,11 +3,7 @@ package Stream::File::Cursor;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::File::Cursor - file cursor
-
-=cut
+# ABSTRACT: file cursor
 
 use Params::Validate;
 use Carp;

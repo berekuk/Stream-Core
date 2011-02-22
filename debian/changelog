@@ -1,9 +1,33 @@
-libstream-perl (0.9.4) unstable; urgency=low
+libstream-perl (0.9.7) unstable; urgency=low
 
-  * File::In->lag
   * File::Cursor r/o mode 
 
  -- Andrei Mishchenko <druxa@yandex-team.ru>  Tue, 22 Feb 2011 19:45:43 +0300
+
+libstream-perl (0.9.6) unstable; urgency=low
+
+  * Stream::In::Role::ShiftAsScalar and Stream::In::Role::ShiftAsList roles
+  * Stream::Role::Clone
+  * Stream::Stream removed
+  * migrating to dzil
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Tue, 30 Nov 2010 22:15:59 +0300
+
+libstream-perl (0.9.5) unstable; urgency=low
+
+  * storage generated with Stream::Formatter now inherits ClientList role from
+    underlying storage
+  * Stream::Filter::FilteredIn propagates Shift role
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 11 Nov 2010 19:01:48 +0300
+
+libstream-perl (0.9.4) unstable; urgency=low
+
+  * Stream::Base: 'cap', 'caps', 'class_caps' methods removed
+  * Stream::File implements lag
+  * build using ppb-native.mk
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 01 Nov 2010 22:13:51 +0300
 
 libstream-perl (0.9.3) unstable; urgency=low
 

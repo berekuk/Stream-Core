@@ -3,9 +3,7 @@ package Stream::Filter;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Filter - objects for transforming input or output streams.
+# ABSTRACT: objects for transforming input or output streams.
 
 =head1 SYNOPSIS
 
@@ -42,7 +40,6 @@ Filters don't have to return all filtered results after each C<write> call, and 
 =cut
 
 use parent qw(Stream::Base);
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
 use Params::Validate qw(:all);
@@ -213,23 +210,11 @@ sub commit {
     return $self->{out}->commit;
 }
 
-sub class_caps {
-    my ($self) = @_;
-    my $out_caps = $self->{out}->caps;
-    if ($out_caps->{persistent}) {
-        return { persistent => $out_caps->{persistent} }; # TODO - which other caps can we propagate?
-    }
-    else {
-        return {};
-    }
-}
-
 package Stream::Filter::FilteredIn;
 
-use parent qw(Stream::In);
-use parent qw(Stream::In::Role::Lag);
-
-use parent qw(Stream::Mixin::Lag); # to be removed
+use parent qw(
+    Stream::In
+);
 
 sub new {
     my ($class, $in, $filter) = @_;
@@ -271,10 +256,16 @@ sub lag {
     return $self->{in}->lag;
 }
 
+sub shift {
+    my $self = shift;
+    my $item = $self->read or return;
+    return @$item;
+}
+
 sub does {
     my ($self, $role) = @_;
-    if ($role eq 'Stream::In::Role::Lag') {
-        # Lag role is propagated to underlying input stream.
+    if ($role eq 'Stream::In::Role::Lag' or $role eq 'Stream::In::Role::Shift') {
+        # Some roles depen on being implemented by the underlying input stream.
         # I guess in future we'll have lots of such role propagating logic... in this case moose metaclasses would be handy.
         return $self->{in}->does($role);
     }

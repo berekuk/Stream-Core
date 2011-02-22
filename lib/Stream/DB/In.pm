@@ -3,11 +3,7 @@ package Stream::DB::In;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::DB::In - DB reading stream
-
-=cut
+# ABSTRACT: DB reading stream
 
 use parent qw(Stream::In);
 

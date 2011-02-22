@@ -3,9 +3,7 @@ package Stream::In::Role::Lag;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::In::Role::Lag - lag-showing role
+# ABSTRACT: lag-showing role
 
 =head1 DESCRIPTION
 

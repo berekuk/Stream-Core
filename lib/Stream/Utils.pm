@@ -3,11 +3,7 @@ package Stream::Utils;
 use strict;
 use warnings;
 
-use Yandex::Version '{{DEBIAN_VERSION}}';
-
-=head1 NAME
-
-Stream::Utils - common stream utilities
+# ABSTRACT: common stream utilities
 
 =head1 SYNOPSIS
 

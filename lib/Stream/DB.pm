@@ -3,11 +3,7 @@ package Stream::DB;
 use strict;
 use warnings;
 
-use Yandex::Version '{{DEBIAN_VERSION}}';
-
-=head1 NAME
-
-Stream::DB - DB-based storage
+# ABSTRACT: DB-based storage
 
 =head1 METHODS
 
@@ -126,10 +122,6 @@ C<$cursor> should be of C<Stream::DB::Cursor> class.
 sub stream {
     my ($self, $cursor) = @_;
     return Stream::DB::In->new({storage => $self, cursor => $cursor});
-}
-
-sub class_caps {
-    return { persistent => 1 };
 }
 
 =back

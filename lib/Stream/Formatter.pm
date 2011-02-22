@@ -3,9 +3,7 @@ package Stream::Formatter;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Formatter - interface for both-way formatter of any storage.
+# ABSTRACT: interface for both-way formatter of any storage.
 
 =head1 SYNOPSIS
 
@@ -26,8 +24,6 @@ Usual way to create new formatters is to inherit from this class and implement C
 =over
 
 =cut
-
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Carp;
 use Params::Validate qw(:all);
@@ -130,6 +126,19 @@ sub commit {
     my $self = shift;
     $self->{storage}->commit;
 }
+
+sub does {
+    my ($self, $role) = @_;
+    if ($role eq 'Stream::Storage::Role::ClientList') {
+        return $self->{storage}->does($role);
+    }
+    return $self->SUPER::does($role);
+}
+
+sub client_names { return shift->{storage}->client_names }
+sub register_client { return shift->{storage}->register_client }
+sub unregister_client { return shift->{storage}->unregister_client }
+sub has_client { return shift->{storage}->has_client }
 
 =head1 AUTHOR
 

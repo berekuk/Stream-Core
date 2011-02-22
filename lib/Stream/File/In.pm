@@ -3,17 +3,17 @@ package Stream::File::In;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::File::In - input stream from any file.
-
-=cut
+# ABSTRACT: input stream from any file.
 
 use File::Basename;
 use Yandex::TmpFile;
 use Yandex::X qw(xopen xclose xprint);
 use Carp;
-use parent qw(Stream::In Stream::In::Role::Lag);
+
+use parent qw(
+    Stream::In::Role::Lag
+    Stream::In
+);
 
 sub new {
     my ($class, $params) = @_;
@@ -42,18 +42,27 @@ sub read ($) {
     return $line;
 }
 
+sub lag ($) {
+    my ($self) = @_;
+    my @stat = stat $self->{fh};
+    unless (@stat) {
+        die "stat failed: $!";
+    }
+    my $size = $stat[7];
+
+    my $pos = tell $self->{fh};
+    if ($pos == -1) {
+        die "tell failed: $!";
+    }
+
+    return $size - $pos;
+}
+
 sub commit ($) {
     my ($self) = @_;
     my $state = $self->{cursor}->state;
     $state->{position} = tell $self->{fh};
     $state->commit;
-}
-
-sub lag ($) {
-    my ($self) = @_;
-    my $fh = $self->{fh};
-    my @stat = stat $fh;
-    return $stat[7] - tell $fh;
 }
 
 =head1 AUTHOR

@@ -8,9 +8,7 @@ use warnings;
 # processor($callback)
 # stream($name)
 
-=head1 NAME
-
-Streams - module for importing all common stream functions.
+# ABSTRACT: module for importing all common stream functions.
 
 =head1 SYNOPSIS
 
@@ -25,8 +23,6 @@ L<Stream> framework is a next abstraction layer above L<Yandex::Unrotate>, L<PPB
 This module is just a simple way to load most important subs from other Stream::* modules. Check out L<Stream> to learn more.
 
 =cut
-
-use Yandex::Version '{{DEBIAN_VERSION}}';
 
 use Stream::Utils qw(process catalog);
 use Stream::Out qw(processor);
@@ -48,10 +44,6 @@ L<Stream::Out> - output stream interface and constructor for anonimous processor
 L<Stream::Filter> - filter that can be attached to other streams.
 
 L<process.pl> - script which processes any specified stream.
-
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
 
 =cut
 

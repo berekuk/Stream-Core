@@ -156,14 +156,17 @@ sub commit_after_incomplete_line :Tests(4) {
     }
 }
 
-sub lag :Test(3) {
+sub lag :Test(5) {
     my $self = shift;
     my $out = Stream::File->new('tfiles/file');
     my $in = $out->stream(Stream::File::Cursor->new('tfiles/pos'));
+    ok($in->does('Stream::In::Role::Lag'), "role");
+
     is($in->lag(), 25, "simple lag");
     $in->read;
     is($in->lag(), 15, "uncommited lag");
     $in->commit;
+    is($in->lag(), 15, "commited lag");
     $in = $out->stream(Stream::File::Cursor->new('tfiles/pos'));
     $out->write("blah\n");
     $out->commit;

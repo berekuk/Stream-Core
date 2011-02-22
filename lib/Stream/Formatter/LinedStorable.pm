@@ -3,11 +3,7 @@ package Stream::Formatter::LinedStorable;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Formatter::LinedStorable - storable line-oriented formatter
-
-=cut
+# ABSTRACT: storable line-oriented formatter
 
 use Stream::Utils qw(catalog);
 
@@ -20,12 +16,6 @@ sub read_filter {
 sub write_filter {
     return catalog->filter('freeze') | catalog->filter('str2line');
 }
-
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
-=cut
 
 1;
 

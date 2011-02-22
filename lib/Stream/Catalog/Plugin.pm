@@ -3,9 +3,7 @@ package Stream::Catalog::Plugin;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Stream::Catalog::Plugin - base class for any catalog's plugin
+# ABSTRACT: base class for any catalog's plugin
 
 =head1 METHODS
 
