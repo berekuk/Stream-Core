@@ -47,11 +47,18 @@ sub _open($) {
 
 sub _write ($) {
     my ($self) = @_;
-    my $bytes = $self->{fh}->syswrite($self->{data});
-    if (not defined $bytes) {
-        die "syswrite failed: $!";
-    } elsif ($bytes != length $self->{data}) {
-        die "syswrite failed: $bytes < ".length($self->{data}).", $!";
+    my $left = length $self->{data};
+    my $offset = 0;
+    while ($left) {
+        my $bytes = $self->{fh}->syswrite($self->{data}, $left, $offset);
+        if (not defined $bytes) {
+            die "syswrite failed: $!";
+        } elsif ($bytes == 0) {
+            die "syswrite no progress";
+        } else {
+            $offset += $bytes;
+            $left -= $bytes;
+        }
     }
     delete $self->{data};
 }

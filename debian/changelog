@@ -1,6 +1,7 @@
 libstream-perl (0.9.8) UNRELEASED; urgency=low
 
   * process() commits output stream even in commit=0 mode
+  * Stream::File can handle strings with size >2GB
 
  -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 03 Mar 2011 20:38:17 +0300
 
