@@ -212,7 +212,7 @@ is_deeply(\@data, [qw/ qqq www /], 'process understands verbose options');
             $in => $out, { commit => 0 }
         );
         is($in->{commit}, undef, 'commit=0 disables commit of input stream');
-        is($out->{commit}, undef, 'commit=0 disables commit of ouput stream');
+        is($out->{commit}, 1, 'commit=0 disables commit of output stream');
     }
 }
 

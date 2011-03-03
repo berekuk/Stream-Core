@@ -71,7 +71,7 @@ Force specific chunk size. Default is C<100>.
 
 =item I<commit>
 
-If set and false, streams will not be commited.
+If set and false, input stream will not be commited.
 
 =back
 
@@ -103,8 +103,8 @@ sub process($$;$) {
     $out = vivify_out($out);
 
     my $commit_both_sub = sub {
-        return unless $commit;
         $out->commit; # output is committed before input to make sure that all data was flushed down correctly
+        return unless $commit;
         $in->commit;
     };
 
