@@ -185,10 +185,6 @@ sub bind_out($$$) {
 
 =back
 
-=head1 SEE ALSO
-
-L<Stream::Utils> for storage() sub
-
 =head1 AUTHOR
 
 Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
@@ -196,4 +192,3 @@ Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
 =cut
 
 1;
-

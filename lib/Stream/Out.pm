@@ -39,6 +39,7 @@ our @EXPORT_OK = 'processor';
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 use Carp;
+use Stream::Out::Anon;
 
 =item I<new>
 
@@ -103,13 +104,15 @@ sub commit {
 
 =head1 HELPER FUNCTIONS
 
-This package also exports helper function C<processor>.
+This package also exports (deprecated) helper function C<processor>.
 
 =over
 
 =item C<processor(&)>
 
 Creates anonymous output stream which calls specified callback on every C<write> call.
+
+This function is deprecated. You should use C<code_out> from C<Stream::Simple> instead.
 
 =cut
 sub processor(&) {
@@ -127,24 +130,6 @@ sub processor(&) {
 L<Stream::Storage> - skeleton of a persistent storage into which all data gets written.
 
 =cut
-
-1;
-
-package Stream::Out::Anon;
-
-use parent qw(Stream::Out);
-
-sub new {
-    my ($class, $callback) = @_;
-    my $self = $class->SUPER::new;
-    $self->{callback} = $callback;
-    return $self;
-}
-
-sub write {
-    my ($self, $item) = @_;
-    $self->{callback}->($item);
-}
 
 1;
 

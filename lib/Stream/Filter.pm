@@ -49,6 +49,11 @@ use Stream::Out;
 use parent qw(Exporter);
 our @EXPORT_OK = 'filter';
 
+use Stream::Filter::Anon;
+use Stream::Filter::FilteredIn;
+use Stream::Filter::FilteredOut;
+use Stream::Filter::FilteredFilter;
+
 use overload '|' => sub {
     my ($left, $right, $swap) = @_;
     if ($swap) {
@@ -154,157 +159,6 @@ sub filter(&;&) {
 
 =cut
 
-package Stream::Filter::Anon;
-
-use parent qw(Stream::Filter);
-use Params::Validate qw(:all);
-
-sub new {
-    my $class = shift;
-    my ($callback, $commit) = validate_pos(@_, { type => CODEREF }, { type => CODEREF | UNDEF, optional => 1 });
-    my $self = $class->SUPER::new;
-    $self->{callback} = $callback;
-    $commit ||= sub {};
-    $self->{commit} = $commit;
-    return $self;
-}
-
-sub write {
-    my ($self, $item) = @_;
-    return $self->{callback}->($item);
-}
-
-sub commit {
-    my ($self) = @_;
-    return $self->{commit}->();
-}
-
-package Stream::Filter::FilteredOut;
-
-use parent qw(Stream::Out);
-
-sub new {
-    my ($class, $filter, $out) = @_;
-    return bless {
-        filter => $filter,
-        out => $out,
-    } => $class;
-}
-
-sub write {
-    my ($self, $item) = @_;
-    my @items = $self->{filter}->write($item);
-    $self->{out}->write($_) for @items;
-}
-
-sub write_chunk {
-    my ($self, $chunk) = @_;
-    $chunk = $self->{filter}->write_chunk($chunk);
-    return $self->{out}->write_chunk($chunk);
-}
-
-sub commit {
-    my ($self) = @_;
-    my @items = $self->{filter}->commit;
-    $self->{out}->write_chunk(\@items);
-    return $self->{out}->commit;
-}
-
-package Stream::Filter::FilteredIn;
-
-use parent qw(
-    Stream::In
-);
-
-sub new {
-    my ($class, $in, $filter) = @_;
-    return bless {
-        filter => $filter,
-        in => $in,
-    } => $class;
-}
-
-sub read {
-    my ($self) = @_;
-    while (my $item = $self->{in}->read()) {
-        my @filtered = $self->{filter}->write($item);
-        next unless @filtered;
-        die "One-to-many not implemented in source filters" unless @filtered == 1;
-        return $filtered[0];
-    }
-    return; # underlying input stream is depleted
-}
-
-sub read_chunk {
-    my ($self, $limit) = @_;
-    my $chunk = $self->{in}->read_chunk($limit);
-    return unless $chunk;
-    return $self->{filter}->write_chunk($chunk);
-}
-
-sub commit {
-    my ($self) = @_;
-    my @items = $self->{filter}->commit;
-    die "flushable filters cannot be attached to input streams" if @items;
-    #FIXME: check it earlier
-    $self->{in}->commit;
-}
-
-sub lag {
-    my $self = shift;
-    die "underlying input stream doesn't implement Lag role" unless $self->{in}->does('Stream::In::Role::Lag');
-    return $self->{in}->lag;
-}
-
-sub shift {
-    my $self = shift;
-    my $item = $self->read or return;
-    return @$item;
-}
-
-sub does {
-    my ($self, $role) = @_;
-    if ($role eq 'Stream::In::Role::Lag' or $role eq 'Stream::In::Role::Shift') {
-        # Some roles depen on being implemented by the underlying input stream.
-        # I guess in future we'll have lots of such role propagating logic... in this case moose metaclasses would be handy.
-        return $self->{in}->does($role);
-    }
-    return $self->SUPER::does($role);
-}
-
-package Stream::Filter::FilteredFilter;
-
-use parent qw(Stream::Filter);
-
-sub new {
-    my ($class, $f1, $f2) = @_;
-    return bless {
-        f1 => $f1,
-        f2 => $f2,
-    } => $class;
-}
-
-sub write {
-    my ($self, $item) = @_;
-    my @items = $self->{f1}->write($item);
-    my @result = map { $self->{f2}->write($_) } @items;
-    return (wantarray ? @result : $result[0]);
-}
-
-sub write_chunk {
-    my ($self, $chunk) = @_;
-    $chunk = $self->{f1}->write_chunk($chunk);
-    return $self->{f2}->write_chunk($chunk);
-}
-
-sub commit {
-    my ($self) = @_;
-    my @items = $self->{f1}->commit;
-    my $result = $self->{f2}->write_chunk(\@items);
-    push @$result, $self->{f2}->commit;
-    return @$result;
-}
-
 =head1 AUTHOR
 
 Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
@@ -312,4 +166,3 @@ Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
 =cut
 
 1;
-

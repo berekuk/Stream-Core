@@ -28,7 +28,7 @@ sub _gen_method {
 
 our @TYPES = qw/ cursor in out filter pumper /;
 {
-    no strict;
+    no strict 'refs';
     for my $type (@TYPES) {
         *{$type} = _gen_method($type);
     }

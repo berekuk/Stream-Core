@@ -21,6 +21,8 @@ my @bad_modules = qw(
     Stream::Log::In
     Stream::File::Cursor
     Stream::Log::Cursor
+    Stream::Filter::FilteredIn
+    Stream::Formatter::Wrapped
 );
 
 TODO: {

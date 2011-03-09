@@ -1,9 +1,12 @@
-libstream-perl (0.9.8) UNRELEASED; urgency=low
+libstream-perl (0.9.8) unstable; urgency=low
 
   * process() commits output stream even in commit=0 mode
   * Stream::File can handle strings with size >2GB
+  * coding style tuning - packages for building anonymous objects moved to
+    separate files; other perlcritic fixes
+  * Stream::Out::processor() function deprecated
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 03 Mar 2011 20:38:17 +0300
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 09 Mar 2011 22:08:51 +0300
 
 libstream-perl (0.9.7) unstable; urgency=low
 
