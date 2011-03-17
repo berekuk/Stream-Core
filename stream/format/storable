@@ -1,0 +1,6 @@
+# vim: ft=perl
+
+use Stream::Formatter::LinedStorable;
+
+my $format = Stream::Formatter::LinedStorable->new;
+sub { $format };

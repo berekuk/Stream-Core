@@ -20,9 +20,13 @@ use warnings;
 
 =cut
 
+use namespace::autoclean;
+
 use Stream::Catalog::Plugin::File;
 use Stream::Catalog::Plugin::Package;
 use Stream::Catalog::Plugin::Memory;
+
+use Stream::Catalog::Utils qw(types);
 
 =item C<new()>
 
@@ -98,7 +102,8 @@ sub in ($$) {
         return $self->storage($storage)->stream($in_name);
     }
 
-    my $cursor = $self->cursor($name) || die "Can't find input stream by name '$name'";
+    my $cursor = $self->cursor($name); # TODO - get rid of cursors in catalog as a separate type
+    die "Can't find input stream by name '$name'" unless $cursor;
     return $cursor->stream();
 }
 
@@ -108,8 +113,10 @@ Just an alias to out() method.
 
 =cut
 sub storage {
+    my ($self, $name) = @_;
+    my $storage = $self->out($name);
     # TODO - since Out stream must have special abilities to be storage, we should check for its type
-    goto &out;
+    return $storage;
 }
 
 =item C<cursor($name)>
@@ -119,7 +126,18 @@ Get cursor by name.
 =cut
 sub cursor ($$) {
     my ($self, $name) = @_;
+    # TODO - get rid of cursors in catalog as a separate type
     $self->_any('cursor', $name) || die "Can't find cursor by name '$name'";
+}
+
+=item C<format($name)>
+
+Get formatter by name.
+
+=cut
+sub format ($$) {
+    my ($self, $name) = @_;
+    $self->_any('format', $name) || die "Can't find format by name '$name'";
 }
 
 =item C<pumper($name)>
@@ -129,6 +147,7 @@ Get pumper by name.
 =cut
 sub pumper ($$) {
     my ($self, $name) = @_;
+    # TODO - do we need pumpers in streams core? they are not used by now, Yandex::Pumper is a separate entity.
     $self->_any('pumper', $name) || die "Can't find pumper by name '$name'";
 }
 
@@ -141,6 +160,8 @@ sub pumper ($$) {
 =item B<list_filter()>
 
 =item B<list_pumper()>
+
+=item B<list_format()>
 
 List all objects of one type.
 
@@ -155,11 +176,13 @@ sub _list_any {
     }
     return keys %uniq;
 }
-sub list_in     { shift()->_list_any('in') }
-sub list_out    { shift()->_list_any('out') }
-sub list_cursor { shift()->_list_any('cursor') }
-sub list_filter { shift()->_list_any('filter') }
-sub list_pumper { shift()->_list_any('pumper') }
+
+for my $type (types()) {
+    no strict 'refs';
+    *{"list_$type"} = sub {
+        shift()->_list_any($type);
+    };
+}
 
 =item C<bind_in($name => $object)>
 

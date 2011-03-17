@@ -42,8 +42,31 @@ sub read ($) {
     return $line;
 }
 
+sub read_chunk {
+    my ($self, $size) = @_;
+
+    my @result;
+    my $fh = $self->{fh};
+
+    while (1) {
+        my $line = <$fh>;
+        last unless defined $line;
+        if ($line !~ /\n$/) {
+            # incomplete line => backstep
+            seek $fh, - length $line, 1;
+            last;
+        }
+        push @result, $line;
+        $size--;
+        last if $size <= 0;
+    }
+    return unless @result;
+    return \@result;
+}
+
 sub lag ($) {
     my ($self) = @_;
+
     my @stat = stat $self->{fh};
     unless (@stat) {
         die "stat failed: $!";

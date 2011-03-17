@@ -67,7 +67,6 @@ sub cursor {
     return;
 }
 
-
 =item B<pumper($name)>
 
 Get pumper by name.
@@ -79,8 +78,19 @@ sub pumper {
     return;
 }
 
+=item B<format($name)>
+
+Get format by name.
+
+Should return C<Stream::Formatter> object or undef.
+
+=cut
+sub format {
+    return;
+}
 
 =item B<list($type)>
+
 List all objects of one type.
 
 Returns list with names.

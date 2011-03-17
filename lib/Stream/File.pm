@@ -18,7 +18,10 @@ use warnings;
 
 use Params::Validate;
 use Stream::Storage;
-use parent qw(Stream::Storage);
+use parent qw(
+    Stream::Storage
+    Stream::Role::Owned
+);
 
 use Carp;
 use IO::Handle;
@@ -137,6 +140,16 @@ sub stream($$) {
     my ($cursor) = validate_pos(@_, {isa => 'Stream::File::Cursor'});
 
     return $cursor->stream($self);
+}
+
+sub owner {
+    my ($self) = @_;
+    if (-e $self->{file}) {
+        return scalar getpwuid( (stat($self->{file}))[4] );
+    }
+    else {
+        return scalar getpwuid($>);
+    }
 }
 
 =back

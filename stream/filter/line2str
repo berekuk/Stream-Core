@@ -1,16 +1,32 @@
 # vim:ft=perl
 
-use Stream::Filter qw(filter);
 use warnings;
 use strict;
 
-sub {
-    filter(sub {
-        my $item = shift;
-        chomp $item;
-        $item =~ s{(\\\\|\\n)}{
-            ($1 eq "\\\\") ? "\\" : "\n"
-        }ge;
-        return $item;
-    });
+use parent qw(Stream::Filter);
+
+sub write_chunk {
+    my ($self, $chunk) = @_;
+    my $result = [
+        map {
+            # in-place modification! I hope it won't cause problems...
+            chomp;
+            s{(\\\\|\\n)}{
+                ($1 eq "\\\\") ? "\\" : "\n"
+            }ge;
+            $_;
+        } @$chunk
+    ];
+    return $result;
+}
+
+sub write {
+    my $self = shift;
+    my $chunk = $self->write_chunk([@_]);
+    return unless $chunk;
+    return $chunk->[0];
+}
+
+return sub {
+    __PACKAGE__->new;
 }

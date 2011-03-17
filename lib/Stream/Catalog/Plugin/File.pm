@@ -17,11 +17,15 @@ use warnings;
 
 =cut
 
+use namespace::autoclean;
+
 use Yandex::X;
 use File::Find;
 use parent qw(Stream::Catalog::Plugin);
 
-our @TYPES = qw/ cursor in out filter pumper /;
+use Stream::Catalog::Utils qw(types);
+
+our @TYPES = types();
 our %TYPE2DIR;
 
 for my $type (@TYPES) {
@@ -167,6 +171,16 @@ Loads pumper from file named C<$name> in catalog dir. Dir defaults to C</etc/str
 sub pumper {
     my ($self, $name) = @_;
     return $self->_load($name, $self->{pumper_dir}, 'Stream::Catalog::Pumper');
+}
+
+=item C<format($name)>
+
+Loads format from file named C<$name> in catalog dir. Dir defaults to C</etc/stream/format>.
+
+=cut
+sub format {
+    my ($self, $name) = @_;
+    return $self->_load($name, $self->{format_dir}, 'Stream::Catalog::Format');
 }
 
 sub list {

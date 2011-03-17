@@ -1,13 +1,28 @@
 # vim:ft=perl
 use Storable qw(thaw);
 
-use Stream::Filter qw(filter);
 use warnings;
 use strict;
 
-sub {
-    filter(sub {
-        my $str = shift;
-        return ${thaw($str)};
-    });
+use parent qw(Stream::Filter);
+
+sub write_chunk {
+    my ($self, $chunk) = @_;
+    my $result = [
+        map {
+            ${thaw($_)};
+        } @$chunk
+    ];
+    return $result;
+}
+
+sub write {
+    my $self = shift;
+    my $chunk = $self->write_chunk([@_]);
+    return unless $chunk;
+    return $chunk->[0];
+}
+
+return sub {
+    __PACKAGE__->new;
 }

@@ -1,3 +1,13 @@
+libstream-perl (0.9.9) unstable; urgency=low
+
+  * Stream::File::In module and 'line2str', 'str2line' and 'thaw' filters
+    optimized
+  * new type in catalog - 'format'; 'plain' and 'storable' formats
+  * Stream::Role::Owned role; process() function refuses to work if
+    input/output stream owners are wrong
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 17 Mar 2011 22:13:37 +0300
+
 libstream-perl (0.9.8) unstable; urgency=low
 
   * process() commits output stream even in commit=0 mode

@@ -17,8 +17,10 @@ use Params::Validate qw(:all);
 
 use Stream::File;
 use Digest::MD5 qw(md5_hex);
-use parent qw(Stream::File);
-use parent qw(Stream::Storage::Role::ClientList);
+use parent qw(
+    Stream::File
+    Stream::Storage::Role::ClientList
+);
 use Stream::Log::Cursor;
 use Scalar::Util qw(blessed reftype);
 use Carp;

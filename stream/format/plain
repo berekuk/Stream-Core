@@ -1,0 +1,24 @@
+# vim: ft=perl
+
+use strict;
+use warnings;
+
+use Stream::Utils qw(catalog);
+use parent qw(Stream::Formatter);
+
+sub read_filter {
+    return catalog->filter('trivial');
+}
+
+sub write_filter {
+    return catalog->filter('trivial');
+}
+
+sub wrap {
+    my $self = shift;
+    return shift;
+}
+
+return sub {
+    __PACKAGE__->new;
+};

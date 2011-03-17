@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use lib 'lib';
 
@@ -13,6 +13,7 @@ BEGIN {
 
 use Yandex::X qw(xsystem);
 use Perl6::Slurp;
+use Streams;
 
 xsystem('rm -rf tfiles');
 xsystem('mkdir tfiles');
@@ -31,3 +32,5 @@ like(slurp('tfiles/result'), qr/12345678/, 'freezed stream looks like storable')
 
 xsystem(q! cat tfiles/result | perl -Ilib -MStreams -e 'process(catalog->in("stdin") | catalog->filter("line2str") | catalog->filter("thaw") | filter(sub { my $item = shift; return $item->{item} }) => catalog->out("stdout"))' >tfiles/result2!);
 is(slurp('tfiles/result2'), "aaa\nbbb\n", 'thaw works');
+
+ok(catalog->format('storable')->isa('Stream::Formatter::LinedStorable'), 'LinedStorable formatter in catalog');

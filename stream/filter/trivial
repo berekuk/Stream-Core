@@ -1,0 +1,13 @@
+# vim:ft=perl
+
+use warnings;
+use strict;
+
+use Stream::Filter qw(filter);
+
+return sub {
+    # FIXME - return some kind of filter which really does nothing (i.e., $x | $trivial == $x)
+    filter(sub {
+        return shift;
+    });
+}

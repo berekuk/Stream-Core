@@ -1,7 +1,6 @@
 API is important, and so are terms
 
 - filter
-    debug_dump # this differs from out:dump in that it isn't last element of stream... or does it really matters?
     eval
 
 Formatters (hashref <=> string):

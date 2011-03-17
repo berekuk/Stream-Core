@@ -18,4 +18,3 @@ sub write_filter {
 }
 
 1;
-

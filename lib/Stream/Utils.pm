@@ -102,6 +102,17 @@ sub process($$;$) {
     $in = vivify_in($in);
     $out = vivify_out($out);
 
+    {
+        my $user = getpwuid($>);
+        # you can read from stream which belong to another user, as long as you don't try to commit it
+        if ($commit and $in->does('Stream::Role::Owned') and $in->owner ne $user) {
+            die "Stream $in belongs to ".$in->owner.", not to $user";
+        }
+        if ($out->does('Stream::Role::Owned') and $out->owner ne $user) {
+            die "Stream $out belongs to ".$out->owner.", not to $user";
+        }
+    }
+
     my $commit_both_sub = sub {
         $out->commit; # output is committed before input to make sure that all data was flushed down correctly
         return unless $commit;

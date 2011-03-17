@@ -1,14 +1,30 @@
 # vim:ft=perl
 
-use Stream::Filter qw(filter);
 use warnings;
 use strict;
 
-sub {
-    filter(sub {
-        my $item = shift;
-        $item =~ s{\\}{\\\\}g;
-        $item =~ s{\n}{\\n}g;
-        return "$item\n";
-    });
+use parent qw(Stream::Filter);
+
+sub write_chunk {
+    my ($self, $chunk) = @_;
+    my $result = [
+        map {
+            # in-place modification! I hope it won't cause problems...
+            s{\\}{\\\\}g;
+            s{\n}{\\n}g;
+            "$_\n";
+        } @$chunk
+    ];
+    return $result;
+}
+
+sub write {
+    my $self = shift;
+    my $chunk = $self->write_chunk([@_]);
+    return unless $chunk;
+    return $chunk->[0];
+}
+
+return sub {
+    __PACKAGE__->new;
 }
