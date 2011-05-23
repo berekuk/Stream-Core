@@ -53,7 +53,7 @@ sub set_storage
         warn "Cursor '$self->{posfile}' is already associated with file '$state->{storage_file}'";
     }
     $state->{storage_file} = $storage->file;
-    $state->commit;
+    $state->commit unless $self->{read_only};
 }
 
 sub stream {

@@ -1,3 +1,9 @@
+libstream-perl (0.9.10) unstable; urgency=low
+
+  * Stream::File::Cursor: respect read_only mode in set_storage() method
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Mon, 23 May 2011 22:09:42 +0400
+
 libstream-perl (0.9.9) unstable; urgency=low
 
   * Stream::File::In module and 'line2str', 'str2line' and 'thaw' filters
