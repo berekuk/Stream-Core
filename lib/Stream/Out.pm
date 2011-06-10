@@ -7,24 +7,15 @@ use warnings;
 
 =head1 SYNOPSIS
 
-    use Stream::Out qw(processor);
+    use Stream::Out;
 
     $out->write($item);
     $out->write_chunk(\@items);
     $out->commit;
 
-    $dump_out = processor(sub {
-        use Data::Dumper;
-        print Dumper shift;
-    });
-    $dump_out->write({ a => 5, b => 'c' });
-    $dump_out->write({ a => 6, b => 'd' });
-    ...
-    $dump_out->commit; # does nothing
-
 =head1 DESCRIPTION
 
-C<Stream::In> defines interface which every writing stream must implement.
+C<Stream::Out> defines interface which every writing stream must implement.
 
 =head1 INTERFACE
 
@@ -34,12 +25,7 @@ C<Stream::In> defines interface which every writing stream must implement.
 
 use parent qw(Stream::Base);
 
-use parent qw(Exporter);
-our @EXPORT_OK = 'processor';
-our %EXPORT_TAGS = (all => \@EXPORT_OK);
-
 use Carp;
-use Stream::Out::Anon;
 
 =item I<new>
 
@@ -54,7 +40,7 @@ sub new {
 
 C<write> method should be implemented by child class.
 
-It receives one scalar C<$item> as it's argument.
+It receives one scalar C<$item> as its argument.
 
 At the implementor's option, it can process C<$item> immediately or keep it's value until C<commit()>.
 
@@ -108,20 +94,6 @@ This package also exports (deprecated) helper function C<processor>.
 
 =over
 
-=item C<processor(&)>
-
-Creates anonymous output stream which calls specified callback on every C<write> call.
-
-This function is deprecated. You should use C<code_out> from C<Stream::Simple> instead.
-
-=cut
-sub processor(&) {
-    # TODO - remove from class methods with namespace::clean
-    my ($callback) = @_;
-    croak "Expected callback" unless ref($callback) eq 'CODE';
-    # alternative constructor
-    return Stream::Out::Anon->new($callback);
-}
 
 =back
 

@@ -19,8 +19,7 @@ xsystem("mkdir tfiles");
     xclose($fh);
 }
 
-use Stream::Utils qw(pump);
-use Stream::Out qw(processor);
+use Stream::Utils qw(pump processor);
 use Stream::File;
 use Stream::File::Cursor;
 

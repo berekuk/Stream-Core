@@ -27,12 +27,13 @@ use Params::Validate 0.83.0 qw(:all);
 use Stream::Catalog;
 use Yandex::Logger;
 use Try::Tiny;
+use Stream::Out::Anon;
 
 use parent qw(Exporter);
 our %EXPORT_TAGS = (
     vivify => [ map { "vivify_$_" } qw/ in out cursor filter storage pumper / ],
 );
-our @EXPORT_OK = (qw/ process pump catalog /, @{ $EXPORT_TAGS{vivify} });
+our @EXPORT_OK = (qw/ process pump catalog processor /, @{ $EXPORT_TAGS{vivify} });
 
 our $catalog = Stream::Catalog->new; # global stream catalog, you usually need only one instance
 
@@ -139,6 +140,21 @@ sub process($$;$) {
     }
     $commit_both_sub->();
     return $i; # return number of actually processed items
+}
+
+=item C<processor(&)>
+
+Creates anonymous output stream which calls specified callback on every C<write> call.
+
+This function is deprecated. You should use C<code_out> from C<Stream::Simple> instead.
+
+=cut
+sub processor(&) {
+    # TODO - remove from class methods with namespace::clean
+    my ($callback) = @_;
+    croak "Expected callback" unless ref($callback) eq 'CODE';
+    # alternative constructor
+    return Stream::Out::Anon->new($callback);
 }
 
 =item B<< pump($storage => $outs, $options) >>
@@ -248,4 +264,3 @@ Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
 =cut
 
 1;
-

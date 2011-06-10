@@ -98,7 +98,7 @@ sub in ($$) {
     my $in = $self->_any('in', $name);
     return $in if $in;
 
-    if (my ($storage, $in_name) = $name =~ /(.+)\[(.+)\]$/) {
+    if (my ($storage, $in_name) = $name =~ /(.+)\[(.*)\]$/) {
         return $self->storage($storage)->stream($in_name);
     }
 

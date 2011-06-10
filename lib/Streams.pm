@@ -24,12 +24,12 @@ This module is just a simple way to load most important subs from other Stream::
 
 =cut
 
-use Stream::Utils qw(process catalog);
-use Stream::Out qw(processor);
+use Stream::Utils qw(process catalog processor);
+use Stream::Out;
 use Stream::Filter qw(filter);
 
 use parent qw(Exporter);
-our @EXPORT = qw(process storage cursor stream processor filter catalog);
+our @EXPORT = qw(process processor catalog filter);
 
 =head1 SEE ALSO
 
@@ -37,15 +37,12 @@ L<Stream> - first doc to learn about streams.
 
 L<Stream::Utils> - various stream functions.
 
-L<Stream::In> - interface which every every stream must implement.
+L<Stream::In> - input stream interface.
 
-L<Stream::Out> - output stream interface and constructor for anonimous processor.
+L<Stream::Out> - output stream interface.
 
 L<Stream::Filter> - filter that can be attached to other streams.
-
-L<process.pl> - script which processes any specified stream.
 
 =cut
 
 1;
-

@@ -15,8 +15,7 @@ use Yandex::X;
 xsystem("rm -rf tfiles");
 xsystem("mkdir tfiles");
 
-use Stream::Utils qw(process catalog);
-use Stream::Out qw(processor);
+use Stream::Utils qw(process catalog processor);
 use Stream::Simple qw(array_seq); # FIXME - this is a dependence on stream-more
 
 my @data;

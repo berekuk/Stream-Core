@@ -8,8 +8,7 @@ use Test::Exception;
 
 use lib qw(lib);
 
-use Streams qw(process);
-use Stream::Out qw(processor);
+use Streams qw(process processor);
 use Stream::Filter qw(filter);
 
 # simple pipeline of filters (2)

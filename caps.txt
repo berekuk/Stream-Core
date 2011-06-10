@@ -5,9 +5,9 @@ in:
 
 out:
  - size
+ - tail (cat? head? tac?)
 
 filter:
  - one-to-one
  - flushable
  - unsorted
-
