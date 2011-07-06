@@ -58,13 +58,14 @@ first flush.
 =back
 
 =cut
+
 sub new($$) {
     my $class = shift;
 
     my ($file, @p) = validate_pos(@_, 1, 0);
     my %params = validate(@p, {
         lock   => {type => BOOLEAN, default => 1},
-        safe   => {type => BOOLEAN, default => 0},
+        safe   => {type => BOOLEAN, default => 1},
         reopen => {type => BOOLEAN, default => 0},
     });
 
@@ -80,12 +81,24 @@ sub _open($) {
         open(my $f, '>', $self->{file});
         close($f);
     }
-    open($self->{fh}, "+<", $self->{file});
+
+    my $mode = $self->{safe} ? "+<" : ">>";
+
+    open($self->{fh}, $mode, $self->{file});
+    my $lock = $self->_lockf;
     if ($self->{safe}) {
         $self->_truncate;
-    } else {
-        sysseek($self->{fh}, 0, SEEK_END);
     }
+
+    return $lock;
+}
+
+sub _lockf {
+    my $self = shift;
+    return unless ($self->{lock});
+    die "no filehandle" unless ($self->{fh});
+    my $lock = lockf($self->{fh});
+    return $lock;
 }
 
 sub _truncate {
@@ -192,13 +205,11 @@ sub _flush($) {
     return unless defined $self->{data};
 
     my $lock;
-    if ($self->{lock}) {
-        $lock = lockf($self->{file} . 'lock');
-    }
     if (!$self->{fh} || $self->{reopen}) {
-        $self->_open;
+        $lock = $self->_open;
     } else {
-        sysseek($self->{fh}, 0, SEEK_END);
+        $lock = $self->_lockf;
+        sysseek($self->{fh}, 0, SEEK_END) if ($self->{safe});
     }
 
     $self->_write();
@@ -211,15 +222,8 @@ Write new line into file.
 =cut
 sub write ($$) {
     my ($self, $line) = @_;
-    if (defined $self->{data}) {
-        $self->{data} .= $line;
-    }
-    else {
-        $self->{data} = $line;
-    }
-    if (length($self->{data}) > 1_000) {
-        $self->_flush;
-    }
+
+    $self->write_chunk([$line]);
 }
 
 =item B<write_chunk($chunk)>
@@ -232,6 +236,7 @@ sub write_chunk ($$) {
     croak "write_chunk method expects arrayref" unless ref($chunk) eq 'ARRAY'; # can chunks be blessed into something?
     return unless @$chunk;
     for my $line (@$chunk) {
+        die "invalid line $line" if ($line !~ /\n\z/);
         if (defined $self->{data}) {
             $self->{data} .= $line;
         }

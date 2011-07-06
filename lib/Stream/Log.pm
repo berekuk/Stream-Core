@@ -25,15 +25,11 @@ use Stream::Log::Cursor;
 use Scalar::Util qw(blessed reftype);
 use Carp;
 
-use Yandex::Lockf;
-
-
-sub _flush($) {
-    my ($self) = @_;
-    return unless defined $self->{data};
-    my $lock = lockf("$self->{file}.lock");
-    $self->_open();
-    $self->_write();
+sub new {
+    my $class = shift;
+    my ($fname) = validate_pos(@_, 1);
+    my $self = $class->SUPER::new($fname, { lock => 1, safe => 1, reopen => 1 });
+    return $self;
 }
 
 =head1 METHODS

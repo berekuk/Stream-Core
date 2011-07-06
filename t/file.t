@@ -189,10 +189,11 @@ sub truncate : Test(8) {
         my ($given, $expected) = @$test;
 
         xsystem("rm -f tfiles/truncate_*");
-        my $out = Stream::File->new('tfiles/truncate_file', {safe => 1, reopen => 1});
-        $out->write($given);
-        $out->commit;
+        my $fh = xopen(">", "tfiles/truncate_file");
+        print $fh $given;
+        close($fh);
 
+        my $out = Stream::File->new('tfiles/truncate_file', {safe => 1, reopen => 1});
         $out->write("a\n");
         $out->commit;
 
@@ -204,7 +205,5 @@ sub truncate : Test(8) {
         is($content, $expected . "a\n");
     }
 }
-
-$ENV{TEST_METHOD} = 'truncate';
 
 __PACKAGE__->new->runtests;
