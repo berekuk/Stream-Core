@@ -173,4 +173,38 @@ sub lag :Test(5) {
     is($in->lag(), 20, "realtime lag");
 }
 
+sub truncate : Test(8) {
+    my $self = shift;
+    my $tests = [
+        ["", ""],
+        ["a" x 7, ""],
+        ["a" x 2000, ""],
+        ["\n", "\n"],
+        ["aaa\n", "aaa\n"],
+        ["aaa\nbbb", "aaa\n"],
+        ["aaa\nbbb\nccc", "aaa\nbbb\n"],
+        ["a\nc\n" . ("b" x 3000), "a\nc\n"],
+    ];
+    foreach my $test (@$tests) {
+        my ($given, $expected) = @$test;
+
+        xsystem("rm -f tfiles/truncate_*");
+        my $out = Stream::File->new('tfiles/truncate_file', {safe => 1, reopen => 1});
+        $out->write($given);
+        $out->commit;
+
+        $out->write("a\n");
+        $out->commit;
+
+        my $content;
+        my $in = $out->stream(Stream::File::Cursor->new('tfiles/trunkate_file.pos'));
+        while (my $l = $in->read) {
+            $content .= $l;
+        }
+        is($content, $expected . "a\n");
+    }
+}
+
+$ENV{TEST_METHOD} = 'truncate';
+
 __PACKAGE__->new->runtests;

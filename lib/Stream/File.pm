@@ -16,7 +16,7 @@ use warnings;
 
 =cut
 
-use Params::Validate;
+use Params::Validate qw(:all);
 use Stream::Storage;
 use parent qw(
     Stream::Storage
@@ -24,29 +24,150 @@ use parent qw(
 );
 
 use Carp;
+use Fcntl qw(SEEK_SET SEEK_CUR SEEK_END);
 use IO::Handle;
 use autodie;
 use Yandex::Lockf;
 use Stream::File::In;
 
-=item B<new($file)>
+=item B<new($file, [$options])>
 
 Create new object. C<$file> should be a name of any writable file into which lines will be appended.
 
 If C<$file> does not yet exist, it will be created.
 
+Options can contains the following keys:
+
+=over
+
+=item I<lock> (default = 1)
+
+Get lock on each write (useful when many processes writes in one file).
+
+=item I<reopen> (default = 0)
+
+Reopen file on each write (useful for files, which can be rotated).
+
+=item I<safe> (default = 0)
+
+Truncate file to the last endline (useful when your unit for writings is a single lines
+and you don't want to have a hanging lines in your log in case of failure).
+If C<reopen> is true, then file checks on each flush, otherwise it will be checked only at
+first flush.
+
+=back
+
 =cut
 sub new($$) {
     my $class = shift;
-    my ($file) = validate_pos(@_, 1);
 
-    return bless {file => $file} => $class;
+    my ($file, @p) = validate_pos(@_, 1, 0);
+    my %params = validate(@p, {
+        lock   => {type => BOOLEAN, default => 1},
+        safe   => {type => BOOLEAN, default => 0},
+        reopen => {type => BOOLEAN, default => 0},
+    });
+
+    my $self = { file => $file, %params };
+    bless $self, $class;
+
+    return $self;
 }
 
 sub _open($) {
     my ($self) = @_;
-    open $self->{fh}, ">>", $self->{file};
+    unless (-f $self->{file}) {
+        open(my $f, '>', $self->{file});
+        close($f);
+    }
+    open($self->{fh}, "+<", $self->{file});
+    if ($self->{safe}) {
+        $self->_truncate;
+    } else {
+        sysseek($self->{fh}, 0, SEEK_END);
+    }
 }
+
+sub _truncate {
+    my $self = shift;
+
+    # return if it is an empty file
+    my $f = $self->{fh};
+    sysseek($f, 0, SEEK_END);
+    my $fsize = sysseek($f, 0, SEEK_CUR);
+    return if ($fsize == 0);
+
+    # initially we check only last byte and if it is a "\n",
+    # then it's all ok
+    sysseek($f, -1, SEEK_END);
+    my $eof_byte = _sysread($f, 1);
+    return if ($eof_byte eq "\n");
+
+    my $cur_pos = $fsize;
+    while (1) {
+        # we have reached beginning of the file and haven't found "\n",
+        # so we truncate file entirely
+        if ($cur_pos == 0) {
+            sysseek($f, 0, SEEK_SET);
+            $f->truncate(0);
+            last;
+        }
+
+        # we read file in reverse order by chunks with $read_portion size.
+        # if current position is near of the beginning, we read
+        # all remained bytes from the start of the file
+        my $read_portion = 1024;
+        $read_portion = $cur_pos if ($cur_pos < $read_portion);
+        sysseek($f, $cur_pos - $read_portion, SEEK_SET);
+        my $s = _sysread($f, $read_portion);
+
+        # try to find last index of "\n" in the chunk
+        my $index;
+        while (1) {
+            my $index_pos = 0;
+            $index_pos = $index + 1 if (defined($index));
+            my $new_index = index($s, "\n", $index_pos);
+            if ($new_index < 0) {
+                last;
+            } else {
+                $index = $new_index;
+            }
+        }
+
+        # if found, then we can truncate file
+        if (defined($index)) {
+            my $new_pos = $cur_pos - $read_portion + $index +1;
+            sysseek($f, $new_pos, SEEK_SET);
+            $f->truncate($new_pos);
+            last;
+        }
+
+        # else try to read chunk nearer to the beginning of file
+        $cur_pos -= $read_portion;
+    }
+}
+
+sub _sysread {
+    my ($f, $length) = @_;
+
+    my $line;
+    my $offset = 0;
+    my $left = $length;
+    while ($left) {
+        my $bytes = $f->sysread($line, $left, $offset);
+        if (not defined $bytes) {
+            die "sysread failed: $!";
+        } elsif ($bytes == 0) {
+            die "sysread no progress";
+        } else {
+            $offset += $bytes;
+            $left   -= $bytes;
+        }
+    }
+
+    return $line;
+}
+
 
 sub _write ($) {
     my ($self) = @_;
@@ -69,8 +190,17 @@ sub _write ($) {
 sub _flush($) {
     my ($self) = @_;
     return unless defined $self->{data};
-    $self->_open unless $self->{fh};
-    my $lock = lockf($self->{fh});
+
+    my $lock;
+    if ($self->{lock}) {
+        $lock = lockf($self->{file} . 'lock');
+    }
+    if (!$self->{fh} || $self->{reopen}) {
+        $self->_open;
+    } else {
+        sysseek($self->{fh}, 0, SEEK_END);
+    }
+
     $self->_write();
 }
 
