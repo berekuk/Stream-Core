@@ -1,3 +1,9 @@
+libstream-perl (0.9.12) unstable; urgency=low
+
+  * support truncating hanging lines in Stream::File
+
+ -- Yury Zavarin <tadam@yandex-team.ru>  Mon, 11 Jul 2011 19:54:14 +0400
+
 libstream-perl (0.9.11) unstable; urgency=low
 
   * Stream::Catalog: allow clients with empty name
