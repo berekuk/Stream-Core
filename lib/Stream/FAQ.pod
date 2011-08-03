@@ -103,12 +103,4 @@ For example, if your program is a comment-fetching robot, it can be presented as
 
 If you want to test your script as a whole, you can also consider C<bind_in> method of C<Stream::Catalog> as a way to override input stream by name.
 
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
-=head1 LICENCE AND COPYRIGHT
-
-Copyright (c) 2009-2010 Yandex LTD. All rights reserved.
-
 =cut

@@ -61,11 +61,4 @@ sub stream {
     return Stream::DB::In->new({ storage => $storage, cursor => $self });
 }
 
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
-=cut
-
 1;
-

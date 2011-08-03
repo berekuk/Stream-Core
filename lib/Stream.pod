@@ -68,12 +68,4 @@ L<http://search.cpan.org/~mstrout/IO-Pipeline/> - unix pipe style expressions fr
 
 L<http://search.cpan.org/~nuffin/Data-Stream-Bulk/> - N at a time iteration API, similar to C<read_chunk()> in Streams 
 
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
-=head1 LICENCE AND COPYRIGHT
-
-Copyright (c) 2009-2010 Yandex LTD. All rights reserved.
-
 =cut

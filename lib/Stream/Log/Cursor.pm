@@ -70,11 +70,4 @@ sub stream {
     return Stream::Log::In->new($unrotate_params);
 }
 
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
-=cut
-
 1;
-

@@ -18,15 +18,20 @@ sub new {
 }
 
 sub write {
-    my ($self, $item) = @_;
+    my $self = shift;
+    my $item = shift;
     my @filtered = $self->{write_filter}->write($item);
     return unless @filtered;
-    $self->{storage}->write($_) for @filtered;
+    $self->{storage}->write($_, @_) for @filtered; # would write_chunk be better?
 }
 
 sub write_chunk {
-    my ($self, $chunk) = @_;
-    $self->{storage}->write_chunk($self->{write_filter}->write_chunk($chunk));
+    my $self = shift;
+    my $chunk = shift;
+    $self->{storage}->write_chunk(
+        $self->{write_filter}->write_chunk($chunk),
+        @_
+    );
 }
 
 sub stream {
@@ -43,7 +48,7 @@ sub stream_by_name {
 
 sub commit {
     my $self = shift;
-    $self->{storage}->commit;
+    $self->{storage}->commit(@_);
 }
 
 sub does {
@@ -54,9 +59,9 @@ sub does {
     return $self->SUPER::does($role);
 }
 
-sub client_names { return shift->{storage}->client_names }
-sub register_client { return shift->{storage}->register_client }
-sub unregister_client { return shift->{storage}->unregister_client }
-sub has_client { return shift->{storage}->has_client }
+sub client_names { return shift->{storage}->client_names(@_) }
+sub register_client { return shift->{storage}->register_client(@_) }
+sub unregister_client { return shift->{storage}->unregister_client(@_) }
+sub has_client { return shift->{storage}->has_client(@_) }
 
 1;

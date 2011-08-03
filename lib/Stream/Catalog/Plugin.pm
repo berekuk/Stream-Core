@@ -106,11 +106,6 @@ sub list {
 
 L<Stream::Catalog> - main catalog class. Most stream users shouldn't be aware about catalog plugins and use it instead.
 
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
 =cut
 
 1;
-

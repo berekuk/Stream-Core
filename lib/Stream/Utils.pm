@@ -104,14 +104,24 @@ sub process($$;$) {
     $out = vivify_out($out);
 
     {
-        my $user = getpwuid($>);
+        my $user;
+        my $get_user = sub {
+            $user = getpwuid($>) unless defined $user; # LDAP is sloooow
+            return $user;
+        };
+
+        my $check_owner = sub {
+            my $stream = shift;
+            if (
+                $stream->does('Stream::Role::Owned') and $stream->owner ne $get_user->()
+                or $stream->does('Stream::Moose::Role::Owned') and $stream->owner_uid != $> # sorry, this role belongs to more/ source tree
+            ) {
+                die "Stream $stream belongs to ".$stream->owner.", not to ".$get_user->();
+            }
+        };
         # you can read from stream which belong to another user, as long as you don't try to commit it
-        if ($commit and $in->does('Stream::Role::Owned') and $in->owner ne $user) {
-            die "Stream $in belongs to ".$in->owner.", not to $user";
-        }
-        if ($out->does('Stream::Role::Owned') and $out->owner ne $user) {
-            die "Stream $out belongs to ".$out->owner.", not to $user";
-        }
+        $check_owner->($in) if $commit;
+        $check_owner->($out);
     }
 
     my $commit_both_sub = sub {
@@ -256,10 +266,6 @@ sub vivify_storage { _vivify_any(shift, 'storage'); }
 =head1 SEE ALSO
 
 If you want even shorter way to load all streams machinery, you can use L<Streams>.
-
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
 
 =cut
 

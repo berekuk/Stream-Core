@@ -112,10 +112,6 @@ L<Stream::In> - base class for all input streams.
 
 L<Yandex::Unrotate> - module for reading rotated logs.
 
-=head1 AUTHOR
-
-Vyacheslav Matjukhin <mmcleric@yandex-team.ru>
-
 =cut
 
 1;
