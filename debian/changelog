@@ -1,3 +1,11 @@
+libstream-perl (0.9.13) unstable; urgency=low
+
+  * check for owner_uid in process() if Stream::Moose::Role::Owned role is
+    implemented
+  * fix proxying ClientList methods in Stream::Formatter::Wrapped
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 04 Aug 2011 18:56:46 +0400
+
 libstream-perl (0.9.12) unstable; urgency=low
 
   * support truncating hanging lines in Stream::File
