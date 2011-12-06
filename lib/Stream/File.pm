@@ -78,7 +78,9 @@ sub new($$) {
 sub _open($) {
     my ($self) = @_;
     unless (-f $self->{file}) {
-        open(my $f, '>', $self->{file});
+        # touch file, so we can open it for rw later
+        # there is still a small race - file can be renamed after this open and before the second open
+        open(my $f, '>>', $self->{file});
         close($f);
     }
 

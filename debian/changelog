@@ -1,3 +1,9 @@
+libstream-perl (0.9.14) UNRELEASED; urgency=low
+
+  * Stream::File: fix truncating open race
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 07 Dec 2011 00:22:11 +0400
+
 libstream-perl (0.9.13) unstable; urgency=low
 
   * check for owner_uid in process() if Stream::Moose::Role::Owned role is
