@@ -51,12 +51,17 @@ sub commit {
     $self->{storage}->commit(@_);
 }
 
-sub does {
+sub DOES {
     my ($self, $role) = @_;
     if ($role eq 'Stream::Storage::Role::ClientList') {
-        return $self->{storage}->does($role);
+        return $self->{storage}->DOES($role);
     }
-    return $self->SUPER::does($role);
+    return $self->SUPER::DOES($role);
+}
+
+{
+    no strict 'refs';
+    *does = \&DOES;
 }
 
 sub client_names { return shift->{storage}->client_names(@_) }

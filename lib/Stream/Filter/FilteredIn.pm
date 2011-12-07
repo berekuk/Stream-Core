@@ -43,7 +43,7 @@ sub commit {
 
 sub lag {
     my $self = shift;
-    die "underlying input stream doesn't implement Lag role" unless $self->{in}->does('Stream::In::Role::Lag');
+    die "underlying input stream doesn't implement Lag role" unless $self->{in}->DOES('Stream::In::Role::Lag');
     return $self->{in}->lag;
 }
 
@@ -53,14 +53,19 @@ sub shift {
     return @$item;
 }
 
-sub does {
+sub DOES {
     my ($self, $role) = @_;
     if ($role eq 'Stream::In::Role::Lag' or $role eq 'Stream::In::Role::Shift') {
         # Some roles depen on being implemented by the underlying input stream.
         # I guess in future we'll have lots of such role propagating logic... in this case moose metaclasses would be handy.
-        return $self->{in}->does($role);
+        return $self->{in}->DOES($role);
     }
-    return $self->SUPER::does($role);
+    return $self->SUPER::DOES($role);
+}
+
+{
+    no strict 'refs';
+    *does = \&DOES;
 }
 
 1;

@@ -113,8 +113,8 @@ sub process($$;$) {
         my $check_owner = sub {
             my $stream = shift;
             if (
-                $stream->does('Stream::Role::Owned') and $stream->owner ne $get_user->()
-                or $stream->does('Stream::Moose::Role::Owned') and $stream->owner_uid != $> # sorry, this role belongs to more/ source tree
+                $stream->DOES('Stream::Role::Owned') and $stream->owner ne $get_user->()
+                or $stream->DOES('Stream::Moose::Role::Owned') and $stream->owner_uid != $> # sorry, this role belongs to more/ source tree
             ) {
                 die "Stream $stream belongs to ".$stream->owner.", not to ".$get_user->();
             }
