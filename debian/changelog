@@ -1,9 +1,9 @@
-libstream-perl (0.9.15) UNRELEASED; urgency=low
+libstream-perl (0.9.15) unstable; urgency=low
 
   * Stream::Base: new DOES() method, deprecate does()
   * use DOES() in all core streams; provide does() as a temporary fallback
 
- -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 07 Dec 2011 22:48:51 +0400
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 08 Dec 2011 17:22:14 +0400
 
 libstream-perl (0.9.14) unstable; urgency=low
 
