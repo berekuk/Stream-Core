@@ -160,7 +160,7 @@ sub lag :Test(5) {
     my $self = shift;
     my $out = Stream::File->new('tfiles/file');
     my $in = $out->stream(Stream::File::Cursor->new('tfiles/pos'));
-    ok($in->does('Stream::In::Role::Lag'), "role");
+    ok($in->DOES('Stream::In::Role::Lag'), "role");
 
     is($in->lag(), 25, "simple lag");
     $in->read;
