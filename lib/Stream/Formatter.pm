@@ -9,7 +9,7 @@ use warnings;
 
     $formatted_storage = $formatter->wrap($storage);
     $formatted_storage->write({ a => "b" });
-    $reader =$formatted_storage->stream_by_name("client1");
+    $reader = $formatted_storage->in("client1");
     $data = $reader->read();
 
 =head1 DESCRIPTION

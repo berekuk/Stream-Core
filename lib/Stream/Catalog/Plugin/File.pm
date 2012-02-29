@@ -117,6 +117,9 @@ sub _load {
                 $self->{lazy}{$package_prefix}{$name} = $object;
                 return $self->{lazy}{$package_prefix}{$name}->();
             }
+            elsif ($stat == 1) {
+                warn "old-style stream descrpition in $file";
+            }
             return $object;
         }
     }

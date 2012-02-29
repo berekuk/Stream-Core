@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 20;
+use Test::More;
 use Test::Exception;
 
 use lib 'lib';
@@ -14,12 +14,37 @@ BEGIN {
 
 use Stream::Catalog;
 use Stream::File::Cursor;
+use Capture::Tiny qw(capture);
 
 use Yandex::X;
 xsystem("rm -rf tfiles");
 xsystem("mkdir tfiles");
 
 my $catalog = Stream::Catalog->new;
+
+# warns for old style definitions (3)
+{
+    my (undef, $stderr) = capture {
+        $catalog->storage('old');
+    };
+    like $stderr, qr{^old-style stream descrpition in t/catalog/out/old}, 'warn about old-style description';
+
+    (undef, $stderr) = capture {
+        $catalog->storage('old');
+    };
+    is $stderr, '', "don't warn about old-style descriptions twice";
+
+    (undef, $stderr) = capture {
+        $catalog->storage('old') for 1 .. 100;
+    };
+    like $stderr, qr{100 evals of .* detected, please migrate it to lazy style instead to avoid memory leak}, "warn on 100-th eval of the same file";
+}
+
+local $SIG{__WARN__} = sub {
+    my $msg = shift;
+    return if $msg =~ /old-style stream descrpition/; # disable warns for the rest of test, they are annoying
+    warn $msg;
+};
 
 # catalog->storage (3)
 {
@@ -70,11 +95,11 @@ my $catalog = Stream::Catalog->new;
 
 # list_* (3)
 {
-    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something something.lazy /], 'list_out returns names');
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom old something something.lazy /], 'list_out returns names');
     $catalog->bind_out('blah' => $catalog->out('custom'));
-    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something something.lazy blah /], 'list_out merges names from plugins');
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom old something something.lazy blah /], 'list_out merges names from plugins');
     $catalog->bind_out('something' => $catalog->out('custom'));
-    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom something something.lazy blah /], 'list_out filters duplicates');
+    is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom old something something.lazy blah /], 'list_out filters duplicates');
 }
 
 # unknown name (1)
@@ -96,3 +121,5 @@ my $catalog = Stream::Catalog->new;
     }, qr/Can't find /, 'catalog throws exception on unknown names');
 
 }
+
+done_testing;

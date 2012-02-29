@@ -1,0 +1,3 @@
+use Stream::File;
+
+Stream::File->new('tfiles/old.file');

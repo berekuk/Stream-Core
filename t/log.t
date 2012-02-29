@@ -63,24 +63,24 @@ sub commit :Test(2) {
 }
 
 
-sub stream_by_name :Test(7) {
+sub by_name :Test(7) {
     xsystem("echo ".($_ x 3)." >>tfiles/log") for 'd'..'g';
 
     $ENV{STREAM_LOG_POSDIR} = 'tfiles';
     my $storage = Stream::Log->new("tfiles/log");
 
-    my $first = $storage->stream_by_name('first');
+    my $first = $storage->in('first');
     is($first->read, "ddd\n");
     is($first->read, "eee\n");
     $first->commit;
-    my $second = $storage->stream_by_name('second');
+    my $second = $storage->in('second');
     is($second->read, "ddd\n");
     $second->commit;
-    $first = $storage->stream_by_name('first');
+    $first = $storage->in('first');
     is($first->read, "fff\n");
     $first->commit;
     is($first->read, "ggg\n");
-    $first = $storage->stream_by_name('first');
+    $first = $storage->in('first');
     is($first->read, "ggg\n");
     $first = $storage->stream('first');
     is($first->read, "ggg\n");
@@ -95,13 +95,13 @@ sub clients :Test(3) {
 
     is_deeply([ $storage->client_names ], [], 'initially there are no clients');
 
-    my $in = $storage->stream_by_name('xxx');
+    my $in = $storage->in('xxx');
     undef $in;
     is_deeply([ $storage->client_names ], [], "uncommited input stream don't create posfile and so don't register itself in storage");
 
-    $in = $storage->stream_by_name('xxx');
+    $in = $storage->in('xxx');
     $in->commit;
-    $in = $storage->stream_by_name('yyy');
+    $in = $storage->in('yyy');
     $in->read;
     $in->commit;
     is_deeply([ $storage->client_names ], ['xxx', 'yyy'], "client_names returns all clients");

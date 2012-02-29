@@ -112,14 +112,14 @@ sub params {
     };
 }
 
-=item stream($cursor)
+=item in($cursor)
 
 Construct input stream from storage, starting from position saved in cursor.
 
 C<$cursor> should be of C<Stream::DB::Cursor> class.
 
 =cut
-sub stream {
+sub in {
     my ($self, $cursor) = @_;
     return Stream::DB::In->new({storage => $self, cursor => $cursor});
 }

@@ -20,6 +20,7 @@ use Digest::MD5 qw(md5_hex);
 use parent qw(
     Stream::File
     Stream::Storage::Role::ClientList
+    Stream::Role::Description
 );
 use Stream::Log::Cursor;
 use Scalar::Util qw(blessed reftype);
@@ -32,20 +33,25 @@ sub new {
     return $self;
 }
 
+sub description {
+    my $self = shift;
+    return "log: ".$self->file;
+}
+
 =head1 METHODS
 
 =over
 
-=item B<stream($cursor)>
+=item B<in($cursor_or_client)>
 
-=item B<stream($cursor, $unrotate_params)>
+=item B<in($cursor_or_client, $unrotate_params)>
 
-Construct stream object from an L<Stream::Log::Cursor> object.
+Construct input stream from a client name or an L<Stream::Log::Cursor> object.
 
 C<$unrotate_params> can contain more unrotate options.
 
 =cut
-sub stream($$;$) {
+sub in($$;$) {
     my $self = shift;
     my ($cursor_or_name, $unrotate_params) = validate_pos(@_, 1, {type => HASHREF, optional => 1});
     if (reftype($cursor_or_name)) {
@@ -54,23 +60,12 @@ sub stream($$;$) {
         return $cursor->stream($self, ($unrotate_params ? $unrotate_params : ()));
     }
     else {
-        return $self->stream_by_name(@_);
+        return $self->_in_by_name(@_);
     }
 
 }
 
-=item B<stream_by_name($name)>
-
-=item B<stream_by_name($name, $unrotate_params)>
-
-Construct stream object by name.
-
-Position will be saved in file which guaranteed to be unique for any log+name pair.
-
-C<$unrotate_params> can contain more unrotate options.
-
-=cut
-sub stream_by_name($$;$) {
+sub _in_by_name($$;$) {
     my $self = shift;
     my ($name, $unrotate_params) = validate_pos(@_, { type => SCALAR }, {type => HASHREF, optional => 1});
 

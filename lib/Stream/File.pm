@@ -21,6 +21,7 @@ use Stream::Storage;
 use parent qw(
     Stream::Storage
     Stream::Role::Owned
+    Stream::Role::Description
 );
 
 use Carp;
@@ -73,6 +74,11 @@ sub new($$) {
     bless $self, $class;
 
     return $self;
+}
+
+sub description {
+    my $self = shift;
+    return "file: ".$self->file;
 }
 
 sub _open($) {
@@ -267,12 +273,12 @@ sub file {
     return $self->{file};
 }
 
-=item B<stream($cursor)>
+=item B<in($cursor)>
 
 Construct stream object from an L<Stream::File::Cursor> object.
 
 =cut
-sub stream($$) {
+sub in {
     my $self = shift;
     my ($cursor) = validate_pos(@_, {isa => 'Stream::File::Cursor'});
 

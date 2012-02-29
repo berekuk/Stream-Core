@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use parent qw(Stream::Storage);
 
-sub stream {
+sub in {
     my $self = shift;
     my $name = shift;
     unless ($name eq 'aaa' or $name eq 'bbb') {

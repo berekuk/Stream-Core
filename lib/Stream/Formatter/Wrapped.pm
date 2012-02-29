@@ -6,6 +6,8 @@ use warnings;
 use parent qw(Stream::Storage);
 use Params::Validate;
 
+use Scalar::Util qw(blessed);
+
 sub new {
     my $class = shift;
     my ($formatter, $storage) = validate_pos(@_, { isa => 'Stream::Formatter' }, { isa => 'Stream::Storage' });
@@ -34,15 +36,9 @@ sub write_chunk {
     );
 }
 
-sub stream {
+sub in {
     my $self = shift;
-    my $input_stream = $self->{storage}->stream(@_);
-    return ($input_stream | $self->{read_filter});
-}
-
-sub stream_by_name {
-    my $self = shift;
-    my $input_stream = $self->{storage}->stream_by_name(@_);
+    my $input_stream = $self->{storage}->stream(@_); # TODO - replace ->stream with ->in!
     return ($input_stream | $self->{read_filter});
 }
 
@@ -53,7 +49,7 @@ sub commit {
 
 sub DOES {
     my ($self, $role) = @_;
-    if ($role eq 'Stream::Storage::Role::ClientList') {
+    if ($role eq 'Stream::Storage::Role::ClientList' or $role eq 'Stream::Role::Description') {
         return $self->{storage}->DOES($role);
     }
     return $self->SUPER::DOES($role);
@@ -68,5 +64,13 @@ sub client_names { return shift->{storage}->client_names(@_) }
 sub register_client { return shift->{storage}->register_client(@_) }
 sub unregister_client { return shift->{storage}->unregister_client(@_) }
 sub has_client { return shift->{storage}->has_client(@_) }
+
+sub description {
+    my $self = shift;
+    my $inner_description = $self->{storage}->description(@_);
+    return
+        "format: ".blessed($self->{formatter})."\n"
+        .$inner_description;
+}
 
 1;

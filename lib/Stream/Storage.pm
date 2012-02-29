@@ -24,18 +24,30 @@ Stream::Storage is an object which can act as a writing stream, and which can ge
 
 use parent qw(Stream::Out);
 
-=item C<stream(...)>
+=item C<in(...)>
 
 Constructs input stream for this storage.
 
 Most storages are able to have several different input streams with different positions in storage.
 
-C<stream> method usually accepts either associated cursor or clients name as plain string.
+C<in> method usually accepts either clients name (as plain string), or more complicated cursor object.
+
+=cut
+sub in {
+    my ($self, $client) = @_;
+    die "input stream construction not implemented";
+}
+
+=item C<stream(...)>
+
+Old deprecated name for C<in(...)> method. Some storage implementations still use it, though, and don't implement C<in>.
+
+This method redirects its calls to C<in(...)> by default, so don't implement it in new storages, please!
 
 =cut
 sub stream {
-    my ($self, $cursor) = @_;
-    die "stream construction not implemented";
+    my $self = shift;
+    $self->in(@_);
 }
 
 =back

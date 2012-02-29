@@ -1,3 +1,17 @@
+libstream-perl (1.0.0) unstable; urgency=low
+
+  * Stream::Storage: stream() method aliases to in() method by default
+  * all core storages define in() method instead of stream()
+  * get rid of stream_by_name in Stream::Log and Stream::Formatter::Wrapped,
+    nobody uses it
+  * build using @PPBModern and ppb-dzil.mk
+  * Stream::Role::Description role
+  * Stream::File and Stream::Log implement description()
+  * propagate description and description role in Stream::Formatter::Wrapped
+  * warn about old-style stream descriptions
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Wed, 29 Feb 2012 20:04:26 +0400
+
 libstream-perl (0.9.15) unstable; urgency=low
 
   * Stream::Base: new DOES() method, deprecate does()

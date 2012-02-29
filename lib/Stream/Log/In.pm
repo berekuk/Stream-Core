@@ -26,6 +26,7 @@ use warnings;
 =cut
 
 use parent qw(
+    Stream::Role::Description
     Stream::Role::Clonable
     Stream::In::Role::Filterable
     Stream::In::Role::Lag
@@ -54,6 +55,15 @@ sub new {
         unrotate => $unrotate,
         params => $params,
     } => $class;
+}
+
+sub description {
+    my $self = shift;
+
+    my $current_log = $self->{unrotate}->_log_file; # FIXME - incapsulation violation!
+    return
+        "pos: $self->{params}{PosFile}\n"
+        ."log: $current_log";
 }
 
 sub clone {
