@@ -64,15 +64,17 @@ sub has_client($$) {
     return grep { $_ eq $name } $self->client_names;
 }
 
-=item B<< lag_value >>
+=item B<< inefficiency >>
 
 Returns the lag value for this storage (the sum of lags of all clients).
 
 =cut
-sub lag_value {
+sub inefficiency {
     my $self = shift;
+
     my $lag = 0;
-    $lag += $_->in($_)->lag() for (@{$self->client_names});
+    $lag += $_->in($_)->lag() for ($self->client_names);
+
     return $lag;
 }
 
