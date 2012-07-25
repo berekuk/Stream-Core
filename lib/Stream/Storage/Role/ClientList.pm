@@ -73,7 +73,7 @@ sub inefficiency {
     my $self = shift;
 
     my $lag = 0;
-    $lag += $_->in($_)->lag() for ($self->client_names);
+    $lag += $self->in($_)->lag() for ($self->client_names);
 
     return $lag;
 }
