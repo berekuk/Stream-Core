@@ -5,8 +5,6 @@ use warnings;
 
 # ABSTRACT: role for classes which want 'shift' method to return lists.
 
-=cut
-
 =head1 METHODS
 
 =over
