@@ -1,6 +1,6 @@
 libstream-perl (1.0.2) unstable; urgency=low
 
-  * clients role can get inefficiency value
+  * role for occupancy value
 
  -- Serge Toropov <sombr@yandex-team.ru>  Wed, 25 Jul 2012 16:58:08 +0400
 
