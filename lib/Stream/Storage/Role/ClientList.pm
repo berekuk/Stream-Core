@@ -63,7 +63,6 @@ sub has_client($$) {
     my $name = shift;
     return grep { $_ eq $name } $self->client_names;
 }
-
 =back
 
 =cut

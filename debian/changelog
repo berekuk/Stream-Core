@@ -1,3 +1,9 @@
+libstream-perl (1.0.2) unstable; urgency=low
+
+  * role for occupancy value
+
+ -- Serge Toropov <sombr@yandex-team.ru>  Wed, 25 Jul 2012 16:58:08 +0400
+
 libstream-perl (1.0.1) unstable; urgency=low
 
   * rebuild with libautodie-perl dependency
