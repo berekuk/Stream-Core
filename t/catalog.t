@@ -93,6 +93,25 @@ local $SIG{__WARN__} = sub {
     is($catalog->in('something.cursor')->{a}, 'b', "bind_in overrides configs");
 }
 
+# calalog->...('...|...') (6)
+{
+    my $storage = $catalog->storage('simple|something');
+    is(ref $storage, 'Stream::Filter::FilteredOut', 'piped out stream');
+
+    my $in = $catalog->in('something.cursor|simple|simple');
+    is(ref $in, 'Stream::Filter::FilteredIn', 'piped in stream');
+
+    my $filter = $catalog->filter('double_stream|simple|double|double|double_stream');
+    is(ref $filter, 'Stream::Filter::FilteredFilter', 'piped filter');
+    my @res = $filter->write(2);
+    is(scalar @res, 4, 'All filters are applied');
+    is($res[0], 8, 'All filters are applied');
+
+    throws_ok(sub {
+        $catalog->storage('incorrect|something');
+    }, qr/Can't find /, 'catalog throws exception on unknown names in pipe');
+}
+
 # list_* (3)
 {
     is_deeply([ sort $catalog->list_out() ], [ sort qw/ custom old something something.lazy /], 'list_out returns names');

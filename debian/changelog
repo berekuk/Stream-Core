@@ -1,3 +1,9 @@
+libstream-perl (1.0.3) UNRELEASED; urgency=low
+
+  * Stream::Catalog::Plugin::ParsePipe
+
+ -- sashateh <sashateh@yandex-team.ru>  Tue, 11 Sep 2012 15:14:24 +0400
+
 libstream-perl (1.0.2) unstable; urgency=low
 
   * role for occupancy value

@@ -25,6 +25,7 @@ use namespace::autoclean;
 use Stream::Catalog::Plugin::File;
 use Stream::Catalog::Plugin::Package;
 use Stream::Catalog::Plugin::Memory;
+use Stream::Catalog::Plugin::ParsePipe;
 
 use Stream::Catalog::Utils qw(types);
 
@@ -43,6 +44,7 @@ sub new ($) {
             Stream::Catalog::Plugin::Package->new,
         ],
     } => $class;
+    unshift @{$self->{plugins}}, Stream::Catalog::Plugin::ParsePipe->new($self);
     $self->{memory_plugin} = Stream::Catalog::Plugin::Memory->new();
     unshift @{$self->{plugins}}, $self->{memory_plugin};
     return $self;
