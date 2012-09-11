@@ -48,7 +48,7 @@ sub in {
     my ($self, $name) = @_;
 
     if ($name =~ /\|/) {
-        my ($in, @filters) = split /\|/, $name;
+        my ($in, @filters) = split /\s*\|\s*/, $name;
         $in = $self->{catalog}->in($in);
         for (@filters) {
             $in = $in | $self->{catalog}->filter($_);
@@ -67,7 +67,7 @@ Splits C<$name> by B<|> and returns pipe of filters followed by out stream.
 sub out {
     my ($self, $name) = @_;
     if ($name =~ /\|/) {
-        my @filters = split /\|/, $name;
+        my @filters = split /\s*\|\s*/, $name;
         my $out = $self->{catalog}->out(pop @filters);
         for (@filters) {
             $out = $self->{catalog}->filter($_) | $out;
@@ -86,7 +86,7 @@ Splits C<$name> by B<|> and returns pipe of filters.
 sub filter {
     my ($self, $name) = @_;
     if ($name =~ /\|/) {
-        my ($filter, @filters) = split /\|/, $name;
+        my ($filter, @filters) = split /\s*\|\s*/, $name;
         $filter = $self->{catalog}->filter($filter);
         for (@filters) {
             $filter = $filter | $self->{catalog}->filter($_);

@@ -101,7 +101,7 @@ local $SIG{__WARN__} = sub {
     my $in = $catalog->in('something.cursor|simple|simple');
     is(ref $in, 'Stream::Filter::FilteredIn', 'piped in stream');
 
-    my $filter = $catalog->filter('double_stream|simple|double|double|double_stream');
+    my $filter = $catalog->filter('double_stream | simple | double | double | double_stream');
     is(ref $filter, 'Stream::Filter::FilteredFilter', 'piped filter');
     my @res = $filter->write(2);
     is(scalar @res, 4, 'All filters are applied');
