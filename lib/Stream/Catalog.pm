@@ -25,7 +25,6 @@ use namespace::autoclean;
 use Stream::Catalog::Plugin::File;
 use Stream::Catalog::Plugin::Package;
 use Stream::Catalog::Plugin::Memory;
-use Stream::Catalog::Plugin::ParsePipe;
 
 use Stream::Catalog::Utils qw(types);
 
@@ -44,7 +43,6 @@ sub new ($) {
             Stream::Catalog::Plugin::Package->new,
         ],
     } => $class;
-    unshift @{$self->{plugins}}, Stream::Catalog::Plugin::ParsePipe->new($self);
     $self->{memory_plugin} = Stream::Catalog::Plugin::Memory->new();
     unshift @{$self->{plugins}}, $self->{memory_plugin};
     return $self;
@@ -73,6 +71,18 @@ Get output stream by name.
 =cut
 sub out ($$) {
     my ($self, $name) = @_;
+
+    if ($name =~ /\|/) {
+        my ($filter, @filters) = split /\s*\|\s*/, $name;
+        my $out = $self->out(pop @filters);
+        $filter = $self->filter($filter);
+        for (@filters) {
+            $filter = $filter | $self->filter($_);
+        }
+        $out = $filter | $out;
+        return $out;
+    }
+
     return $self->_any('out', $name) || die "Can't find output stream by name '$name'";
 }
 
@@ -83,6 +93,16 @@ Get filter by name.
 =cut
 sub filter ($$) {
     my ($self, $name) = @_;
+
+    if ($name =~ /\|/) {
+        my ($filter, @filters) = split /\s*\|\s*/, $name;
+        $filter = $self->filter($filter);
+        for (@filters) {
+            $filter = $filter | $self->filter($_);
+        }
+        return $filter;
+    }
+
     $self->_any('filter', $name) || die "Can't find filter by name '$name'";
 }
 
@@ -97,6 +117,16 @@ If name looks like C<aaa[bbb]>, and no input stream found, this method will try 
 =cut
 sub in ($$) {
     my ($self, $name) = @_;
+
+    if ($name =~ /\|/) {
+        my ($in, @filters) = split /\s*\|\s*/, $name;
+        $in = $self->in($in);
+        for (@filters) {
+            $in = $in | $self->filter($_);
+        }
+        return $in;
+    }
+
     my $in = $self->_any('in', $name);
     return $in if $in;
 

@@ -1,6 +1,6 @@
 libstream-perl (1.0.3) UNRELEASED; urgency=low
 
-  * Stream::Catalog::Plugin::ParsePipe
+  * Support pipes in stringed in/out/filter description
 
  -- sashateh <sashateh@yandex-team.ru>  Tue, 11 Sep 2012 15:14:24 +0400
 
