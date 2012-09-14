@@ -1,3 +1,9 @@
+libstream-perl (1.1.0) unstable; urgency=low
+
+  * Support pipes in stringed in/out/filter description
+
+ -- sashateh <sashateh@yandex-team.ru>  Fri, 14 Sep 2012 17:44:59 +0400
+
 libstream-perl (1.0.2) unstable; urgency=low
 
   * role for occupancy value

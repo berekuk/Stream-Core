@@ -1,0 +1,14 @@
+# vim:ft=perl
+
+use warnings;
+use strict;
+
+use Stream::Filter qw(filter);
+
+return sub {
+    filter(sub {
+        my $item = shift;
+        return ($item, $item);
+    });
+}
+
