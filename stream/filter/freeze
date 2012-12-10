@@ -1,5 +1,5 @@
 # vim:ft=perl
-use Storable qw(freeze);
+use Storable qw(nfreeze);
 
 use Stream::Filter qw(filter);
 use warnings;
@@ -8,6 +8,6 @@ use strict;
 sub {
     filter(sub {
         my $item = shift;
-        return freeze(\$item);
+        return nfreeze(\$item);
     });
 };
