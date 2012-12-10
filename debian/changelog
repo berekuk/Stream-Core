@@ -1,3 +1,9 @@
+libstream-perl (1.1.1) unstable; urgency=low
+
+  * nfreeze instead of freeze 
+
+ -- Strelkova Natalia <skalolazka@yandex-team.ru>  Mon, 10 Dec 2012 18:23:19 +0400
+
 libstream-perl (1.1.0) unstable; urgency=low
 
   * Support pipes in stringed in/out/filter description
