@@ -11,7 +11,7 @@ sub write_chunk {
         map {
             # in-place modification! I hope it won't cause problems...
             chomp;
-            s{(\\\\|\\n)}{
+            s{(\\[\\n])}{
                 ($1 eq "\\\\") ? "\\" : "\n"
             }ge;
             $_;

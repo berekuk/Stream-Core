@@ -1,3 +1,9 @@
+libstream-perl (1.1.2) unstable; urgency=low
+
+  * 5x speedup line2str filter
+
+ -- Vyacheslav Matjukhin (No comments) <mmcleric@yandex-team.ru>  Thu, 10 Jan 2013 19:47:22 +0400
+
 libstream-perl (1.1.1) unstable; urgency=low
 
   * nfreeze instead of freeze 
